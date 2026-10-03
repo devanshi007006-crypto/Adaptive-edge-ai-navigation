@@ -7,8 +7,13 @@ import yaml
 import cv2
 import numpy as np
 
-# Ensure project root is in sys.path
-sys.path.insert(0, os.path.abspath(os.path.dirname(__file__)))
+# Ensure both package directory and project workspace root are in sys.path
+_current_dir = os.path.abspath(os.path.dirname(__file__))
+_project_root = os.path.dirname(_current_dir)
+if _current_dir not in sys.path:
+    sys.path.insert(0, _current_dir)
+if _project_root not in sys.path:
+    sys.path.insert(0, _project_root)
 
 from risk import TTCEstimator, TTCResult, RiskEngine, RiskFeatures, RiskAssessment
 from uncertainty.reliability import ReliabilityEstimator, ReliabilityAssessment, SystemReliability
@@ -741,7 +746,7 @@ def run_perception_pipeline(
         print("=" * 75)
 
 def main():
-    parser = argparse.ArgumentParser(description="Adaptive Edge-AI Navigation - Step 5: Depth Anything V2")
+    parser = argparse.ArgumentParser(description="Adaptive Edge-AI Navigation - Step 15: Wearable Audio & End-to-End Pipeline")
     parser.add_argument("--config", type=str, default="config.yaml", help="Path to config file")
     parser.add_argument("--video", type=str, default=None, help="Path to test video file")
     parser.add_argument("--cam", type=int, default=None, help="Camera index")
