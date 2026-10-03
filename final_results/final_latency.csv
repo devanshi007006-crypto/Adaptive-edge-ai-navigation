@@ -1,0 +1,14 @@
+Subsystem Module,Latency (ms),FPS Contribution,Relative Share (%),Hardware Accelerator
+Frame Ingestion & Validation,0.65,1538.5 FPS,5.6%,CPU / OpenCV Memory Buffer
+Detection (YOLOv8n / YOLO11n),0.95,1052.6 FPS,8.2%,CUDA FP16 Tensor Cores
+Tracking (BoT-SORT),0.72,1388.9 FPS,6.2%,CPU Vectorized Kalman
+Depth Estimation (Depth Anything V2),7.82,127.9 FPS,67.7%,CUDA FP16 + 2:1 Cadence Interleaving
+Motion & Range Rate Estimation,0.28,3571.4 FPS,2.4%,CPU NumPy History Derivatives
+Camera Ego-Motion Compensation,0.30,3333.3 FPS,2.6%,OpenCV Sparse Optical Flow + RANSAC
+TTC Physics Engine,0.18,5555.6 FPS,1.6%,CPU Kinematic Formula
+Multi-Factor Risk Engine,0.16,6250.0 FPS,1.4%,CPU Multi-Source Weighting
+Perception Reliability Layer,0.14,7142.9 FPS,1.2%,CPU Multi-Factor Coverage Gate
+Temporal Risk Stabilization,0.12,8333.3 FPS,1.0%,CPU 2-Frame Hysteresis Machine
+Spatial Corridor & Navigation,0.13,7692.3 FPS,1.1%,CPU Lateral Geometry Partitioning
+Message Formatting & Dispatch,0.10,10000.0 FPS,0.9%,CPU Non-Blocking Thread Queue
+Total End-to-End Pipeline Loop,11.55,86.58 FPS,100.0%,Intel i7-12700H + RTX 3060 Laptop GPU

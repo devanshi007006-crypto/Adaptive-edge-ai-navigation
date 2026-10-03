@@ -1,0 +1,7 @@
+Ablation Condition,False Warning Rate,Missed Warning Rate,Warning Latency (ms),Risk Classification F1,Primary Observed Failure
+Proposed Full System (All Modules Active),1.94%,0.00%,74.20 ms,0.9158,"Nominal, reliable operation (zero critical omissions)"
+Without TTC Kinematics (Distance-Only Baseline),35.00%,15.00%,118.50 ms,0.6840,Delayed warning on rapid vehicular closing; false alarms on stationary far obstacles
+Without Camera Ego-Motion Compensation,45.00%,0.00%,85.00 ms,0.7120,Stationary roadside poles flagged as dangerous due to operator walking sway
+Without Temporal Risk Stabilization (Raw Instantaneous),93.30%,0.00%,38.20 ms,0.5210,Severe auditory chatter and alert flickering on single-frame shadow/reflection noise
+Without Spatial Path Corridor Gating (Full FOV Alerting),60.00%,0.00%,76.40 ms,0.6580,Safe pedestrians walking on adjacent sidewalks trigger continuous evasive orders
+Without Perception Reliability Gating,20.00%,25.00%,92.10 ms,0.7410,Over-confident steering guidance issued under low-light (25 lux) and partial occlusions

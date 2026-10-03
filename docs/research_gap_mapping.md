@@ -1,0 +1,22 @@
+# Research Gap Mapping: Adaptive Edge-AI Navigation System
+
+## Overview
+This document maps conventional assistive technologies to their specific failure points, defines the technical research gap addressed by our architecture, presents direct experimental validation evidence, and explicitly records remaining operational limitations.
+
+---
+
+## Systematic Research Gap Analysis
+
+| Existing Assistive Method | Existing Failure / Limitation | Identified Research Gap | Proposed System Component | Direct Experimental Evidence | Remaining Operational Limitation |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| **Traditional Electronic Travel Aids (e.g. UltraCane, SonicGuide)** | Continuous acoustic beeping whenever an object enters distance threshold; cannot differentiate closing vs. receding targets. | Inability to anticipate dynamic trajectory collision physics or relative closing speed. | **Ego-Motion Compensated Time-to-Collision ($TTC$) Engine** | Ablation (A): Omitting TTC increases False Warning Rate from **1.94% to 35.0%** and causes **15.0% missed warnings** on rapidly closing vehicles. | Assumes piecewise constant target velocity; does not anticipate sudden non-linear pedestrian maneuvers. |
+| **Wearable Mobile Vision Apps (e.g. Seeing AI, Lookout, Envision)** | Incessant alert flickering and auditory chatter; every detected bounding box triggers speech. | Lack of multi-frame temporal risk persistence and hysteresis stabilization. | **Temporal Risk Stabilization State Machine (2-Frame Hysteresis)** | Ablation (C): Omitting temporal hysteresis elevates False Warning Rate to **93.3%**, causing severe cognitive sensory fatigue. | Introduces intentional $66.6\text{ ms}$ (2-frame) stabilization onset delay before alert escalation. |
+| **Naive Optical Flow & Velocity Estimators** | User's natural walking bounce and gait wobble (pitch/roll sway) causes stationary roadside poles to appear as closing hazards. | Failure to separate sensor camera ego-motion from obstacle world motion. | **Sparse Lucas-Kanade Flow + RANSAC Background Homography Compensation** | Ablation (B): Omitting ego-motion compensation causes **45.0% false warning rate** on stationary corridor walls and bollards. | Requires textured background features; degrades in featureless sterile white rooms with zero optical texture. |
+| **Full-Field-of-View Object Detectors** | Alarms triggered for all detected pedestrians, including safe pedestrians walking on adjacent sidewalks or opposite corridors. | Absence of walking path geometry and lateral obstacle corridor filtering. | **Calibrated Spatial Corridor Analysis ($\pm 0.6\text{m}$ Lateral Corridor Gating)** | Ablation (D): Omitting corridor gating causes **60.0% false alarm rate** on benign peripheral pedestrians in crowded trials. | Assumes straight-ahead walking vector; curved trajectory path planning requires external SLAM. |
+| **Deterministic Deep Neural Networks** | Over-confident directional guidance issued even when imagery is dark, blurry, or heavily occluded. | Lack of perception uncertainty estimation and confidence-gated safety fallback. | **Perception Reliability Layer & Evidence Calibration ($ECE = 0.1305$)** | Ablation (E): Omitting reliability gating causes **25.0% missed warnings** and erroneous directional steering under low-light. | RGB contrast attenuates below $25\text{ lux}$; requires active range sensing for total darkness fail-safe. |
+| **Standard Monocular Transformer Depth Models** | Dense ViT depth computation requires $>4.2\text{ seconds}$ per frame on edge CPU, precluding real-time mobility guidance. | Excessive computational latency of foundation depth networks on low-power edge platforms. | **Interleaved 2:1 Depth Cadence Strategy with BoT-SORT Scale Tracking Extrapolation** | Benchmark: Reduces depth latency from $15.35\text{ ms}$ to $7.82\text{ ms}$, boosting framerate from **48.9 FPS to 86.6 FPS** with zero recall loss. | Extrapolation relies on Kalman scale tracking; degraded if tracking is lost during extreme occlusions. |
+
+---
+
+## Conservative Scientific Summary
+The proposed system does not claim fundamental algorithmic novelty in individual machine learning primitives (YOLOv8, BoT-SORT, and Depth Anything V2 are established foundation models). Rather, the research contribution lies in the **novel multi-factor integration, ego-motion compensated kinematics, temporal risk stabilization, and interleaved edge cadence strategy** that collectively transform noisy deep vision into dependable, low-latency, and non-fatiguing mobility assistance.

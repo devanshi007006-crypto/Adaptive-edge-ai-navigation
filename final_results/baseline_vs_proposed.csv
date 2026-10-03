@@ -1,0 +1,12 @@
+Metric,Baseline,Proposed,Absolute Change,Relative Change,Dataset,Protocol
+False Warning Rate (FWR),93.30%,1.94%,-91.36%,-97.9%,Canonical Suite & Real-World Pilot,Raw Instantaneous Detection vs 2-Frame Hysteresis Machine
+System Throughput (FPS),48.95 FPS,86.58 FPS,+37.63 FPS,+76.9%,Live Camera / Video Stream (640x480),FP32 Synchronous Depth vs FP16 Interleaved 2:1 Cadence
+Mean Frame Latency (ms),20.43 ms,11.55 ms,-8.88 ms,-43.5%,Live Camera / Video Stream (640x480),End-to-End Processing Loop
+Depth Inference Latency (ms),15.35 ms,7.82 ms,-7.53 ms,-49.1%,Depth Anything V2 (vits),Every Frame vs Interleaved 2:1 with BoT-SORT Interpolation
+Detection Subsystem Latency (ms),1.45 ms,0.95 ms,-0.50 ms,-34.5%,YOLOv8n / YOLO11n Checkpoint,FP32 Precision vs FP16 Tensor Optimization
+Warning Decision Latency (ms),98.84 ms,74.20 ms,-24.64 ms,-24.9%,Dynamic Approach Trajectories,Hazard Relevance to Wearable Audio Dispatch
+Navigation-to-Audio Latency (ms),32.24 ms,23.40 ms,-8.84 ms,-27.4%,Corridor Blockage Scenarios,Spatial Blockage to Speech Synthesizer Trigger
+Host RAM Memory Allocation (MB),1420.0 MB,1180.0 MB,-240.0 MB,-16.9%,Long-Run Stability Test (1000 Frames),Unbounded Buffer vs Capped Circular Deques (maxlen=30)
+GPU VRAM Allocation (MB),1850.0 MB,1340.0 MB,-510.0 MB,-27.6%,NVIDIA RTX 3060 Laptop GPU,FP32 Full Allocation vs FP16 Tensor Compression
+Detection Recall Preservation (%),95.80%,95.80%,0.00%,0.0%,Canonical Benchmark Suite (100 Frames),Strict Ground Truth Matching (IoU > 0.50)
+Tracking ID Continuity (%),99.58%,99.58%,0.00%,0.0%,Real-World Controlled Trials (240 Frames),Continuous Track ID Retention Ratio

@@ -1,7 +1,7 @@
 """
-Unified Entrypoint for Adaptive Edge-AI Navigation System.
-Supports Research, Demo, Real-World Testing, and Deployment Modes.
-Complies with Step 19 specification.
+Unified Entrypoint for Adaptive Edge-AI Navigation System (Step 20 Final Release).
+Supports Final Frozen Research, Demo, Real-World Testing, and Deployment Modes.
+Complies strictly with Step 20 specification.
 """
 
 import os
@@ -18,21 +18,21 @@ from adaptive_navigation.main import run_perception_pipeline, load_config
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Adaptive Edge-AI Navigation System (Step 19 Unified CLI)",
+        description="Adaptive Edge-AI Navigation System (Step 20 Final Release)",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter
     )
     parser.add_argument(
         "--mode",
         type=str,
-        choices=["research", "demo", "real_world", "deployment"],
-        default=None,
+        choices=["final", "research", "demo", "real_world", "deployment"],
+        default="final",
         help="Operational execution mode"
     )
     parser.add_argument(
         "--config",
         type=str,
         default=None,
-        help="Path to YAML configuration file (e.g., configs/deployment.yaml)"
+        help="Path to YAML configuration file (overrides --mode)"
     )
     parser.add_argument(
         "--video",
@@ -68,19 +68,19 @@ def main():
     # Determine configuration file
     if args.config is not None:
         config_path = args.config
-    elif args.mode is not None:
+    else:
         mode_map = {
+            "final": "configs/final.yaml",
             "research": "configs/evaluation.yaml",
             "demo": "configs/development.yaml",
             "real_world": "configs/real_world.yaml",
             "deployment": "configs/deployment.yaml"
         }
-        config_path = mode_map[args.mode]
-    else:
-        config_path = "configs/development.yaml"
+        config_path = mode_map.get(args.mode, "configs/final.yaml")
 
     print("=" * 75)
-    print("ADAPTIVE EDGE-AI NAVIGATION SYSTEM (STEP 19)")
+    print("ADAPTIVE EDGE-AI NAVIGATION SYSTEM (STEP 20 - FINAL RELEASE)")
+    print(f"Operational Mode:      {args.mode.upper()}")
     print(f"Loading Configuration: {config_path}")
     print("=" * 75)
 

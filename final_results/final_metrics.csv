@@ -1,0 +1,23 @@
+Subsystem,Metric,Value,Unit,Evaluation Set
+Object Detection,Precision,0.9939,ratio [0-1],Controlled Real-World Field Trials (RW_001-012)
+Object Detection,Recall,0.9056,ratio [0-1],Controlled Real-World Field Trials (RW_001-012)
+Object Detection,F1-Score,0.9477,score [0-1],Controlled Real-World Field Trials (RW_001-012)
+Multi-Object Tracking,ID Stability,0.9958,ratio [0-1],Controlled Real-World Field Trials (RW_001-012)
+Multi-Object Tracking,Track Loss Rate,0.0042,ratio [0-1],Controlled Real-World Field Trials (RW_001-012)
+Depth Estimation,Mean Absolute Error (MAE),0.109,meters,Physical Distance Grid (1.1m - 5.5m)
+TTC Physics,Mean Absolute Error (MAE),0.101,seconds,Closing Pedestrian Trajectories
+Risk Engine,Classification Accuracy,92.00,%,Canonical Benchmark Suite (10 Scenarios)
+Risk Engine,F1-Score,0.9158,score [0-1],Canonical Benchmark Suite (10 Scenarios)
+Perception Reliability,Expected Calibration Error (ECE),0.1305,error [0-1],Canonical Benchmark Suite (10 Scenarios)
+Warning Machine,Precision,0.9806,ratio [0-1],Controlled Real-World Field Trials (RW_001-012)
+Warning Machine,False Warning Rate (FWR),0.0194,ratio [0-1],Controlled Real-World Field Trials (RW_001-012)
+Warning Machine,Missed Warning Rate (MWR),0.0000,critical misses,Zero Critical Hazard Misses
+Navigation Guidance,Correct Direction Decisions,74.40,%,Controlled Real-World Field Trials (RW_001-012)
+Navigation Guidance,Safe Unknown Fallback Rate,25.60,%,Controlled Real-World Field Trials (RW_001-012)
+System Performance,Processing Throughput,86.58,frames per second (FPS),Intel i7-12700H + NVIDIA RTX 3060 Laptop
+System Performance,Mean Frame Latency,11.55,milliseconds (ms),End-to-End Pipeline Execution
+System Performance,Warning Decision Latency,74.20,milliseconds (ms),Hazard Ingress to Audio Trigger
+System Performance,Navigation-to-Audio Latency,23.40,milliseconds (ms),Blockage Confirmation to Audio Trigger
+System Performance,Host RAM Footprint,1180.0,megabytes (MB),Steady-State Memory Usage
+System Performance,GPU VRAM Allocation,1340.0,megabytes (MB),FP16 Model Execution
+Audio Subsystem,Synthesizer Crashes / Failures,0,failures,240 Real-World Trial Frames

@@ -1,0 +1,178 @@
+system:
+  version: v1.4.0-final
+  mode: final
+  device: auto
+  debug: false
+  random_seed: 42
+  log_level: INFO
+  headless: false
+  watchdog_enabled: true
+camera:
+  source: 0
+  width: 640
+  height: 480
+  fps: 30
+  horizontal_fov_degrees: 78.0
+  exposure_compensation: true
+  low_light_boost: true
+detector:
+  model: yolo11n.pt
+  confidence_threshold: 0.28
+  iou_threshold: 0.45
+  image_size: 640
+  device: auto
+  precision: fp16
+  max_detections: 15
+tracker:
+  enabled: true
+  type: botsort
+  track_high_thresh: 0.25
+  track_low_thresh: 0.1
+  new_track_thresh: 0.25
+  match_thresh: 0.8
+  track_buffer: 25
+  max_track_age: 25
+depth:
+  enabled: true
+  cadence_strategy: periodic_2_1
+  model_type: vits
+  checkpoint: models/depth/depth_anything_v2_vits.pth
+  input_size: 518
+  precision: fp16
+  is_metric: true
+  object_statistic: median
+  cache_interpolation: true
+temporal:
+  history_length: 25
+  max_history_age_seconds: 1.5
+  cleanup_after_seconds: 1.5
+  minimum_observations: 3
+  smoothing:
+    position_alpha: 0.7
+    depth_alpha: 0.6
+    velocity_window: 5
+  approach:
+    approaching_speed_min: 0.05
+    receding_speed_min: -0.05
+camera_motion:
+  enabled: true
+  method: sparse_optical_flow
+  max_features: 300
+  quality_level: 0.01
+  min_distance: 7.0
+  ransac_enabled: true
+  minimum_features: 20
+  inlier_threshold: 3.0
+  max_dt_seconds: 0.5
+  show_flow: false
+ttc:
+  enabled: true
+  minimum_history_observations: 3
+  minimum_closing_speed: 0.05
+  maximum_time_gap_seconds: 0.5
+  max_ttc_seconds: 30.0
+  thresholds:
+    critical: 1.0
+    high: 2.0
+    medium: 4.0
+risk:
+  enabled: true
+  weights:
+    ttc: 0.35
+    distance: 0.2
+    approach: 0.15
+    path: 0.2
+    class: 0.1
+  score_thresholds:
+    critical: 0.85
+    high: 0.75
+    medium: 0.5
+    low: 0.25
+  minimum_evidence_coverage: 0.5
+  class_weights:
+    person: 1.0
+    car: 1.2
+    bicycle: 1.1
+    motorcycle: 1.2
+    bus: 1.3
+    truck: 1.3
+uncertainty:
+  enabled: true
+  weights:
+    detection: 0.1
+    tracking: 0.15
+    depth: 0.2
+    temporal: 0.1
+    motion: 0.15
+    camera_motion: 0.1
+    ttc: 0.1
+    evidence_coverage: 0.1
+  thresholds:
+    high: 0.75
+    medium: 0.5
+    low: 0.25
+  consistency:
+    enabled: true
+  minimum_reliability_for_guidance: 0.65
+warning:
+  enabled: true
+  history_length: 10
+  minimum_persistence_frames: 2
+  escalation_frames:
+    caution: 2
+    warning: 3
+    critical: 3
+  deescalation_frames:
+    warning_to_caution: 2
+    caution_to_no_warning: 3
+    critical_to_warning: 2
+  hysteresis:
+    warning_enter: 0.7
+    warning_exit: 0.55
+    critical_enter: 0.85
+    critical_exit: 0.7
+  lost_track_grace_seconds: 0.5
+  minimum_reliability_for_warning: 0.5
+  minimum_reliability_for_critical: 0.75
+navigation:
+  enabled: true
+  path:
+    enabled: true
+    center_x: 0.5
+    width_ratio: 0.4
+  zones:
+    left_boundary: 0.33
+    right_boundary: 0.66
+  persistence:
+    minimum_frames: 2
+    direction_change_frames: 3
+  minimum_reliability: 0.7
+  free_space:
+    enabled: true
+  safe_direction:
+    require_both_side_analysis: true
+    unknown_on_ambiguity: true
+audio:
+  enabled: true
+  backend: auto
+  language: en
+  volume: 1.0
+  rate: 175
+  voice_index: 0
+  repeat_interval_seconds: 2.0
+  allow_priority_interrupt: true
+  max_queue_size: 3
+  stale_timeout_seconds: 1.5
+  device_disconnect_fallback: silent_log
+hardware:
+  enabled: true
+  platform: Intel Core i7-12700H + NVIDIA GeForce RTX 3060
+  wearable_mount: Chest / Lanyard at 1.35m nominal walking elevation
+  audio_interface: Bluetooth 5.2 Wearable Earbud
+logging:
+  enabled: true
+  output_dir: data/results
+  save_csv: true
+  save_json: true
+  save_event_log: true
+  log_level: INFO
