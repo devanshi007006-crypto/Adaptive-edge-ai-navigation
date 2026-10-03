@@ -193,3 +193,16 @@ warning_messages:
   caution: Please be cautious.
   warning: Obstacle ahead.
   critical: Immediate obstacle ahead.
+hardware:
+  enabled: true
+  simulation_mode: true
+  device_type: auto
+  reconnect_interval_seconds: 5
+  max_audio_queue_size: 2
+  audio:
+    volume: 1.0
+experiment:
+  logging_enabled: true
+  save_debug_video: false
+  save_event_log: true
+  log_file: data/experiment_log.jsonl

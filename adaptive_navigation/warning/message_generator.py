@@ -79,6 +79,7 @@ class WarningMessageGenerator:
         global_warning: GlobalWarningDecision,
         track_decisions: Optional[Dict[int, WarningDecision]] = None,
         current_time: Optional[float] = None,
+        scene_nav=None,
     ) -> WarningMessage:
         """
         Generate a concise, explainable warning message based on global decision.
@@ -106,7 +107,7 @@ class WarningMessageGenerator:
             )
 
         # 2. Formulate natural wording based on obstacle context
-        raw_text = self._build_natural_text(state, target_dec)
+        raw_text = self._build_natural_text(state, target_dec, scene_nav=scene_nav)
 
         # 3. Deduplication & Escalation Check
         should_speak = self._evaluate_should_speak(
@@ -134,7 +135,26 @@ class WarningMessageGenerator:
             timestamp=current_time,
         )
 
-    def _build_natural_text(self, state: str, target: Optional[WarningDecision]) -> str:
+    def _build_natural_text(
+        self,
+        state: str,
+        target: Optional[WarningDecision],
+        scene_nav=None,
+    ) -> str:
+        # Check for validated navigation commands from Step 14
+        nav_state = scene_nav.navigation_state if scene_nav else "UNKNOWN"
+
+        if nav_state == "STOP":
+            if state == "CRITICAL":
+                return "Immediate obstacle ahead. Stop."
+            return "Stop."
+
+        if nav_state == "AVOID_LEFT":
+            return "Move left."
+
+        if nav_state == "AVOID_RIGHT":
+            return "Move right."
+
         """
         Builds concise natural language warning text without fabricating directions or metrics.
         """

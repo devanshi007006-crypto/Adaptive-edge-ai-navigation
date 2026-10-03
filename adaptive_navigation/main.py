@@ -15,6 +15,16 @@ from uncertainty.reliability import ReliabilityEstimator, ReliabilityAssessment,
 from warning.state_machine import WarningStateMachine, WarningDecision, GlobalWarningDecision
 from warning.message_generator import WarningMessageGenerator, WarningMessage
 from audio.tts import TTSEngine
+from hardware import (
+    AudioDevice,
+    SimulationAudioDevice,
+    SystemAudioDevice,
+    WearableBluetoothAudioDevice,
+    DeviceManager,
+    DeviceStatus,
+    SystemStatus,
+)
+from evaluation.logger import ExperimentLogger, ExperimentEventRecord
 from navigation import (
     SpatialAnalyzer,
     SpatialObjectRepresentation,
@@ -64,7 +74,7 @@ def run_perception_pipeline(
     max_frames: int = None,
     headless: bool = False,
 ) -> None:
-    """Executes Step 14: Camera -> Frame Validation -> YOLO Detection -> BoT-SORT Tracking -> Depth Anything V2 -> Object-Level Depth -> Temporal History -> Motion Estimation -> Camera Motion Compensation -> TTC Estimation -> Multi-Factor Risk Assessment -> Uncertainty & Reliability -> Warning Decision State Machine -> Audio/TTS -> Spatial Position & Navigation Decision."""
+    """Executes Step 15: Camera -> Frame Validation -> YOLO Detection -> BoT-SORT Tracking -> Depth Anything V2 -> Object-Level Depth -> Temporal History -> Motion Estimation -> Camera Motion Compensation -> TTC Estimation -> Multi-Factor Risk Assessment -> Uncertainty & Reliability -> Warning Decision State Machine -> Spatial & Navigation -> Audio/TTS & Wearable Output."""
     cam_cfg = config.get("camera", {})
     source = source_override if source_override is not None else cam_cfg.get("source", 0)
     width = cam_cfg.get("width", 640)
@@ -142,10 +152,10 @@ def run_perception_pipeline(
     display_enabled = debug_cfg.get("display", True) and not headless
     show_trails = debug_cfg.get("show_trails", True)
     show_depth_inset = debug_cfg.get("show_depth_inset", True)
-    window_name = debug_cfg.get("window_name", "Adaptive Navigation - Safe Navigation Decision Engine")
+    window_name = debug_cfg.get("window_name", "Adaptive Navigation - Wearable Audio & End-to-End Pipeline")
 
     print("=" * 75)
-    print("STEP 14: CAMERA + YOLO + BoT-SORT + DEPTH + TEMPORAL + MOTION + CAM COMP + TTC + RISK + UNCERTAINTY + WARNING + TTS + NAVIGATION DECISION")
+    print("STEP 15: CAMERA + YOLO + BoT-SORT + DEPTH + TEMPORAL + MOTION + CAM COMP + TTC + RISK + UNCERTAINTY + WARNING + NAV + TTS + WEARABLE AUDIO")
     print("=" * 75)
     print(f"Camera Source:   {source} ({width}x{height} @ {fps} FPS)")
     print(f"YOLO Detector:   {model_name} | Conf: {conf_thresh} | Device: {det_device}")
@@ -289,6 +299,14 @@ def run_perception_pipeline(
     navigation_engine = NavigationEngine(config)
     print(f"Navigation:       Enabled: {nav_cfg.get('enabled', True)} | Corridor: {nav_cfg.get('path', {}).get('width_ratio', 0.40)} | MinRel: {nav_cfg.get('minimum_reliability', 0.70)}")
 
+    # 14. Initialize Hardware Device Manager & Experiment Logger (Step 15)
+    hw_cfg = config.get("hardware", {})
+    device_manager = DeviceManager(config, tts_engine=tts_engine)
+    exp_cfg = config.get("experiment", {})
+    exp_logger = ExperimentLogger(exp_cfg.get("log_file", "data/experiment_log.jsonl")) if exp_cfg.get("logging_enabled", True) else None
+    print(f"Hardware Manager: Mode: {'Simulation' if device_manager.simulation_mode else 'Hardware'} | Device: {device_manager.get_status().device_name} | Connected: {device_manager.is_connected()}")
+    print(f"Experiment Log:   Enabled: {exp_cfg.get('logging_enabled', True)} | Path: {exp_cfg.get('log_file', 'data/experiment_log.jsonl')}")
+
     # 9. Initialize Multi-Factor Risk Assessment Engine (Step 10)
     risk_engine = RiskEngine(
         enabled=risk_enabled,
@@ -312,6 +330,7 @@ def run_perception_pipeline(
     try:
         while True:
             packet: FramePacket = camera.read_frame()
+            t_frame_start = time.perf_counter()
 
             if packet is None:
                 if camera.is_video_file:
@@ -443,18 +462,7 @@ def run_perception_pipeline(
             )
             warn_latency_ms = (time.perf_counter() - t_warn_start) * 1000.0
 
-            # Stage 12: User-Facing Warning Message Generation & Audio/TTS (Step 13)
-            t_tts_start = time.perf_counter()
-            warning_message: WarningMessage = message_generator.generate(
-                global_warning=global_warning,
-                track_decisions=warning_decisions,
-                current_time=packet.timestamp,
-            )
-            if warning_message.should_speak and tts_engine.is_available():
-                tts_engine.speak(warning_message.text, priority=warning_message.priority)
-            tts_latency_ms = (time.perf_counter() - t_tts_start) * 1000.0
-
-            # Stage 13: Spatial Position, Path Geometry & Navigation Decision (Step 14)
+            # Stage 12: Spatial Position, Path Geometry & Navigation Decision (Step 14)
             t_nav_start = time.perf_counter()
             spatial_objects = {}
             for obj in object_depths:
@@ -483,6 +491,70 @@ def run_perception_pipeline(
             spatial_analyzer.cleanup_stale_tracks([obj.track_id for obj in object_depths])
             nav_latency_ms = (time.perf_counter() - t_nav_start) * 1000.0
 
+            # Stage 13: User-Facing Warning Message Generation (Step 13/14)
+            t_tts_start = time.perf_counter()
+            warning_message: WarningMessage = message_generator.generate(
+                global_warning=global_warning,
+                track_decisions=warning_decisions,
+                current_time=packet.timestamp,
+                scene_nav=scene_nav_state,
+            )
+
+            # Stage 14: Wearable Audio Output & Hardware Dispatch (Step 15)
+            t_audio_start = time.perf_counter()
+            audio_dispatched, audio_latency_ms = False, 0.0
+            if warning_message.should_speak:
+                audio_dispatched, audio_latency_ms = device_manager.dispatch_audio(
+                    text=warning_message.text,
+                    priority=warning_message.priority,
+                    decision_timestamp=packet.timestamp,
+                )
+            audio_hw_latency_ms = (time.perf_counter() - t_audio_start) * 1000.0
+            tts_latency_ms = (time.perf_counter() - t_tts_start) * 1000.0
+
+            # Stage 15: System Watchdog & Research Logging (Step 15)
+            system_watchdog = device_manager.check_system_health(
+                camera_ok=(packet is not None and packet.frame is not None),
+                detector_ok=True,
+                tracker_ok=True,
+                depth_ok=(depth_result is not None),
+                motion_ok=True,
+                ttc_ok=True,
+                risk_ok=True,
+                reliability_ok=(system_reliability.system_status != "FAULT"),
+                navigation_ok=(scene_nav_state.navigation_state != "UNKNOWN"),
+                tts_ok=tts_engine.is_available(),
+            )
+
+            if exp_logger and global_warning.selected_track_id is not None:
+                sel_tid = global_warning.selected_track_id
+                sel_risk = risk_assessments.get(sel_tid)
+                sel_rel = reliability_assessments.get(sel_tid)
+                sel_sp = spatial_objects.get(sel_tid)
+                sel_ttc = ttc_results.get(sel_tid)
+                exp_event = ExperimentEventRecord(
+                    timestamp=packet.timestamp,
+                    frame_id=packet.frame_index,
+                    track_id=sel_tid,
+                    object_class=sel_risk.class_name if sel_risk else "unknown",
+                    depth=sel_risk.features.distance_value if (sel_risk and hasattr(sel_risk, "features") and hasattr(sel_risk.features, "distance_value")) else None,
+                    depth_type="relative",
+                    raw_motion=(sel_sp.horizontal_motion, sel_sp.vertical_motion) if sel_sp else None,
+                    compensated_motion=(sel_sp.horizontal_motion, sel_sp.vertical_motion) if sel_sp else None,
+                    ttc=sel_ttc.ttc_seconds if sel_ttc else None,
+                    ttc_state=sel_ttc.ttc_state if sel_ttc else "UNKNOWN",
+                    risk_score=sel_risk.risk_score if sel_risk else 0.0,
+                    risk_level=sel_risk.risk_level if sel_risk else "UNKNOWN",
+                    reliability_score=sel_rel.reliability_score if sel_rel else 0.0,
+                    reliability_level=sel_rel.reliability_level if sel_rel else "UNKNOWN",
+                    warning_state=global_warning.state,
+                    navigation_state=scene_nav_state.navigation_state,
+                    message=warning_message.text,
+                    audio_status="DISPATCHED" if audio_dispatched else "SILENT",
+                    latency_ms=(time.perf_counter() - t_frame_start) * 1000.0,
+                )
+                exp_logger.log_event(exp_event)
+
             frames_processed += 1
 
             # Overall loop FPS
@@ -507,16 +579,15 @@ def run_perception_pipeline(
                     return f"ID:{o.track_id}({o.class_name})[{w_str} | {r_str} | {rel_str}]"
 
                 depth_info = ", ".join(_obj_summary(o) for o in object_depths) if object_depths else "No active tracks"
-                speech_info = f"TTS: \"{warning_message.text}\"" if warning_message.should_speak else "TTS: (silent)"
+                speech_info = f"AUDIO: \"{warning_message.text}\"" if warning_message.should_speak else "AUDIO: (silent)"
                 print(
                     f"[Frame {packet.frame_index:05d}] "
-                    f"Loop FPS: {overall_fps:4.1f} | "
+                    f"FPS: {overall_fps:4.1f} | "
                     f"Det: {det_latency_ms:4.0f}ms | "
-                    f"Track: {track_latency_ms:3.0f}ms | "
-                    f"Depth: {depth_latency_ms:4.0f}ms | "
-                    f"Risk: {risk_latency_ms:3.1f}ms | "
+                    f"Dep: {depth_latency_ms:4.0f}ms | "
                     f"Nav: {nav_latency_ms:3.1f}ms | "
                     f"NAV: [{scene_nav_state.navigation_state}](Dir={scene_nav_state.safe_direction}) | "
+                    f"Watchdog: [{'OK' if system_watchdog.overall_healthy else 'WARN'}] | "
                     f"{speech_info} | "
                     f"Objects ({len(object_depths)}): [{depth_info}]"
                 )
@@ -621,12 +692,15 @@ def run_perception_pipeline(
                 overlay_nav = f"NAV: [{scene_nav_state.navigation_state}] (Dir: {scene_nav_state.safe_direction}) - {scene_nav_state.reason}"
                 overlay_space = f"FreeSpace: L:{scene_nav_state.left_free_space:.2f} C:{scene_nav_state.center_free_space:.2f} R:{scene_nav_state.right_free_space:.2f} | Blocked:{scene_nav_state.path_blocked}"
                 speech_text = warning_message.text if warning_message.text else "(Silent)"
-                overlay_speech = f"TTS: \"{speech_text}\" | Alert: [{global_warning.state}]"
+                overlay_speech = f"AUDIO: \"{speech_text}\" [{device_manager.get_status().device_type.upper()}]"
+                dev_st = device_manager.get_status()
+                overlay_hw = f"WATCHDOG: {'HEALTHY' if system_watchdog.overall_healthy else 'DEGRADED'} | Dev: {'CONNECTED' if dev_st.connected else 'UNAVAIL'}"
                 cv2.putText(display_frame, overlay_top, (10, 25), cv2.FONT_HERSHEY_SIMPLEX, 0.65, (255, 255, 0), 2)
                 cv2.putText(display_frame, overlay_sub, (10, 52), cv2.FONT_HERSHEY_SIMPLEX, 0.54, (255, 255, 0), 2)
                 cv2.putText(display_frame, overlay_nav, (10, 78), cv2.FONT_HERSHEY_SIMPLEX, 0.56, n_color, 2)
                 cv2.putText(display_frame, overlay_space, (10, 102), cv2.FONT_HERSHEY_SIMPLEX, 0.50, (0, 255, 255), 1)
                 cv2.putText(display_frame, overlay_speech, (10, 126), cv2.FONT_HERSHEY_SIMPLEX, 0.50, (255, 255, 255), 1)
+                cv2.putText(display_frame, overlay_hw, (10, 150), cv2.FONT_HERSHEY_SIMPLEX, 0.48, (0, 255, 0) if system_watchdog.overall_healthy else (0, 0, 255), 1)
 
                                 # Show optical flow inliers if requested
                 if show_flow and camera_motion.feature_points_curr is not None:
