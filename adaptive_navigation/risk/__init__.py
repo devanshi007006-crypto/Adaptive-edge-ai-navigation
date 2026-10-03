@@ -5,7 +5,12 @@ from .ttc import (
     TTCEstimatorInterface,
     AnalyticalTTCEstimator,
 )
-from .features import RiskFeatures, RiskFeatureExtractor
+from .risk_engine import (
+    RiskFeatures,
+    RiskAssessment,
+    RiskEngine,
+)
+from .features import RiskFeatureExtractor
 from .score import RiskLevel, RiskScoreResult, RiskScorer
 from .uncertainty import UncertaintyMetric, UncertaintyEstimator
 from .state_machine import RiskStateMachine
@@ -16,6 +21,8 @@ __all__ = [
     "TTCEstimatorInterface",
     "AnalyticalTTCEstimator",
     "RiskFeatures",
+    "RiskAssessment",
+    "RiskEngine",
     "RiskFeatureExtractor",
     "RiskLevel",
     "RiskScoreResult",

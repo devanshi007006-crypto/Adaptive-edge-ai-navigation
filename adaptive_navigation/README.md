@@ -112,6 +112,7 @@ python main.py --dry-run
 - **Step 7**: Velocity, Approach Estimation & Temporal Smoothing (Completed - Image-plane velocity, relative depth rate, EMA smoothing, and approach classification)
 - **Step 8**: Camera Motion Compensation (Completed - Lucas-Kanade sparse optical flow with RANSAC outlier rejection, foreground obstacle masking, and compensated velocity estimation)
 - **Step 9**: Time-to-Collision (TTC) Estimation (Completed - Analytical closing speed calculation, explicit metric vs relative depth distinction, out-of-range clamping, and state reporting)
+- **Step 10**: Multi-Factor Risk Assessment Engine (Completed - Multi-modal fusion of TTC, depth, closing motion, path corridor relevance, class weights, and evidence coverage tracking)
 
 ### Running the Integrated Pipeline (Step 5)
 `ash

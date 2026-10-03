@@ -58,22 +58,34 @@ temporal:
   cleanup_after_seconds: 2.0
   minimum_observations: 3
 risk:
+  enabled: true
   weights:
-    distance_weight: 0.35
-    approach_weight: 0.25
-    ttc_weight: 0.2
-    path_overlap_weight: 0.15
-    confidence_weight: 0.05
-  ttc_thresholds:
-    critical: 1.5
-    warning: 3.0
-    cautious: 5.0
+    ttc: 0.35
+    distance: 0.2
+    approach: 0.15
+    path: 0.2
+    class: 0.1
   score_thresholds:
-    critical: 0.75
-    high: 0.55
-    medium: 0.35
-    low: 0.15
-  uncertainty_penalty_factor: 0.2
+    low: 0.25
+    medium: 0.5
+    high: 0.75
+    critical: 0.85
+  ttc_thresholds:
+    critical: 1.0
+    high: 2.0
+    medium: 4.0
+  path:
+    enabled: true
+    center_ratio: 0.5
+    corridor_width_ratio: 0.4
+  minimum_evidence_coverage: 0.5
+  class_weights:
+    person: 1.0
+    car: 1.2
+    bicycle: 1.1
+    motorcycle: 1.2
+    bus: 1.3
+    truck: 1.3
 navigation:
   corridor:
     center_min_ratio: 0.33

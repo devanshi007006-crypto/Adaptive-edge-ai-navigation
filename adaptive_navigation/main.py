@@ -10,7 +10,7 @@ import numpy as np
 # Ensure project root is in sys.path
 sys.path.insert(0, os.path.abspath(os.path.dirname(__file__)))
 
-from risk import TTCEstimator, TTCResult
+from risk import TTCEstimator, TTCResult, RiskEngine, RiskFeatures, RiskAssessment
 from temporal import (
     TemporalHistory,
     ObjectObservation,
@@ -51,7 +51,7 @@ def run_perception_pipeline(
     max_frames: int = None,
     headless: bool = False,
 ) -> None:
-    """Executes Step 9: Camera -> Frame Validation -> YOLO Detection -> BoT-SORT Tracking -> Depth Anything V2 -> Object-Level Depth -> Temporal History -> Motion Estimation -> Camera Motion Compensation -> TTC Estimation."""
+    """Executes Step 10: Camera -> Frame Validation -> YOLO Detection -> BoT-SORT Tracking -> Depth Anything V2 -> Object-Level Depth -> Temporal History -> Motion Estimation -> Camera Motion Compensation -> TTC Estimation -> Multi-Factor Risk Assessment Engine."""
     cam_cfg = config.get("camera", {})
     source = source_override if source_override is not None else cam_cfg.get("source", 0)
     width = cam_cfg.get("width", 640)
@@ -116,14 +116,23 @@ def run_perception_pipeline(
     ttc_max_gap = ttc_cfg.get("maximum_time_gap_seconds", 0.5)
     ttc_max_sec = ttc_cfg.get("max_ttc_seconds", 30.0)
 
+    risk_cfg = config.get("risk", {})
+    risk_enabled = risk_cfg.get("enabled", True)
+    risk_weights = risk_cfg.get("weights")
+    risk_score_th = risk_cfg.get("score_thresholds")
+    risk_ttc_th = risk_cfg.get("ttc_thresholds")
+    risk_path_cfg = risk_cfg.get("path")
+    risk_min_cov = risk_cfg.get("minimum_evidence_coverage", 0.50)
+    risk_class_w = risk_cfg.get("class_weights")
+
     debug_cfg = config.get("debug", {})
     display_enabled = debug_cfg.get("display", True) and not headless
     show_trails = debug_cfg.get("show_trails", True)
     show_depth_inset = debug_cfg.get("show_depth_inset", True)
-    window_name = debug_cfg.get("window_name", "Adaptive Navigation - YOLO + BoT-SORT + Depth + Motion + Camera Comp + TTC")
+    window_name = debug_cfg.get("window_name", "Adaptive Navigation - Multi-Factor Risk Assessment Engine")
 
     print("=" * 75)
-    print("STEP 9: CAMERA + YOLO + BoT-SORT + DEPTH ANYTHING V2 + TEMPORAL HISTORY + MOTION + CAMERA COMPENSATION + TTC")
+    print("STEP 10: CAMERA + YOLO + BoT-SORT + DEPTH ANYTHING V2 + TEMPORAL + MOTION + CAM COMP + TTC + RISK ENGINE")
     print("=" * 75)
     print(f"Camera Source:   {source} ({width}x{height} @ {fps} FPS)")
     print(f"YOLO Detector:   {model_name} | Conf: {conf_thresh} | Device: {det_device}")
@@ -133,6 +142,7 @@ def run_perception_pipeline(
     print(f"Motion Estimator: Method: {smoothing_method} (win={smoothing_window}) | StableThresh: {stable_thresh} | Convention: {depth_convention}")
     print(f"Camera Motion:    Enabled: {cam_motion_enabled} | Method: {cam_method} | MaxFeat: {cam_max_feat} | RANSAC: {cam_ransac}")
     print(f"TTC Estimator:    Enabled: {ttc_enabled} | MinClosingSpd: {ttc_min_close_spd} | MaxTTC: {ttc_max_sec}s")
+    print(f"Risk Engine:      Enabled: {risk_enabled} | MinCoverage: {risk_min_cov} | PathCorridor: {risk_path_cfg.get('corridor_width_ratio', 0.4) if risk_path_cfg else 0.4}")
     print(f"Display Mode:    {'Active Window' if display_enabled else 'Headless'}")
     print("Press 'q' in preview window or Ctrl+C in terminal to stop.")
     print("-" * 75)
@@ -232,6 +242,17 @@ def run_perception_pipeline(
         max_ttc_seconds=ttc_max_sec,
     )
 
+    # 9. Initialize Multi-Factor Risk Assessment Engine (Step 10)
+    risk_engine = RiskEngine(
+        enabled=risk_enabled,
+        weights=risk_weights,
+        score_thresholds=risk_score_th,
+        ttc_thresholds=risk_ttc_th,
+        path_config=risk_path_cfg,
+        minimum_evidence_coverage=risk_min_cov,
+        class_weights=risk_class_w,
+    )
+
     frames_processed = 0
     loop_times = []
     last_loop_time = time.perf_counter()
@@ -306,6 +327,43 @@ def run_perception_pipeline(
             )
             ttc_latency_ms = (time.perf_counter() - t_ttc_start) * 1000.0
 
+            # Stage 9: Multi-Factor Risk Assessment Engine (Step 10)
+            t_risk_start = time.perf_counter()
+            fh, fw = packet.frame.shape[:2]
+            risk_features_map = {}
+            for obj in tracked_objects:
+                tid = obj.track_id
+                comp_m = compensated_estimates.get(tid)
+                ttc_r = ttc_results.get(tid)
+                od = next((d for d in object_depths if d.track_id == tid), None)
+                risk_features_map[tid] = RiskFeatures(
+                    track_id=tid,
+                    class_name=obj.class_name,
+                    confidence=obj.confidence,
+                    depth_value=od.depth_value if od else None,
+                    depth_type="metric" if (od and od.is_metric) else "relative",
+                    depth_valid=od.depth_valid if od else False,
+                    depth_reliability=od.depth_reliability if od else "INVALID",
+                    raw_velocity=(comp_m.raw_vx if comp_m else None, comp_m.raw_vy if comp_m else None),
+                    compensated_velocity=(comp_m.compensated_vx if comp_m else None, comp_m.compensated_vy if comp_m else None),
+                    compensated_speed=comp_m.compensated_speed if comp_m else None,
+                    approach_state=comp_m.approach_state if comp_m else "UNKNOWN",
+                    motion_reliability=comp_m.reliability if comp_m else "UNKNOWN",
+                    ttc_seconds=ttc_r.ttc_seconds if ttc_r else None,
+                    ttc_state=ttc_r.ttc_state if ttc_r else "UNKNOWN",
+                    ttc_valid=ttc_r.ttc_valid if ttc_r else False,
+                    bbox=obj.bbox,
+                    center_x=obj.center_x,
+                    center_y=obj.center_y,
+                    object_width=obj.width,
+                    object_height=obj.height,
+                    frame_width=fw,
+                    frame_height=fh,
+                    camera_motion_valid=camera_motion.valid,
+                )
+            risk_assessments: dict[int, RiskAssessment] = risk_engine.assess_all(risk_features_map)
+            risk_latency_ms = (time.perf_counter() - t_risk_start) * 1000.0
+
             frames_processed += 1
 
             # Overall loop FPS
@@ -347,7 +405,7 @@ def run_perception_pipeline(
                     x1, y1, x2, y2 = [int(v) for v in obj.bbox]
                     color = get_color_for_id(obj.track_id)
 
-                    cv2.rectangle(display_frame, (x1, y1), (x2, y2), color, 2)
+                    # cv2.rectangle replaced below
 
                     depth_str = f"{obj.depth_value:.2f} (rel)" if obj.depth_valid else "N/A"
                     label = f"ID: {obj.track_id} | {obj.class_name} | depth: {depth_str}"
@@ -361,15 +419,28 @@ def run_perception_pipeline(
                     else:
                         ttc_str = "TTC: UNKNOWN"
 
-                    if comp_m and comp_m.motion_valid:
-                        comp_spd = f"{comp_m.compensated_speed:.0f}px/s" if comp_m.compensated_speed is not None else "--"
-                        state_str = comp_m.approach_state
-                        sub_label = f"spd: {comp_spd} | {ttc_str} | {comp_m.reliability}"
-                    else:
-                        sub_label = f"spd: --px/s | {ttc_str} | hist:{hist_len}f"
+                    risk_ass = risk_assessments.get(obj.track_id)
+                    level_color_map = {
+                        "CRITICAL": (0, 0, 255),    # Red
+                        "HIGH": (0, 140, 255),      # Orange
+                        "MEDIUM": (0, 255, 255),    # Yellow
+                        "LOW": (0, 255, 0),         # Green
+                        "UNKNOWN": (200, 200, 200), # Gray
+                    }
+                    risk_color = level_color_map.get(risk_ass.risk_level if risk_ass else "UNKNOWN", color)
 
-                    cv2.putText(display_frame, label, (x1, max(20, y1 - 22)), cv2.FONT_HERSHEY_SIMPLEX, 0.52, (255, 255, 255), 2)
-                    cv2.putText(display_frame, sub_label, (x1, max(36, y1 - 6)), cv2.FONT_HERSHEY_SIMPLEX, 0.45, (0, 255, 255), 1)
+                    cv2.rectangle(display_frame, (x1, y1), (x2, y2), risk_color, 2)
+
+                    if risk_ass:
+                        sub_label = f"Risk: {risk_ass.risk_score:.2f} [{risk_ass.risk_level}] | {ttc_str}"
+                        third_label = f"Path: {risk_ass.path_state} | {risk_ass.primary_reason}"
+                    else:
+                        sub_label = f"{ttc_str} | hist:{hist_len}f"
+                        third_label = "Risk: UNKNOWN"
+
+                    cv2.putText(display_frame, label, (x1, max(20, y1 - 28)), cv2.FONT_HERSHEY_SIMPLEX, 0.50, (255, 255, 255), 2)
+                    cv2.putText(display_frame, sub_label, (x1, max(34, y1 - 14)), cv2.FONT_HERSHEY_SIMPLEX, 0.45, risk_color, 1)
+                    cv2.putText(display_frame, third_label, (x1, max(48, y1 - 2)), cv2.FONT_HERSHEY_SIMPLEX, 0.42, (220, 220, 220), 1)
                     cv2.circle(display_frame, (int(obj.center_x), int(obj.center_y)), 4, color, -1)
 
                 # Show colorized depth inset in bottom-right corner if enabled
@@ -384,7 +455,7 @@ def run_perception_pipeline(
 
                 # HUD Statistics
                 overlay_top = f"Frame: {packet.frame_index} | Tracks: {len(object_depths)} | Loop FPS: {overall_fps:.1f}"
-                overlay_sub = f"Det:{det_latency_ms:.0f}ms|Trk:{track_latency_ms:.0f}ms|Dep:{depth_latency_ms:.0f}ms|Mot:{motion_latency_ms:.1f}ms|Cam:{cam_latency_ms:.1f}ms|TTC:{ttc_latency_ms:.1f}ms"
+                overlay_sub = f"Det:{det_latency_ms:.0f}ms|Trk:{track_latency_ms:.0f}ms|Dep:{depth_latency_ms:.0f}ms|Mot:{motion_latency_ms:.1f}ms|Cam:{cam_latency_ms:.1f}ms|TTC:{ttc_latency_ms:.1f}ms|Risk:{risk_latency_ms:.1f}ms"
                 overlay_cam = f"Camera Motion: dx={camera_motion.dx:+.1f}px dy={camera_motion.dy:+.1f}px | v={camera_motion.camera_speed:.0f}px/s | [{camera_motion.confidence}]"
                 cv2.putText(display_frame, overlay_cam, (10, 78), cv2.FONT_HERSHEY_SIMPLEX, 0.58, (0, 255, 255), 2)
                 cv2.putText(display_frame, overlay_top, (10, 25), cv2.FONT_HERSHEY_SIMPLEX, 0.65, (255, 255, 0), 2)
@@ -397,6 +468,15 @@ def run_perception_pipeline(
                     for idx, pt in enumerate(pts):
                         color = (0, 255, 0) if inliers[idx] else (0, 0, 255)
                         cv2.circle(display_frame, (int(pt[0][0]), int(pt[0][1])), 2, color, -1)
+
+                                # Draw semi-transparent walking path corridor lines if enabled
+                if risk_path_cfg and risk_path_cfg.get("enabled", True):
+                    c_center = fw * float(risk_path_cfg.get("center_ratio", 0.50))
+                    c_half = (fw * float(risk_path_cfg.get("corridor_width_ratio", 0.40))) / 2.0
+                    x_left, x_right = int(c_center - c_half), int(c_center + c_half)
+                    cv2.line(display_frame, (x_left, 0), (x_left, fh), (255, 255, 0), 1)
+                    cv2.line(display_frame, (x_right, 0), (x_right, fh), (255, 255, 0), 1)
+                    cv2.putText(display_frame, "Walking Corridor", (x_left + 5, 20), cv2.FONT_HERSHEY_SIMPLEX, 0.40, (255, 255, 0), 1)
 
                 cv2.imshow(window_name, display_frame)
                 key = cv2.waitKey(1) & 0xFF
