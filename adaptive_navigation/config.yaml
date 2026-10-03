@@ -29,25 +29,28 @@ tracker:
   match_thresh: 0.8
   track_buffer: 30
 
+depth:
+  enabled: true
+  model_type: "vits"          # "vits", "vitb", or "vitl"
+  checkpoint: "models/depth/depth_anything_v2_vits.pth"
+  device: "auto"
+  input_size: 518
+  is_metric: false            # Standard checkpoint produces relative depth (not calibrated meters)
+  object_statistic: "median"  # "median", "mean", or "percentile_25"
+
 debug:
   display: true               # Display live camera preview window
-  window_name: "Adaptive Navigation - BoT-SORT Tracking"
+  window_name: "Adaptive Navigation - YOLO + BoT-SORT + Depth"
   show_trails: true           # Display short trajectory trail for active tracks
   trail_length: 15
+  show_depth_inset: true      # Display colorized depth map inset
 
 perception:
   preprocessing:
-    target_width: null        # null = keep native camera resolution
+    target_width: null
     target_height: null
     normalize: false
     to_rgb: false
-
-  depth:
-    model_name: "depth_anything_v2_vits"
-    model_path: "models/depth/depth_anything_v2_vits.pth"
-    is_metric: false
-    input_size: 518
-    relative_depth_inverted: true
 
 temporal:
   history_length: 15

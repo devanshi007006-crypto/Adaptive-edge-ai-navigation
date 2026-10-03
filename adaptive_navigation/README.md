@@ -100,3 +100,26 @@ pip install -r requirements.txt
 ```bash
 python main.py --dry-run
 ```
+
+
+## Pipeline Implementation Status
+- **Step 1**: Architectural Skeleton & Interfaces (Completed)
+- **Step 2**: Camera / Frame Acquisition Layer (Completed)
+- **Step 3**: YOLO Object Detection (Completed - YOLO11n)
+- **Step 4**: BoT-SORT Object Tracking (Completed - Ultralytics BoT-SORT with persistent Track IDs)
+- **Step 5**: Depth Estimation (Completed - Depth Anything V2 ViT-S relative depth & object-level depth estimation)
+
+### Running the Integrated Pipeline (Step 5)
+`ash
+# Live camera with YOLO + BoT-SORT + Depth Anything V2 visualization
+python adaptive_navigation/main.py --cam 0
+
+# Headless mode for benchmark / testing
+python adaptive_navigation/main.py --cam 0 --max-frames 10 --headless
+`
+
+### Depth Representation Note
+- Model: depth_anything_v2_vits (models/depth/depth_anything_v2_vits.pth)
+- Output: **Relative Depth** (dimensionless affine-invariant depth, NOT metric meters)
+- Object Depth: Robust median calculation over clamped bounding box interior
+- Reliability Levels: HIGH, MEDIUM, LOW, INVALID based on pixel validity and bounding box size

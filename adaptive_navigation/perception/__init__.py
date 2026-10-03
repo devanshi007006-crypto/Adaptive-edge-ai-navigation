@@ -3,7 +3,7 @@ from .camera import FramePacket, CameraSource
 from .preprocessing import FramePreprocessor, PreprocessedFrame
 from .detector import Detection, DetectorInterface, YOLOObjectDetector
 from .tracker import TrackedObject, TrackerInterface, BoTSORTTracker
-from .depth import DepthResult, DepthEstimatorInterface, DepthAnythingV2Estimator
+from .depth import DepthResult, TrackedObjectDepth, DepthEstimatorInterface, DepthAnythingV2Estimator
 
 __all__ = [
     "FramePacket",
@@ -17,6 +17,7 @@ __all__ = [
     "TrackerInterface",
     "BoTSORTTracker",
     "DepthResult",
+    "TrackedObjectDepth",
     "DepthEstimatorInterface",
     "DepthAnythingV2Estimator",
 ]

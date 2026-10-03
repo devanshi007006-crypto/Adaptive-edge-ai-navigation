@@ -18,6 +18,9 @@ from perception import (
     Detection,
     BoTSORTTracker,
     TrackedObject,
+    DepthAnythingV2Estimator,
+    DepthResult,
+    TrackedObjectDepth,
 )
 
 def load_config(config_path: str = "config.yaml") -> dict:
@@ -31,14 +34,14 @@ def load_config(config_path: str = "config.yaml") -> dict:
     with open(config_path, "r", encoding="utf-8") as f:
         return yaml.safe_load(f)
 
-def run_tracking_pipeline(
+def run_perception_pipeline(
     config: dict,
     source_override=None,
     model_override=None,
     max_frames: int = None,
     headless: bool = False,
 ) -> None:
-    """Executes Step 4: Camera -> Frame Validation -> YOLO Detection -> BoT-SORT Tracking -> Visualization."""
+    """Executes Step 5: Camera -> Frame Validation -> YOLO Detection -> BoT-SORT Tracking -> Depth Anything V2 -> Object-Level Depth."""
     cam_cfg = config.get("camera", {})
     source = source_override if source_override is not None else cam_cfg.get("source", 0)
     width = cam_cfg.get("width", 640)
@@ -50,7 +53,7 @@ def run_tracking_pipeline(
     conf_thresh = det_cfg.get("confidence_threshold", 0.25)
     iou_thresh = det_cfg.get("iou_threshold", 0.45)
     img_size = det_cfg.get("image_size", 640)
-    device = det_cfg.get("device", "auto")
+    det_device = det_cfg.get("device", "auto")
 
     track_cfg = config.get("tracker", {})
     tracker_config = track_cfg.get("tracker_config", "botsort.yaml")
@@ -60,23 +63,32 @@ def run_tracking_pipeline(
     match_thresh = track_cfg.get("match_thresh", 0.8)
     track_buffer = track_cfg.get("track_buffer", 30)
 
+    depth_cfg = config.get("depth", {})
+    depth_checkpoint = depth_cfg.get("checkpoint", "models/depth/depth_anything_v2_vits.pth")
+    depth_type = depth_cfg.get("model_type", "vits")
+    depth_device = depth_cfg.get("device", "auto")
+    depth_input_size = depth_cfg.get("input_size", 518)
+    is_metric = depth_cfg.get("is_metric", False)
+    obj_stat = depth_cfg.get("object_statistic", "median")
+
     debug_cfg = config.get("debug", {})
     display_enabled = debug_cfg.get("display", True) and not headless
     show_trails = debug_cfg.get("show_trails", True)
-    window_name = debug_cfg.get("window_name", "Adaptive Navigation - BoT-SORT Tracking")
+    show_depth_inset = debug_cfg.get("show_depth_inset", True)
+    window_name = debug_cfg.get("window_name", "Adaptive Navigation - YOLO + BoT-SORT + Depth")
 
-    print("=" * 70)
-    print("STEP 4: CAMERA + YOLO + BoT-SORT OBJECT TRACKING PIPELINE")
-    print("=" * 70)
-    print(f"Camera Source: {source} ({width}x{height} @ {fps} FPS)")
-    print(f"YOLO Model:    {model_name} | Conf: {conf_thresh} | IoU: {iou_thresh} | ImgSz: {img_size}")
-    print(f"Tracker:       BoT-SORT (buffer={track_buffer}, match={match_thresh})")
-    print(f"Device:        {device}")
-    print(f"Display Mode:  {'Active Window' if display_enabled else 'Headless'}")
+    print("=" * 75)
+    print("STEP 5: CAMERA + YOLO + BoT-SORT + DEPTH ANYTHING V2 PIPELINE")
+    print("=" * 75)
+    print(f"Camera Source:   {source} ({width}x{height} @ {fps} FPS)")
+    print(f"YOLO Detector:   {model_name} | Conf: {conf_thresh} | Device: {det_device}")
+    print(f"Tracker:         BoT-SORT (buffer={track_buffer}, match={match_thresh})")
+    print(f"Depth Model:     Depth Anything V2 ({depth_type}) | Metric: {is_metric} | Stat: {obj_stat}")
+    print(f"Display Mode:    {'Active Window' if display_enabled else 'Headless'}")
     print("Press 'q' in preview window or Ctrl+C in terminal to stop.")
-    print("-" * 70)
+    print("-" * 75)
 
-    # Initialize Camera
+    # 1. Initialize Camera
     preprocessor = FramePreprocessor()
     camera = CameraSource(source=source, width=width, height=height, target_fps=fps)
     try:
@@ -85,21 +97,21 @@ def run_tracking_pipeline(
         print(f"\nERROR: Unable to open camera source: {e}")
         return
 
-    # Initialize Detector
+    # 2. Initialize Detector
     try:
         detector = YOLOObjectDetector(
             model_name_or_path=model_name,
             confidence_threshold=conf_thresh,
             iou_threshold=iou_thresh,
             image_size=img_size,
-            device=device,
+            device=det_device,
         )
     except Exception as e:
         camera.release()
         print(f"\nERROR: Failed to initialize detector: {e}")
         return
 
-    # Initialize BoT-SORT Tracker
+    # 3. Initialize BoT-SORT Tracker
     try:
         tracker = BoTSORTTracker(
             tracker_config=tracker_config,
@@ -114,11 +126,25 @@ def run_tracking_pipeline(
         print(f"\nERROR: Failed to initialize BoT-SORT tracker: {e}")
         return
 
+    # 4. Initialize Depth Anything V2 Estimator
+    try:
+        depth_estimator = DepthAnythingV2Estimator(
+            checkpoint_path=depth_checkpoint,
+            model_type=depth_type,
+            device=depth_device,
+            input_size=depth_input_size,
+            is_metric=is_metric,
+            object_statistic=obj_stat,
+        )
+    except Exception as e:
+        camera.release()
+        print(f"\nERROR: Failed to initialize Depth Anything V2: {e}")
+        return
+
     frames_processed = 0
     loop_times = []
     last_loop_time = time.perf_counter()
 
-    # Pre-generate distinct colors for different Track IDs
     def get_color_for_id(track_id: int) -> tuple:
         np.random.seed(track_id * 17)
         c = np.random.randint(50, 255, size=3).tolist()
@@ -144,13 +170,20 @@ def run_tracking_pipeline(
             detections: list[Detection] = detector.detect(packet.frame, packet.timestamp)
             det_latency_ms = detector.last_inference_latency_ms
 
-            # Stage 2: Run BoT-SORT Object Tracking
+            # Stage 2: Run BoT-SORT Tracking
             tracked_objects: list[TrackedObject] = tracker.update(detections, packet.frame, packet.timestamp)
             track_latency_ms = tracker.last_tracker_latency_ms
 
+            # Stage 3: Run Depth Anything V2
+            depth_result: DepthResult = depth_estimator.estimate_depth(packet.frame, packet.timestamp)
+            depth_latency_ms = depth_estimator.last_inference_latency_ms
+
+            # Stage 4: Extract Object-Level Depth for each tracked obstacle
+            object_depths: list[TrackedObjectDepth] = depth_estimator.extract_all_object_depths(depth_result, tracked_objects)
+
             frames_processed += 1
 
-            # Measure overall loop FPS
+            # Overall loop FPS
             t_now = time.perf_counter()
             dt_loop = t_now - last_loop_time
             last_loop_time = t_now
@@ -161,22 +194,22 @@ def run_tracking_pipeline(
             overall_fps = sum(loop_times) / len(loop_times)
 
             # Periodic console report
-            if frames_processed % 30 == 0 or frames_processed == 1:
-                track_info = ", ".join(f"ID:{o.track_id}({o.class_name})" for o in tracked_objects) if tracked_objects else "None"
+            if frames_processed % 10 == 0 or frames_processed == 1:
+                depth_info = ", ".join(f"ID:{o.track_id}({o.class_name}):depth={o.depth_value:.2f}[rel,{o.depth_reliability}]" for o in object_depths) if object_depths else "No active tracks"
                 print(
                     f"[Frame {packet.frame_index:05d}] "
-                    f"Cam FPS: {packet.capture_fps:4.1f} | "
                     f"Loop FPS: {overall_fps:4.1f} | "
-                    f"Det Lat: {det_latency_ms:4.1f}ms | "
-                    f"Track Lat: {track_latency_ms:4.1f}ms | "
-                    f"Tracks ({len(tracked_objects)}): [{track_info}]"
+                    f"Det: {det_latency_ms:4.0f}ms | "
+                    f"Track: {track_latency_ms:3.0f}ms | "
+                    f"Depth: {depth_latency_ms:4.0f}ms | "
+                    f"Objects ({len(object_depths)}): [{depth_info}]"
                 )
 
             # Debug visual overlay
             if display_enabled:
                 display_frame = packet.frame.copy()
 
-                # Draw short trajectory trail for active tracks (visual verification only)
+                # Visual trails
                 if show_trails:
                     for tid, trail in tracker.debug_trails.items():
                         pts = list(trail)
@@ -184,33 +217,34 @@ def run_tracking_pipeline(
                         for k in range(1, len(pts)):
                             cv2.line(display_frame, pts[k - 1], pts[k], color, 2)
 
-                # Draw bounding boxes, class names, confidence, and Track ID
-                for obj in tracked_objects:
+                # Annotate tracked objects with ID, Class, Confidence, and Relative Depth
+                for obj in object_depths:
                     x1, y1, x2, y2 = [int(v) for v in obj.bbox]
                     color = get_color_for_id(obj.track_id)
 
                     cv2.rectangle(display_frame, (x1, y1), (x2, y2), color, 2)
-                    label = f"ID: {obj.track_id} | {obj.class_name} | {obj.confidence:.2f}"
-                    
-                    # Background tag for label readability
-                    label_size, _ = cv2.getTextSize(label, cv2.FONT_HERSHEY_SIMPLEX, 0.55, 2)
-                    lbl_w, lbl_h = label_size
-                    cv2.rectangle(display_frame, (x1, max(0, y1 - lbl_h - 10)), (x1 + lbl_w + 6, y1), color, -1)
-                    cv2.putText(
-                        display_frame,
-                        label,
-                        (x1 + 3, max(lbl_h + 2, y1 - 4)),
-                        cv2.FONT_HERSHEY_SIMPLEX,
-                        0.55,
-                        (255, 255, 255),
-                        2,
-                    )
-                    # Center marker
+
+                    depth_str = f"{obj.depth_value:.2f} (rel)" if obj.depth_valid else "N/A"
+                    label = f"ID: {obj.track_id} | {obj.class_name} | depth: {depth_str}"
+                    sub_label = f"conf: {obj.confidence:.2f} | rel: {obj.depth_reliability}"
+
+                    cv2.putText(display_frame, label, (x1, max(20, y1 - 22)), cv2.FONT_HERSHEY_SIMPLEX, 0.52, (255, 255, 255), 2)
+                    cv2.putText(display_frame, sub_label, (x1, max(36, y1 - 6)), cv2.FONT_HERSHEY_SIMPLEX, 0.45, (0, 255, 255), 1)
                     cv2.circle(display_frame, (int(obj.center_x), int(obj.center_y)), 4, color, -1)
 
-                # Overall HUD statistics
-                overlay_top = f"Frame: {packet.frame_index} | Active Tracks: {len(tracked_objects)} | Cam FPS: {packet.capture_fps:.1f}"
-                overlay_sub = f"Loop FPS: {overall_fps:.1f} | Det: {det_latency_ms:.1f}ms | Track: {track_latency_ms:.1f}ms"
+                # Show colorized depth inset in bottom-right corner if enabled
+                if show_depth_inset:
+                    color_depth = DepthAnythingV2Estimator.colorize_depth(depth_result)
+                    inset_h, inset_w = 120, 160
+                    small_depth = cv2.resize(color_depth, (inset_w, inset_h), interpolation=cv2.INTER_AREA)
+                    fh, fw = display_frame.shape[:2]
+                    display_frame[fh - inset_h - 10 : fh - 10, fw - inset_w - 10 : fw - 10] = small_depth
+                    cv2.rectangle(display_frame, (fw - inset_w - 10, fh - inset_h - 10), (fw - 10, fh - 10), (255, 255, 255), 1)
+                    cv2.putText(display_frame, "Relative Depth", (fw - inset_w - 5, fh - inset_h - 15), cv2.FONT_HERSHEY_SIMPLEX, 0.45, (255, 255, 255), 1)
+
+                # HUD Statistics
+                overlay_top = f"Frame: {packet.frame_index} | Tracks: {len(object_depths)} | Loop FPS: {overall_fps:.1f}"
+                overlay_sub = f"Det: {det_latency_ms:.0f}ms | Track: {track_latency_ms:.0f}ms | Depth: {depth_latency_ms:.0f}ms"
                 cv2.putText(display_frame, overlay_top, (10, 25), cv2.FONT_HERSHEY_SIMPLEX, 0.65, (255, 255, 0), 2)
                 cv2.putText(display_frame, overlay_sub, (10, 52), cv2.FONT_HERSHEY_SIMPLEX, 0.65, (255, 255, 0), 2)
 
@@ -230,12 +264,12 @@ def run_tracking_pipeline(
         camera.release()
         if display_enabled:
             cv2.destroyAllWindows()
-        print("-" * 70)
+        print("-" * 75)
         print(f"Camera released. Total frames processed: {frames_processed}")
-        print("=" * 70)
+        print("=" * 75)
 
 def main():
-    parser = argparse.ArgumentParser(description="Adaptive Edge-AI Navigation - Step 4: BoT-SORT Tracking")
+    parser = argparse.ArgumentParser(description="Adaptive Edge-AI Navigation - Step 5: Depth Anything V2")
     parser.add_argument("--config", type=str, default="config.yaml", help="Path to config file")
     parser.add_argument("--video", type=str, default=None, help="Path to test video file")
     parser.add_argument("--cam", type=int, default=None, help="Camera index")
@@ -247,7 +281,7 @@ def main():
     config = load_config(args.config)
     source = args.cam if args.cam is not None else args.video
 
-    run_tracking_pipeline(
+    run_perception_pipeline(
         config=config,
         source_override=source,
         model_override=args.model,
