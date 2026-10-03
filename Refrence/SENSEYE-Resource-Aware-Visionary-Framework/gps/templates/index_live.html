@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Live Location Tracker</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script src="https://cdn.socket.io/4.6.1/socket.io.min.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            width: 100%;
+            overflow: hidden;
+        }
+        #map {
+            height: 100%;
+            width: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+        .overlay {
+            position: fixed;
+            background: rgba(0, 0, 0, 0.5);
+            color: white;
+            padding: 5px 20px;
+            border-radius: 10px;
+            text-align: center;
+            font-size: 12px;
+            z-index: 1000;
+        }
+        #top-overlay {
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        #bottom-overlay {
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+    </style>
+</head>
+<body>
+    <div id="map"></div>
+
+    <!-- Top overlay -->
+    <div id="top-overlay" class="overlay">
+        Live Location Tracking, BME Project
+    </div>
+
+    <!-- Bottom overlay -->
+    <div id="bottom-overlay" class="overlay">
+        <p id="location">Location: Loading...</p>
+        <p id="method">Signal: Loading...</p>
+        <p id="last_update">Last update: Loading...</p>
+    </div>
+
+    <script>
+        // Initialize map
+        var map = L.map('map').setView([0, 0], 14); // Default to a closer zoom level (14)
+
+        // Add OpenStreetMap tiles
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 18
+        }).addTo(map);
+
+        // Add marker for live location
+        var marker = L.marker([0, 0]).addTo(map);
+
+        // Store the last update time
+        var lastUpdateTime = null;
+
+        // Function to calculate "time ago"
+        function timeAgo(lastUpdate) {
+            if (!lastUpdate) return "Loading...";
+            const now = new Date();
+            const diff = Math.floor((now - lastUpdate) / 1000);
+            if (diff < 60) return `${diff} seconds ago`;
+            if (diff < 3600) return `${Math.floor(diff / 60)} minutes ago`;
+            return `${Math.floor(diff / 3600)} hours ago`;
+        }
+
+        // Update "Last Update" field every second
+        setInterval(() => {
+            if (lastUpdateTime) {
+                document.getElementById('last_update').innerText = `Updated: ${timeAgo(lastUpdateTime)}`;
+            }
+        }, 1000);
+
+        // Connect to WebSocket for live updates
+        var socket = io.connect();
+
+        socket.on('location_update', function(data) {
+            var lat = data.latitude;
+            var lon = data.longitude;
+            var location = data.location; // Location added from backend
+            var method = data.method;
+
+            // Set the last update time
+            lastUpdateTime = new Date();
+
+            // Update map and marker
+            marker.setLatLng([lat, lon]);
+            map.setView([lat, lon], 16); // Zoom in when a new location is received
+
+            // Update bottom overlay text
+            document.getElementById('location').innerText = `Location: ${location}`;
+            document.getElementById('method').innerText = `Signal: ${method}`;
+        });
+    </script>
+</body>
+</html>

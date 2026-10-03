@@ -1,0 +1,37 @@
+yolo/venv/
+
+
+Resource_Aware_Visionary_Solution_via_IoT_Edge_Computing_to_Assist_Individuals_with_Visual_Disabilities.pdf
+
+# macOS
+.DS_Store
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# IDE
+.vscode/
+.idea/
+
+# Logs
+*.log
+
+# Temporary files
+*.tmp
+*.swp
+*~
+
+# Build artifacts
+build/
+dist/
+*.egg-info/
+
