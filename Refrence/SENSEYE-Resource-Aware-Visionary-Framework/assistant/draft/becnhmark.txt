@@ -1,0 +1,424 @@
+promt::  I've been feeling dizzy, with chest pain. Give answer in one line of what could be causing this ?
+
+ollama run qwen2:0.5b --verbose
+
+>>> I've been feeling dizzy, with chest pain. What could be causing this?
+The symptoms you are describing are consistent with heart problems or 
+anxiety disorders. Hyperventilation or stress can also cause similar 
+symptoms.
+
+total duration:       2.005146213s
+load duration:        27.077103ms
+prompt eval count:    500 token(s)
+prompt eval duration: 65.209ms
+prompt eval rate:     7667.65 tokens/s
+eval count:           27 token(s)
+eval duration:        516.336ms
+eval rate:            52.29 tokens/s
+
+
+ollama run qwen2:1.5b --verbose
+
+>>> I've been feeling dizzy, with chest pain. Give a concise answer to what coul
+... d be causing this.
+Heart condition like heart attack or heart failure, blood pressure issues, 
+vascular disease, seizure disorders, anxiety/ depression, physical 
+exertion, and dehydration can cause sudden dizziness with chest pain. 
+Consult a doctor if symptoms persist.
+
+total duration:       2.021303736s
+load duration:        25.576184ms
+prompt eval count:    371 token(s)
+prompt eval duration: 76.909ms
+prompt eval rate:     4823.88 tokens/s
+eval count:           46 token(s)
+eval duration:        1.60282s
+eval rate:            28.70 tokens/s
+
+
+ollama run gemma2:2b --verbose
+
+>>> I've been feeling dizzy, with chest pain. Give a concise answer to the possible reasons for this.
+It's important to seek immediate medical attention if you experience dizziness and chest pain as it could indicate a serious issue 
+like:
+
+* **Heart attack:**  Blood flow is blocked to the heart muscle.
+* **Stroke:** Blood flow to the brain is cut off. 
+* **Panic attack:** Sudden, intense fear causing physical symptoms like dizziness, rapid heartbeat, and chest tightness.
+* **Low blood sugar (hypoglycemia):** Can lead to lightheadedness and dizziness.
+
+
+Call emergency services immediately! Don't delay seeking medical care as your health needs attention.  
+
+
+total duration:       8.098932093s
+load duration:        48.109705ms
+prompt eval count:    441 token(s)
+prompt eval duration: 78.107ms
+prompt eval rate:     5646.10 tokens/s
+eval count:           121 token(s)
+eval duration:        7.694877s
+eval rate:            15.72 tokens/s
+>>> 
+
+
+
+
+ollama run phi3:latest --verbose
+
+>>> I've been feeling dizzy, with chest pain. Give a concise answer to the possible reasons for this.
+Possible cardiovascular issues or vertigo. Immediate medical consultation recommended.
+
+total duration:       1.406061742s
+load duration:        10.450114ms
+prompt eval count:    35 token(s)
+prompt eval duration: 143.477ms
+prompt eval rate:     243.94 tokens/s
+eval count:           20 token(s)
+eval duration:        1.205251s
+eval rate:            16.59 tokens/s
+>>> S
+
+
+ollama run qwen:0.5b --verbose
+
+>>> I've been feeling dizzy, with chest pain. Give a concise answer to the possible reasons for this.
+Dizziness and chest pain are common symptoms of certain medical conditions. The specific cause of your symptoms requires further 
+evaluation by a healthcare professional.
+
+total duration:       681.287942ms
+load duration:        34.298871ms
+prompt eval count:    30 token(s)
+prompt eval duration: 36.529ms
+prompt eval rate:     821.27 tokens/s
+eval count:           28 token(s)
+eval duration:        562.158ms
+eval rate:            49.81 tokens/s
+>>> Se
+
+
+ollama run qwen:1.8b --verbose
+
+>>> I've been feeling dizzy, with chest pain. Give a concise answer to the possible reasons for this.
+The symptoms you described, dizziness and chest pain, could be caused by various factors:
+
+1. Dehydration: If you are not drinking enough fluids, it can lead to dizziness due to low blood volume.
+
+2. Heart problems: Chest pain is a common symptom of heart problems. In this case, your chest pain could be due to an underlying 
+heart condition that requires medical attention.
+
+3. Migraine or vertigo: Migraines or vertigo can cause similar symptoms, including dizziness and chest pain. In these cases, it's 
+essential to consult with a healthcare professional for proper diagnosis and treatment.
+
+In summary, the symptoms you described could be caused by various factors, including dehydration, heart problems, 
+migraines/vertigo, and more. If you experience these symptoms consistently or with severe severity, it's crucial to seek medical 
+attention promptly.
+
+total duration:       6.560877098s
+load duration:        30.333387ms
+prompt eval count:    30 token(s)
+prompt eval duration: 68.901ms
+prompt eval rate:     435.41 tokens/s
+eval count:           174 token(s)
+eval duration:        6.4155s
+eval rate:            27.12 tokens/s
+>>> Se
+
+
+ollama run qwen:4b --verbose
+
+>>> I've been feeling dizzy, with chest pain. Give a concise answer to the possible reasons for this.
+The symptoms you described could be due to heart problems such as angina or a heart attack. It could also be due to other health 
+conditions such as low blood pressure or dehydration. It is important to seek medical attention if you are experiencing any 
+concerning symptoms.
+
+total duration:       3.871079688s
+load duration:        25.909073ms
+prompt eval count:    30 token(s)
+prompt eval duration: 108.732ms
+prompt eval rate:     275.91 tokens/s
+eval count:           52 token(s)
+eval duration:        3.69473s
+eval rate:            14.07 tokens/s
+>>> Se
+
+
+
+ollama run llama3.2:1b --verbose
+
+>>> I've been feeling dizzy, with chest pain. Give a concise answer to the possible reasons for this.
+I'm not a medical professional, but I can provide some general information. If you're experiencing dizziness and chest pain, it's 
+essential to seek immediate medical attention. Possible reasons for these symptoms include:
+
+- Cardiac arrhythmias (irregular heartbeats)
+- Heart attack or unstable angina
+- Pulmonary embolism or other cardiovascular emergencies
+- Pneumonia or other respiratory issues
+- Gastrointestinal problems, such as acid reflux or gastritis
+- Pancreatitis or other gastrointestinal disorders
+- Anxiety or panic attacks
+
+Please note that this is not a comprehensive list, and only a qualified medical professional can provide an accurate diagnosis and 
+treatment plan. If you're experiencing severe symptoms, such as severe chest pain, shortness of breath, or difficulty speaking, 
+please call emergency services immediately.
+
+total duration:       6.921966801s
+load duration:        37.854549ms
+prompt eval count:    46 token(s)
+prompt eval duration: 70.965ms
+prompt eval rate:     648.21 tokens/s
+eval count:           165 token(s)
+eval duration:        6.769916s
+eval rate:            24.37 tokens/s
+>>> Se
+
+
+
+ollama run llama3.2:latest --verbose
+
+>>> I've been feeling dizzy, with chest pain. Give a concise answer to the possible reasons for this.
+I'm not a medical professional, but I can provide some general information that may help. If you're experiencing dizziness and 
+chest pain, it's essential to seek immediate medical attention. Possible causes include:
+
+1. **Heart attack or angina**: Reduced blood flow to the heart.
+2. **Cardiac arrhythmia**: Abnormal heartbeat.
+3. **Pulmonary embolism**: Blood clot in the lungs.
+4. **Anxiety or panic attack**: Emotional distress.
+5. **Dehydration or low blood pressure**: Imbalanced fluids and blood pressure.
+
+Please seek medical help as soon as possible to determine the cause of your symptoms and receive proper treatment.
+
+total duration:       10.900241119s
+load duration:        44.728946ms
+prompt eval count:    46 token(s)
+prompt eval duration: 132.696ms
+prompt eval rate:     346.66 tokens/s
+eval count:           136 token(s)
+eval duration:        10.675889s
+eval rate:            12.74 tokens/s
+>>> Sen
+
+ollama run gemma:2b --verbose
+
+>>> I've been feeling dizzy, with chest pain. Give a concise answer to the possible reasons for this.
+I'm unable to provide medical advice or diagnoses, so I cannot answer this question. If you are experiencing dizziness and chest 
+pain, please seek medical attention immediately.
+
+total duration:       3.819810746s
+load duration:        1.971359011s
+prompt eval count:    48 token(s)
+prompt eval duration: 86.927ms
+prompt eval rate:     552.19 tokens/s
+eval count:           34 token(s)
+eval duration:        1.715259s
+eval rate:            19.82 tokens/s
+>>> Se
+
+
+ollama run qwen2.5:0.5b --verbose
+
+>>> I've been feeling dizzy, with chest pain. Give a concise answer to the possible reasons for this.
+It is possible that you may be experiencing symptoms of various conditions such as heart disease or anxiety. Chest pain, also 
+known as angina, can occur in individuals with coronary artery disease and are often associated with exertion or stress. However, 
+it's important to note that chest pain on its own doesn't necessarily indicate a serious medical condition. It is best to seek 
+medical attention for any symptoms of concern.
+
+total duration:       1.940769331s
+load duration:        27.32881ms
+prompt eval count:    50 token(s)
+prompt eval duration: 79.245ms
+prompt eval rate:     630.95 tokens/s
+eval count:           82 token(s)
+eval duration:        1.694163s
+eval rate:            48.40 tokens/s
+>>> 
+
+
+
+ollama run qwen2.5-coder:0.5b --verbose
+
+>>> I've been feeling dizzy, with chest pain. Give a concise answer to the possible reasons for this.
+Dizziness and chest pain are common symptoms of heart disease, heart failure, or another condition related to blood flow in the 
+body. Common causes include:
+
+1. Overdose: Excessive consumption of drugs can lead to stomach pain, nausea, and increased heart rate.
+
+2. Insufficiency of oxygen: Lack of oxygen is a leading cause of chest pain and dizziness.
+
+3. Hyperventilation: Poor ventilation can result in shortness of breath and a feeling of suffocated, which can cause dizziness.
+
+4. Pulmonary issues: Conditions such as asthma or lung cancer can worsen the symptoms of heart disease and chest pain.
+
+5. Lifestyle factors: Smoking, obesity, and poor diet can all increase the risk of heart disease and chest pain.
+
+6. Chronic obstructive pulmonary disease (COPD): This condition is characterized by long-term obstructive pulmonary disease that 
+causes shortness of breath, confusion, or difficulty breathing.
+
+7. Anemia: Ingestion of red blood cells can lead to symptoms of dizziness, fatigue, and low oxygen levels.
+
+8. Respiratory infections: Certain viruses or bacteria can cause inflammation and exacerbate chest pain and dizziness.
+
+9. Sleep apnea: Poor sleep quality can cause chest pain, nausea, and difficulty breathing.
+
+10. Trauma: Injuries to the heart or respiratory system can lead to dizziness, shortness of breath, and feelings of suffocatedness.
+
+total duration:       6.529482457s
+load duration:        27.723255ms
+prompt eval count:    50 token(s)
+prompt eval duration: 44.031ms
+prompt eval rate:     1135.56 tokens/s
+eval count:           294 token(s)
+eval duration:        6.316027s
+eval rate:            46.55 tokens/s
+>>> Send a message (/? for help)
+
+
+
+ollama run qwen2.5-coder:1.5b --verbose
+
+>>> I've been feeling dizzy, with chest pain. Give a concise answer to the possible reasons for this.
+The symptoms you're describing could be indicative of several conditions such as heart disease (e.g., angina pectoris), anxiety or 
+depression, or gastrointestinal issues like gastritis or peptic ulcer. It's important to consult with a healthcare professional to 
+determine the underlying cause and receive appropriate treatment.
+
+total duration:       2.877812987s
+load duration:        31.808252ms
+prompt eval count:    50 token(s)
+prompt eval duration: 109.864ms
+prompt eval rate:     455.11 tokens/s
+eval count:           60 token(s)
+eval duration:        2.595168s
+eval rate:            23.12 tokens/s
+>>> S
+
+
+ollama run tinyllama --verbose
+
+>>> I've been feeling dizzy, with chest pain. Give a concise answer to the possible reasons for this.
+Possible causes for chest pain could be:
+1. Acute appendicitis: This is inflammation of the appendix and it can cause severe abdominal pain, fever, chills, nausea, 
+vomiting, and diarrhea. The pain may worsen with movements or coughing.
+2. Celiac disease: If you have celiac disease, gluten can irritate the small intestine, leading to diarrhea, bloating, and 
+abdominal cramping.
+3. Gallbladder disease: A gallstone (bile duct stone) may enter into the biliary system (the area where bile produced by the liver 
+is stored and excreted) or through the common bile duct, leading to a feeling of fullness in the upper abdomen.
+4. Varices: Varicose veins are enlarged, bulging veins that are located deep inside the legs, usually caused by blood circulation 
+problems. They can lead to painful swelling or discomfort during movement.
+5. Stress: Chronic stress can cause a variety of digestive issues, including irritable bowel syndrome (IBS) and abdominal pain.
+6. Gastritis/gastric ulcers: If you have chronic gastroesophageal reflux disease (GERD), or acid reflux, stomach pain or burning 
+or erosive ulcers may occur in the lower part of your stomach (the pylorus).
+7. Surgery-related issues: Post-surgical complications, such as gastric varices, may cause abdominal pain and diarrhea.
+8. Pregnancy: During pregnancy, there is a strong likelihood of developing gallstones or pregnancy-induced bowel obstruction 
+(PIBO).
+9. Eating certain foods: Some foods like avocados, nuts, and dark chocolate can cause diarrhea, cramping, and bloating.
+10. Lack of exercise: Not exercising regularly can cause abdominal pain, bloating or gas.
+11. Too much caffeine intake: A small amount of caffeine may trigger cramps in the lower part of the stomach which causes 
+abdominal pain.
+12. Immunosuppressive medications: When taken alongside immunosuppressive medications, such as prednisone or corticosteroids, 
+abdominal pain and diarrhea can occur.
+In summary, some of the possible causes for chest pain are acute appendicitis, celiac disease, gallbladder disease, varices, 
+stress, gastritis/GERD, post-surgery complications, pregnancy related issues, eating certain foods, lack of exercise, too much 
+caffeine intake, immunosuppressive medications, and chronic digestive disorders.
+
+total duration:       15.748197382s
+load duration:        11.821049ms
+prompt eval count:    60 token(s)
+prompt eval duration: 62.498ms
+prompt eval rate:     960.03 tokens/s
+eval count:           663 token(s)
+eval duration:        15.542157s
+eval rate:            42.66 tokens/s
+>>> Send a message (/? for help)
+
+
+
+ollama run orca-mini --verbose
+
+>>>  I've been feeling dizzy, with chest pain. Give a concise answer to the possible reasons for this.
+ There could be several reasons why you might be feeling dizzy and experiencing chest pain. It is important to seek medical 
+attention if you experience any severe symptoms as they can indicate a serious condition. Some possible causes include fainting 
+due to low blood pressure, anxiety or stress, lung cancer, heart attack, collapsed lungs, or other medical conditions.
+
+total duration:       7.258354089s
+load duration:        2.376315646s
+prompt eval count:    64 token(s)
+prompt eval duration: 166.156ms
+prompt eval rate:     385.18 tokens/s
+eval count:           71 token(s)
+eval duration:        4.666868s
+eval rate:            15.21 tokens/s
+>>> S
+
+
+
+ollama run tinydolphin --verbose
+
+>>> I've been feeling dizzy, with chest pain. Give a concise answer to the possible reasons for this.
+ Dizziness can be caused by several factors. Here are some of the most common reasons: 
+1. High blood pressure: This can cause a loss in balance and dizziness. 
+2. Dehydration: Dry mouth, dry eyes or lack of fluids could also contribute to dizziness. 
+3. Electrolyte imbalance: This may include low potassium levels or high sodium levels which can cause dizziness. 
+4. Stomach problems: Gastritis and ulcers can make it difficult for the stomach to produce enough acid. 
+5. Headaches or tension headaches: These can make it more difficult to stay balanced.
+6. Infection in the ear: This could cause dizziness. 
+7. Trauma: Tremors and dizziness from sudden movements can also contribute to dizziness. 
+8. Lack of exercise or physical exertion: Exercise is known to help increase heart rate which can increase blood flow. 
+9. Alcohol: Consuming alcohol too quickly or excessively could cause dizziness in the short term. In the long term, it can impair 
+cognitive functions and make it more difficult to maintain balance.
+10. Medical issues such as epilepsy or neurological disorders: These can also affect balance and coordination.
+
+total duration:       7.727390047s
+load duration:        858.684945ms
+prompt eval count:    55 token(s)
+prompt eval duration: 59.493ms
+prompt eval rate:     924.48 tokens/s
+eval count:           301 token(s)
+eval duration:        6.760238s
+eval rate:            44.53 tokens/s
+>>> 
+
+
+
+
+ollama run smollm --verbose
+
+>>> 've been feeling dizzy, with chest pain. Give a concise answer to the possible reasons for this.
+The possible causes of dizziness and chest pain are:
+
+1. **Anxiety or Panic Disorder**: High levels of anxiety can cause physical symptoms like dizziness, rapid heartbeat, and 
+shortness of breath. Chest pain is also common in people with panic disorder.
+2. **Dehydration**: Not drinking enough water or losing too much fluid through excessive sweating, vomiting, or diarrhea can lead 
+to dehydration, which can cause dizziness, lightheadedness, and chest pain.
+3. **Orthostatic Hypotension (Shock)**: A sudden drop in blood pressure when standing up from a lying or sitting position can 
+cause dizziness, lightheadedness, and chest pain. This is more common in older adults.
+4. **Cardiovascular Problems**: Heart conditions like heart failure, coronary artery disease, or arrhythmias can cause dizziness, 
+chest pain, and shortness of breath.
+5. **Anxiety or Panic Disorder**: As mentioned earlier, anxiety can cause physical symptoms like dizziness, rapid heartbeat, and 
+shortness of breath. Chest pain is also common in people with panic disorder.
+6. **Dehydration**: Not drinking enough water or losing too much fluid through excessive sweating, vomiting, or diarrhea can lead 
+to dehydration, which can cause dizziness, lightheadedness, and chest pain.
+7. **Medication Side Effects**: Certain medications, such as diuretics, beta-blockers, or sedatives, can cause dizziness, 
+lightheadedness, and chest pain as a side effect.
+8. **Anxiety or Panic Disorder**: As mentioned earlier, anxiety can cause physical symptoms like dizziness, rapid heartbeat, and 
+shortness of breath. Chest pain is also common in people with panic disorder.
+9. **Dehydration**: Not drinking enough water or losing too much fluid through excessive sweating, vomiting, or diarrhea can lead 
+to dehydration, which can cause dizziness, lightheadedness, and chest pain.
+10. **Anxiety or Panic Disorder**: As mentioned earlier, anxiety can cause physical symptoms like dizziness, rapid heartbeat, and 
+shortness of breath. Chest pain is also common in people with panic disorder.
+
+If you're experiencing dizziness and chest pain, it's essential to seek medical attention to determine the underlying cause and 
+appropriate treatment.
+
+total duration:       18.658497688s
+load duration:        1.619345303s
+prompt eval count:    30 token(s)
+prompt eval duration: 61.993ms
+prompt eval rate:     483.93 tokens/s
+eval count:           448 token(s)
+eval duration:        16.930161s
+eval rate:            26.46 tokens/s
+>>> S
+
+
+
+
