@@ -1,43 +1,176 @@
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
-from typing import List, Tuple, Optional
+from typing import List, Tuple, Optional, Dict
+import time
+import os
 import numpy as np
+import torch
+from ultralytics import YOLO
 
 @dataclass
 class Detection:
-    """Represents a single detected bounding box and class attribution."""
-    bbox: Tuple[float, float, float, float]  # (x1, y1, x2, y2)
+    """Standardized detection data contract consumed by downstream modules."""
+    bbox: Tuple[float, float, float, float]  # (x1, y1, x2, y2) in pixel space
     class_id: int
     class_name: str
     confidence: float
-    center: Tuple[float, float]              # (cx, cy)
+    center_x: float
+    center_y: float
+    width: float
+    height: float
     timestamp: float
 
 class DetectorInterface(ABC):
-    """Abstract interface for 2D Object Detection models."""
+    """Abstract interface for object detection models."""
     @abstractmethod
-    def load_model(self, model_path: str, device: str) -> None:
-        """Load detector checkpoint onto specified device."""
+    def load_model(self, model_name_or_path: str, device: str = "auto") -> None:
         pass
 
     @abstractmethod
     def detect(self, frame: np.ndarray, timestamp: float) -> List[Detection]:
-        """Perform object detection on the input frame."""
         pass
 
 class YOLOObjectDetector(DetectorInterface):
-    """Ultralytics YOLO implementation of the detector interface."""
-    def __init__(self, model_path: str = "yolo11n.pt", confidence_thresh: float = 0.35, device: str = "cpu"):
-        self.model_path = model_path
-        self.confidence_thresh = confidence_thresh
-        self.device = device
-        self.model = None
+    """Ultralytics YOLO implementation conforming to the standardized detection interface."""
+    def __init__(
+        self,
+        model_name_or_path: str = "yolo11n.pt",
+        confidence_threshold: float = 0.25,
+        iou_threshold: float = 0.45,
+        image_size: int = 640,
+        device: str = "auto",
+        classes_of_interest: Optional[List[str]] = None,
+    ):
+        self.model_name_or_path = model_name_or_path
+        self.confidence_threshold = float(confidence_threshold)
+        self.iou_threshold = float(iou_threshold)
+        self.image_size = int(image_size)
+        self.device_config = device
+        self.classes_of_interest = set(classes_of_interest) if classes_of_interest else None
 
-    def load_model(self, model_path: str, device: str) -> None:
-        self.model_path = model_path
-        self.device = device
-        # Model loading will be executed in STEP 3
+        self.model: Optional[YOLO] = None
+        self.resolved_device: str = "cpu"
+        self.class_names: Dict[int, str] = {}
+        self.last_inference_latency_ms: float = 0.0
+
+        # Load model upon initialization
+        self.load_model(self.model_name_or_path, self.device_config)
+
+    def _resolve_device(self, requested_device: str) -> str:
+        """Resolve device string: 'auto' selects CUDA if available, otherwise CPU."""
+        if requested_device == "auto":
+            if torch.cuda.is_available():
+                return "cuda:0"
+            return "cpu"
+        elif requested_device.startswith("cuda"):
+            if not torch.cuda.is_available():
+                print(f"WARNING: CUDA requested ('{requested_device}') but not available. Falling back to CPU.")
+                return "cpu"
+            return requested_device
+        return "cpu"
+
+    def load_model(self, model_name_or_path: str, device: str = "auto") -> None:
+        """Loads the Ultralytics YOLO model onto the target device."""
+        self.model_name_or_path = model_name_or_path
+        self.resolved_device = self._resolve_device(device)
+        print(f"[YOLOObjectDetector] Loading model '{self.model_name_or_path}' onto device '{self.resolved_device}'...")
+
+        try:
+            self.model = YOLO(self.model_name_or_path)
+            # Query model class names dictionary
+            if hasattr(self.model, "names") and self.model.names:
+                self.class_names = self.model.names
+            else:
+                self.class_names = {}
+            print(f"[YOLOObjectDetector] Model loaded successfully. Classes available: {len(self.class_names)}")
+        except Exception as e:
+            self.model = None
+            raise RuntimeError(f"ERROR: Failed to load YOLO model '{self.model_name_or_path}': {e}")
 
     def detect(self, frame: np.ndarray, timestamp: float) -> List[Detection]:
-        # Concrete implementation in STEP 3
-        return []
+        """Runs YOLO object detection on the input frame and returns standardized Detection objects."""
+        if self.model is None:
+            raise RuntimeError("ERROR: Cannot perform detection; YOLO model is not loaded.")
+
+        if frame is None or not isinstance(frame, np.ndarray) or frame.size == 0:
+            return []
+
+        h, w = frame.shape[:2]
+        if h <= 0 or w <= 0:
+            return []
+
+        t_start = time.perf_counter()
+
+        try:
+            results = self.model.predict(
+                source=frame,
+                conf=self.confidence_threshold,
+                iou=self.iou_threshold,
+                imgsz=self.image_size,
+                device=self.resolved_device,
+                verbose=False,
+            )
+        except Exception as e:
+            print(f"ERROR during YOLO inference: {e}")
+            self.last_inference_latency_ms = (time.perf_counter() - t_start) * 1000.0
+            return []
+
+        self.last_inference_latency_ms = (time.perf_counter() - t_start) * 1000.0
+
+        detections: List[Detection] = []
+        if not results or len(results) == 0:
+            return detections
+
+        first_res = results[0]
+        if first_res.boxes is None or len(first_res.boxes) == 0:
+            return detections
+
+        boxes_data = first_res.boxes
+        xyxy_coords = boxes_data.xyxy.cpu().numpy()
+        confidences = boxes_data.conf.cpu().numpy()
+        class_ids = boxes_data.cls.cpu().numpy().astype(int)
+
+        for i in range(len(xyxy_coords)):
+            conf = float(confidences[i])
+            if conf < self.confidence_threshold:
+                continue
+
+            cls_id = int(class_ids[i])
+            cls_name = self.class_names.get(cls_id, str(cls_id))
+
+            # Filter by classes of interest if configured
+            if self.classes_of_interest and cls_name not in self.classes_of_interest:
+                continue
+
+            raw_x1, raw_y1, raw_x2, raw_y2 = xyxy_coords[i]
+
+            # Constrain bounding box strictly within frame dimensions
+            x1 = max(0.0, min(float(raw_x1), float(w - 1)))
+            y1 = max(0.0, min(float(raw_y1), float(h - 1)))
+            x2 = max(x1, min(float(raw_x2), float(w)))
+            y2 = max(y1, min(float(raw_y2), float(h)))
+
+            box_width = x2 - x1
+            box_height = y2 - y1
+
+            if box_width <= 0 or box_height <= 0:
+                continue
+
+            center_x = (x1 + x2) / 2.0
+            center_y = (y1 + y2) / 2.0
+
+            detections.append(
+                Detection(
+                    bbox=(x1, y1, x2, y2),
+                    class_id=cls_id,
+                    class_name=cls_name,
+                    confidence=conf,
+                    center_x=center_x,
+                    center_y=center_y,
+                    width=box_width,
+                    height=box_height,
+                    timestamp=timestamp,
+                )
+            )
+
+        return detections

@@ -12,41 +12,23 @@ camera:
   height: 480
   fps: 30
 
+detector:
+  model: "yolo11n.pt"         # Ultralytics model (e.g. yolo11n.pt, yolo11s.pt, yolov8n.pt)
+  confidence_threshold: 0.25
+  iou_threshold: 0.45
+  image_size: 640
+  device: "auto"
+
 debug:
   display: true               # Display live camera preview window
-  window_name: "Adaptive Navigation - Camera Stream"
+  window_name: "Adaptive Navigation - YOLO Detection Preview"
 
 perception:
   preprocessing:
-    target_width: null        # null = keep native resolution for Step 2
+    target_width: null        # null = keep native camera resolution
     target_height: null
     normalize: false
     to_rgb: false
-
-  detector:
-    model_name: "yolo11n.pt"
-    confidence_threshold: 0.35
-    iou_threshold: 0.45
-    classes_of_interest:
-      - person
-      - bicycle
-      - car
-      - motorcycle
-      - bus
-      - truck
-      - traffic light
-      - fire hydrant
-      - stop sign
-      - bench
-      - dog
-      - chair
-      - couch
-      - potted plant
-      - bed
-      - dining table
-      - stairs
-      - door
-      - pole
 
   tracker:
     tracker_type: "botsort.yaml"
