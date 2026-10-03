@@ -1,59 +1,49 @@
-# Adaptive Edge-AI Navigation System Configuration
-# Centralized configuration parameters.
-
 system:
-  device: "auto"              # "auto", "cuda", or "cpu"
+  device: auto
   debug: true
   random_seed: 42
-
 camera:
-  source: 0                   # Camera index (int) or video file path (str)
+  source: 0
   width: 640
   height: 480
   fps: 30
-
 detector:
-  model: "models/detector/yolo11n.pt" # Ultralytics model checkpoint
+  model: models/detector/yolo11n.pt
   confidence_threshold: 0.25
   iou_threshold: 0.45
   image_size: 640
-  device: "auto"
-
+  device: auto
 tracker:
   enabled: true
-  type: "botsort"
-  tracker_config: "botsort.yaml"
+  type: botsort
+  tracker_config: botsort.yaml
   track_high_thresh: 0.25
   track_low_thresh: 0.1
   new_track_thresh: 0.25
   match_thresh: 0.8
   track_buffer: 30
-
 depth:
   enabled: true
-  model_type: "vits"          # "vits", "vitb", or "vitl"
-  checkpoint: "models/depth/depth_anything_v2_vits.pth"
-  device: "auto"
+  model_type: vits
+  checkpoint: models/depth/depth_anything_v2_vits.pth
+  device: auto
   input_size: 518
-  is_metric: false            # Standard checkpoint produces relative depth (not calibrated meters)
-  object_statistic: "median"  # "median", "mean", or "percentile_25"
-
+  is_metric: false
+  object_statistic: median
 debug:
-  display: true               # Display live camera preview window
-  window_name: "Adaptive Navigation - YOLO + BoT-SORT + Depth"
-  show_trails: true           # Display short trajectory trail for active tracks
+  display: true
+  window_name: Adaptive Navigation - YOLO + BoT-SORT + Depth
+  show_trails: true
   trail_length: 15
-  show_depth_inset: true      # Display colorized depth map inset
-
+  show_depth_inset: true
 perception:
   preprocessing:
     target_width: null
     target_height: null
     normalize: false
     to_rgb: false
-
 temporal:
-  history_length: 15
+  history_length: 30
   smoothing:
     position_alpha: 0.7
     depth_alpha: 0.6
@@ -63,13 +53,15 @@ temporal:
     receding_speed_min: -0.05
   camera_motion:
     enabled: false
-    method: "farneback"
-
+    method: farneback
+  max_history_age_seconds: 2.0
+  cleanup_after_seconds: 2.0
+  minimum_observations: 3
 risk:
   weights:
     distance_weight: 0.35
     approach_weight: 0.25
-    ttc_weight: 0.20
+    ttc_weight: 0.2
     path_overlap_weight: 0.15
     confidence_weight: 0.05
   ttc_thresholds:
@@ -82,7 +74,6 @@ risk:
     medium: 0.35
     low: 0.15
   uncertainty_penalty_factor: 0.2
-
 navigation:
   corridor:
     center_min_ratio: 0.33
@@ -93,7 +84,6 @@ navigation:
     grid_cols: 10
     clearance_weight: 0.6
     depth_weight: 0.4
-
 warning:
   priority_state_machine:
     candidate_persistence_frames: 3
@@ -101,25 +91,23 @@ warning:
     interrupt_on_escalation: true
     suppress_p1: true
   messages:
-    p4_critical: "STOP. Obstacle ahead."
-    p3_left: "Move right."
-    p3_right: "Move left."
-    p3_center: "Obstacle in center."
-    p2_medium: "Caution. Obstacle nearby."
-    p1_low: "Path clear."
-
+    p4_critical: STOP. Obstacle ahead.
+    p3_left: Move right.
+    p3_right: Move left.
+    p3_center: Obstacle in center.
+    p2_medium: Caution. Obstacle nearby.
+    p1_low: Path clear.
 feedback:
   tts:
     enabled: true
     rate: 175
     volume: 1.0
     voice_index: 0
-
 evaluation:
   logging:
     enabled: true
-    output_dir: "data/results"
-    csv_filename: "navigation_log.csv"
+    output_dir: data/results
+    csv_filename: navigation_log.csv
   metrics:
     compute_fps: true
     compute_latency: true

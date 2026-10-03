@@ -10,6 +10,7 @@ import numpy as np
 # Ensure project root is in sys.path
 sys.path.insert(0, os.path.abspath(os.path.dirname(__file__)))
 
+from temporal import TemporalHistory, ObjectObservation
 from perception import (
     CameraSource,
     FramePacket,
@@ -41,7 +42,7 @@ def run_perception_pipeline(
     max_frames: int = None,
     headless: bool = False,
 ) -> None:
-    """Executes Step 5: Camera -> Frame Validation -> YOLO Detection -> BoT-SORT Tracking -> Depth Anything V2 -> Object-Level Depth."""
+    """Executes Step 6: Camera -> Frame Validation -> YOLO Detection -> BoT-SORT Tracking -> Depth Anything V2 -> Object-Level Depth -> Temporal History Buffer."""
     cam_cfg = config.get("camera", {})
     source = source_override if source_override is not None else cam_cfg.get("source", 0)
     width = cam_cfg.get("width", 640)
@@ -71,19 +72,26 @@ def run_perception_pipeline(
     is_metric = depth_cfg.get("is_metric", False)
     obj_stat = depth_cfg.get("object_statistic", "median")
 
+    temporal_cfg = config.get("temporal", {})
+    history_length = temporal_cfg.get("history_length", 30)
+    max_history_age = temporal_cfg.get("max_history_age_seconds", 2.0)
+    cleanup_after = temporal_cfg.get("cleanup_after_seconds", 2.0)
+    min_obs = temporal_cfg.get("minimum_observations", 3)
+
     debug_cfg = config.get("debug", {})
     display_enabled = debug_cfg.get("display", True) and not headless
     show_trails = debug_cfg.get("show_trails", True)
     show_depth_inset = debug_cfg.get("show_depth_inset", True)
-    window_name = debug_cfg.get("window_name", "Adaptive Navigation - YOLO + BoT-SORT + Depth")
+    window_name = debug_cfg.get("window_name", "Adaptive Navigation - YOLO + BoT-SORT + Depth + Temporal")
 
     print("=" * 75)
-    print("STEP 5: CAMERA + YOLO + BoT-SORT + DEPTH ANYTHING V2 PIPELINE")
+    print("STEP 6: CAMERA + YOLO + BoT-SORT + DEPTH ANYTHING V2 + TEMPORAL HISTORY")
     print("=" * 75)
     print(f"Camera Source:   {source} ({width}x{height} @ {fps} FPS)")
     print(f"YOLO Detector:   {model_name} | Conf: {conf_thresh} | Device: {det_device}")
     print(f"Tracker:         BoT-SORT (buffer={track_buffer}, match={match_thresh})")
     print(f"Depth Model:     Depth Anything V2 ({depth_type}) | Metric: {is_metric} | Stat: {obj_stat}")
+    print(f"Temporal Buffer: MaxLen: {history_length} | MaxAge: {max_history_age}s | Cleanup: {cleanup_after}s | MinObs: {min_obs}")
     print(f"Display Mode:    {'Active Window' if display_enabled else 'Headless'}")
     print("Press 'q' in preview window or Ctrl+C in terminal to stop.")
     print("-" * 75)
@@ -141,6 +149,14 @@ def run_perception_pipeline(
         print(f"\nERROR: Failed to initialize Depth Anything V2: {e}")
         return
 
+    # 5. Initialize Temporal History Buffer
+    temporal_history = TemporalHistory(
+        history_length=history_length,
+        max_history_age_seconds=max_history_age,
+        cleanup_after_seconds=cleanup_after,
+        minimum_observations=min_obs,
+    )
+
     frames_processed = 0
     loop_times = []
     last_loop_time = time.perf_counter()
@@ -180,6 +196,13 @@ def run_perception_pipeline(
 
             # Stage 4: Extract Object-Level Depth for each tracked obstacle
             object_depths: list[TrackedObjectDepth] = depth_estimator.extract_all_object_depths(depth_result, tracked_objects)
+
+            # Stage 5: Update Temporal History Buffer (strictly observation records, no velocity/TTC yet)
+            observations = [
+                ObjectObservation.from_tracked_depth(obj, packet.timestamp, packet.frame_index)
+                for obj in object_depths
+            ]
+            temporal_history.update(observations, current_timestamp=packet.timestamp)
 
             frames_processed += 1
 
@@ -226,7 +249,8 @@ def run_perception_pipeline(
 
                     depth_str = f"{obj.depth_value:.2f} (rel)" if obj.depth_valid else "N/A"
                     label = f"ID: {obj.track_id} | {obj.class_name} | depth: {depth_str}"
-                    sub_label = f"conf: {obj.confidence:.2f} | rel: {obj.depth_reliability}"
+                    hist_len = temporal_history.get_length(obj.track_id)
+                    sub_label = f"conf: {obj.confidence:.2f} | rel: {obj.depth_reliability} | hist: {hist_len}f"
 
                     cv2.putText(display_frame, label, (x1, max(20, y1 - 22)), cv2.FONT_HERSHEY_SIMPLEX, 0.52, (255, 255, 255), 2)
                     cv2.putText(display_frame, sub_label, (x1, max(36, y1 - 6)), cv2.FONT_HERSHEY_SIMPLEX, 0.45, (0, 255, 255), 1)
