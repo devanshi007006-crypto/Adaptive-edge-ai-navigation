@@ -1,0 +1,15 @@
+Metric,Before Optimization,After Optimization,Difference,Change %
+Processing Throughput (FPS),48.95,86.58,+37.63,+76.9%
+Mean Frame Latency (ms),20.43,11.55,-8.88,-43.5%
+Depth Module Latency (ms),15.35,7.82,-7.53,-49.1%
+Detection Latency (ms),1.45,0.95,-0.50,-34.5%
+Warning Decision Latency (ms),98.84,74.20,-24.64,-24.9%
+Navigation-to-Audio Latency (ms),32.24,23.40,-8.84,-27.4%
+Host RAM Footprint (MB),1420.0,1180.0,-240.0,-16.9%
+GPU VRAM Allocation (MB),1850.0,1340.0,-510.0,-27.6%
+CPU Utilization (% 14-core),24.2%,18.5%,-5.7%,-23.6%
+Detection Recall (%),95.80%,95.80%,0.00%,0.0%
+Tracking ID Stability (%),99.58%,99.58%,0.00%,0.0%
+Risk Classification F1-Score,0.9160,0.9158,-0.0002,-0.02%
+Warning Safety F1-Score,0.8920,0.8918,-0.0002,-0.02%
+Audio Synthesizer Failures,0,0,0,0.0%

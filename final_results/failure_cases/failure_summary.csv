@@ -1,0 +1,14 @@
+Error Type,Occurrences,Percentage (%),Representative Example,Possible Root Cause
+FALSE_DETECTION,1,20.0,Frame 14: GT=No object vs Pred=dog,Background texture or reflection artifact
+MISSED_DETECTION,0,0.0,No occurrences recorded.,"Low contrast, partial occlusion, or extreme distance"
+ID_SWITCH,0,0.0,No occurrences recorded.,Visual occlusion or sudden ego-motion jump
+DEPTH_FAILURE,1,20.0,Frame 22: GT=6.0m vs Pred=4.2m,Monocular scale ambiguity or reflective surface
+MOTION_FAILURE,0,0.0,No occurrences recorded.,Sensor frame drop or noisy bounding box jitter
+CAMERA_MOTION_FAILURE,1,20.0,Frame 45: GT=Static pole vs Pred=Approaching target,Insufficient static optical flow feature points
+TTC_FAILURE,1,20.0,Frame 51: GT=3.5s vs Pred=None,Low closing speed or unstable depth rate
+RISK_MISCLASSIFICATION,0,0.0,No occurrences recorded.,Over-reliance on noisy feature or path geometry error
+RELIABILITY_MISMATCH,0,0.0,No occurrences recorded.,Uncalibrated evidence weights under domain shift
+FALSE_WARNING,1,20.0,Frame 83: GT=Benign obstacle leaving corridor vs Pred=CAUTION,Transient risk spike before temporal stabilization
+MISSED_WARNING,0,0.0,No occurrences recorded.,Under-estimated risk or aggressive temporal suppression
+INCORRECT_NAVIGATION,0,0.0,No occurrences recorded.,Corridor missegmentation or asymmetric clearance error
+AUDIO_FAILURE,0,0.0,No occurrences recorded.,Audio device disconnected or priority queue dropped

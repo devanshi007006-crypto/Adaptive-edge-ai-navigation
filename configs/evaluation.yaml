@@ -1,0 +1,69 @@
+system:
+  mode: research
+  device: auto
+  debug: false
+  random_seed: 42
+  log_level: INFO
+  headless: true
+dataset:
+  name: Adaptive Navigation Canonical Suite
+  frames_per_scenario: 10
+  ground_truth_path: evaluation/results/ground_truth.json
+detector:
+  model: yolo11n.pt
+  confidence_threshold: 0.25
+  iou_threshold: 0.45
+  image_size: 640
+  device: auto
+  precision: fp32
+tracker:
+  enabled: true
+  type: botsort
+  track_high_thresh: 0.25
+  match_thresh: 0.8
+  track_buffer: 30
+  max_track_age: 30
+depth:
+  enabled: true
+  cadence_strategy: synchronous
+  precision: fp32
+temporal:
+  history_length: 30
+  max_history_age_seconds: 2.0
+risk:
+  enabled: true
+  ttc_thresholds:
+    critical: 1.0
+    high: 2.0
+    medium: 4.0
+  score_thresholds:
+    critical: 0.85
+    high: 0.75
+    medium: 0.5
+    low: 0.25
+uncertainty:
+  enabled: true
+  thresholds:
+    high: 0.75
+    medium: 0.5
+    low: 0.25
+warning:
+  enabled: true
+  minimum_persistence_frames: 2
+  hysteresis:
+    warning_enter: 0.7
+    warning_exit: 0.55
+    critical_enter: 0.85
+    critical_exit: 0.7
+navigation:
+  enabled: true
+  minimum_reliability: 0.7
+  corridor_width_ratio: 0.4
+audio:
+  enabled: true
+  simulation_mode: true
+  repeat_interval_seconds: 2.0
+logging:
+  output_dir: evaluation/results
+  save_csv: true
+  save_json: true

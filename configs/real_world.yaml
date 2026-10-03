@@ -1,0 +1,53 @@
+system:
+  mode: real_world
+  device: auto
+  debug: false
+  random_seed: 42
+  log_level: WARNING
+  headless: false
+camera:
+  source: 0
+  width: 640
+  height: 480
+  fps: 30
+  exposure_compensation: true
+  low_light_boost: true
+detector:
+  model: yolo11n.pt
+  confidence_threshold: 0.25
+  device: auto
+  precision: fp32
+tracker:
+  enabled: true
+  type: botsort
+  track_buffer: 30
+  max_track_age: 30
+depth:
+  enabled: true
+  cadence_strategy: synchronous
+  precision: fp32
+temporal:
+  history_length: 30
+  camera_motion_compensation: true
+uncertainty:
+  enabled: true
+  minimum_reliability_threshold: 0.65
+  low_light_uncertainty_scaling: true
+warning:
+  enabled: true
+  minimum_persistence_frames: 2
+  hysteresis:
+    warning_enter: 0.7
+    warning_exit: 0.55
+    critical_enter: 0.85
+    critical_exit: 0.7
+navigation:
+  enabled: true
+  minimum_reliability: 0.7
+  unknown_on_ambiguity: true
+audio:
+  enabled: true
+  repeat_interval_seconds: 2.0
+  max_queue_size: 2
+  priority_interrupt: true
+  device_disconnect_fallback: silent_log

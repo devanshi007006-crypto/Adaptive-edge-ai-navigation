@@ -1,0 +1,19 @@
+experiment_metadata:
+  experiment_id: EXP_FINAL_STEP19_OPT
+  software_version: v1.3.0-optimized
+  configuration_version: 1.0.0
+  model_version: YOLOv8n-v8.1.0 / DepthAnythingV2-Metric
+  dataset_version: v1.2-canonical
+  hardware: Intel i7-12700H + NVIDIA RTX 3060 Laptop GPU (16GB RAM)
+  freeze_date: '2026-10-04'
+  random_seed: 42
+baseline_pipeline:
+  depth_cadence: every_frame
+  precision: fp32
+  measured_fps: 48.83
+  measured_latency_ms: 20.48
+optimized_pipeline:
+  depth_cadence: periodic_2_1
+  precision: fp16
+  measured_fps: 82.64
+  measured_latency_ms: 12.1

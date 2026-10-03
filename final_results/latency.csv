@@ -1,0 +1,12 @@
+Module,Before Latency (ms),After Latency (ms),Speedup Factor,Relative Contribution (%)
+Detection (YOLOv8n),1.45,0.95,1.53x,8.2%
+Tracking (BoT-SORT),0.88,0.72,1.22x,6.2%
+Depth Estimation (Monocular),15.35,7.82,1.96x,67.7%
+Motion Estimation,0.35,0.28,1.25x,2.4%
+Camera Compensation,0.38,0.30,1.27x,2.6%
+TTC Calculation,0.24,0.18,1.33x,1.6%
+Risk Assessment Engine,0.22,0.16,1.38x,1.4%
+Reliability Layer,0.18,0.14,1.29x,1.2%
+Temporal Warning Machine,0.15,0.12,1.25x,1.0%
+Spatial & Navigation,0.16,0.13,1.23x,1.1%
+Message & Audio Dispatch,0.12,0.10,1.20x,0.9%

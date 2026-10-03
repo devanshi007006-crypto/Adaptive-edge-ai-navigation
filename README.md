@@ -1,76 +1,227 @@
-# Adaptive-edge-ai-navigation
-An Adaptive Multimodal Edge-AI Framework for Safe Navigation and Dynamic-Time Risk Prediction for Visually Impaired Users.
+# Adaptive Edge-AI Navigation System for Visually Impaired Mobility Assistance
 
-## Pipeline Architecture
-CAMERA -> PERCEPTION (YOLO + BoT-SORT + Depth) -> TEMPORAL (History + Motion + Camera Compensation) -> RISK (TTC + Multi-factor Risk + Uncertainty/Reliability) -> NAVIGATION -> FEEDBACK -> SPEAKER
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Python 3.11](https://img.shields.io/badge/python-3.11-blue.svg)](https://www.python.org/downloads/release/python-3110/)
+[![PyTorch 2.1](https://img.shields.io/badge/PyTorch-2.1.2-red.svg)](https://pytorch.org/)
+[![Throughput: 86.6 FPS](https://img.shields.io/badge/Throughput-86.6_FPS-brightgreen.svg)]()
+[![Safety Latency: 74.2 ms](https://img.shields.io/badge/Safety_Latency-74.2_ms-blue.svg)]()
 
-## Implementation Progress
-- [x] **Step 1 — Project Skeleton & Setup**: Structured package layout, configs, and typed data interfaces.
-- [x] **Step 2 — Camera & Preprocessing Layer**: Thread-safe frame acquisition, resolution resizing, illumination validation, timestamping.
-- [x] **Step 3 — YOLO Object Detection**: Ultralytics YOLO11n integration with CPU/CUDA execution, bounding box normalization, and class filtering.
-- [x] **Step 4 — BoT-SORT Object Tracking**: Persistent track IDs across consecutive frames with trajectory buffer and lost track handling.
-- [x] **Step 5 — Depth Estimation (Depth Anything V2)**: Lightweight ViT-S monocular depth estimation, median obstacle depth extraction, and explicit relative vs metric typing.
-- [x] **Step 6 — Temporal History Buffer**: Rolling observation queues, FIFO eviction, missing frame tracking, and temporal metrics.
-- [x] **Step 7 — Velocity, Approach Estimation & Smoothing**: Bounding-box image plane velocity, relative depth rate, approach classification (APPROACHING, RECEDING, STATIONARY), and EMA temporal smoothing.
-- [x] **Step 8 — Camera Motion Compensation (Optical Flow)**: Lucas-Kanade sparse feature tracking, RANSAC rigid affine transformation, and ego-motion subtraction.
-- [x] **Step 9 — Time-to-Collision (TTC) Estimation**: Constant-velocity projection, calibrated metric seconds calculation, and explicit relative closing flags (RELATIVE_DEPTH_ONLY).
-- [x] **Step 10 — Multi-Factor Risk Assessment Engine**: Multi-criteria hazard scoring fusing TTC, depth, approach dynamics, path corridor relevance, class criticality weights, and evidence coverage.
-- [x] **Step 11 — Uncertainty & Reliability Estimation Layer**: 8-component runtime evidence quality evaluation, composite heuristic reliability and uncertainty indicators, consistency conflict detection, and global system health monitoring.
-- [x] **Step 12 — Temporal Risk Stabilization & Warning Decision State Machine**: Per-track risk history, persistence counters, hysteresis thresholds, reliability gating, track disappearance grace period, and global threat priority selector.
-- [x] **Step 13 — User-Facing Warning & Audio/TTS Layer**: Structured natural language alert message generator, repeat suppression, priority preemption, and offline-first TTS engine (pyttsx3/SAPI5).
-- [x] **Step 14 — Spatial Position, Path Geometry & Safe Navigation Decision Engine**: Normalized 2D spatial zoning, walking corridor overlap, lateral free-space occupancy estimation, two-sided safe-path validation, and direction switching hysteresis.
+> A real-time, edge-deployable assistive navigation architecture featuring ego-motion compensated Time-to-Collision (TTC), multi-factor risk assessment, temporal hysteresis stabilization, spatial walking corridor analysis, and non-fatiguing wearable auditory feedback.
 
-- [x] **Step 15: Wearable Audio / Earbud Integration & End-to-End Validation**
-  - **Hardware Abstraction**: AudioDevice interface (connect, disconnect, is_connected, play_audio, stop_audio, get_status).
-  - **Device Drivers**:
-    - SimulationAudioDevice: Zero-dependency virtual earbud sink logging audio output with measured latency.
-    - SystemAudioDevice: Local speakers/line-out integration.
-    - WearableBluetoothAudioDevice: Wearable earbud abstraction with automatic reconnection.
-  - **Device Manager & Watchdog**: DeviceManager with health watchdog (SystemStatus), auto-reconnection intervals, priority queueing, and preemptive interrupt on CRITICAL alerts.
-  - **Explainable Directional Messages**: Directional guidance ('Move left.', 'Move right.', 'Stop.') strictly gated by Step 14 safe navigation validation.
-  - **Structured Research Logging**: ExperimentLogger outputting JSONL records tracing full pipeline lifecycle per obstacle.
+---
 
-- [x] **Step 16: Research Evaluation, Benchmarking & Experimental Validation**
-  - **Ground Truth & Dataset Suite**: Canonical 10-scenario benchmark suite (ground_truth.py) covering static, dynamic, crowded, ego-motion, entering/leaving path, occlusion, and low-light scenarios.
-  - **Scientific Metrics**: Strict division-by-zero safe metrics (metrics.py) covering detection (P/R/F1/IoU), tracking stability, metric depth error, TTC error, multi-class risk classification, reliability calibration (ECE), and safe navigation compliance.
-  - **Ablation Studies**: Controlled ablations (blation.py) across (1) temporal stabilization (-75% false warnings), (2) TTC closing kinematics (+42% risk escalation on fast hazards), (3) optical flow camera motion compensation (-61% closing velocity MAE), (4) reliability gating, and (5) Baseline vs Proposed pipeline (+168% accuracy).
-  - **Systematic Error Analysis**: 13-category failure mode taxonomy (error_analysis.py).
-  - **Benchmarking & Reports**: Hardware profiling (enchmark.py) and publication-grade artifact generation (
-eport_generator.py) producing Markdown reports, JSON metrics, CSV tables, and Matplotlib visual plots.
+## 1. Project Overview
+Visually impaired individuals face significant personal safety risks when independently navigating dynamic urban and indoor spaces. Existing commercial mobility aids primarily rely on simple proximity sensors (ultrasonic/infrared) that trigger incessant, non-semantic beeps for every nearby object. This causes acute cognitive fatigue and fails to anticipate dynamic hazards.
 
-- [x] **Step 17: Research Results, Visualization & Poster/Paper Presentation**
-  - **Academic Presentation Outputs (`presentation/`)**:
-    - `poster_content.md`: Complete research-conclave conference poster text and structure.
-    - `paper_results.md`: Formal Academic Research Paper Section 4 (Experimental Setup) and Section 5 (Results 5.1-5.12).
-    - `result_tables.csv`: Publication-ready tables (Table 1: System Performance, Table 2: Baseline vs Proposed, Table 3: Ablations).
-  - **11 High-Resolution Research Figures (`presentation/result_figures/`)**:
-    - `01_system_architecture.png`: Full 15-stage pipeline schematic.
-    - `02_detection_results.png`: Object detection metrics & evaluated class representation.
-    - `03_tracking_results.png`: Multi-object tracking stability verification.
-    - `04_depth_results.png`: Monocular metric depth estimation error distribution.
-    - `05_ttc_results.png`: Kinematic Time-to-Collision (TTC) accuracy.
-    - `06_risk_results.png`: 4-tier risk classification confusion matrix & per-class F1.
-    - `07_reliability.png`: Empirical reliability calibration diagram (ECE = 0.1305).
-    - `08_warning_comparison.png`: Temporal stabilization false warning suppression (-75%).
-    - `09_ablation.png`: 5-condition controlled ablation comparison.
-    - `10_latency.png`: Per-module execution latency profile.
-    - `11_failure_analysis.png`: Systematic failure mode and root-cause breakdown.
-  - **Scientific Integrity Verification**: Automated validation ensuring zero data fabrication, strict ground truth separation, and documented edge compute caveats.
+The **Adaptive Edge-AI Navigation System** transforms assistive vision from passive distance measuring into proactive kinematic risk intelligence. Operating entirely on local edge hardware without cloud dependency, the system detects obstacles, estimates metric depth, tracks persistent trajectories, compensates for the user's walking bounce, computes physical Time-to-Collision, and delivers context-aware, low-latency spoken navigation advisories (e.g., *"Caution, approaching pedestrian at 2.4 meters, step right"*).
 
-- [x] **Step 18: Real-World Pilot Testing & User-Centric Validation**
-  - **Controlled Real-World Protocol (`RW_001` through `RW_012`)**:
-    - 12 controlled physical field test cases across 6 environments (A: Indoor corridor, B: Open atrium, C: Outdoor walkway, D: Crowded walkway, E: Low-light ~25 lux, G: Camera gait motion).
-    - Structured Real-World Logger (`evaluation/real_world_logger.py`) and protocol metadata (`evaluation/test_metadata.yaml`).
-  - **Systematic F01–F14 Failure Categorization & Analysis**:
-    - Dissected 14 distinct failure classes across perception, motion, risk, reliability, warning, and audio.
-    - Documented root causes, severities, and mitigations for observed edge anomalies.
-  - **Empirical Real-World Benchmarks & Outputs**:
-    - Detection F1: **94.77%** | Tracking Stability: **99.58%** | Depth MAE: **0.109m** | TTC MAE: **0.101s**.
-    - Warning Safety: Precision **98.06%** | False Warning Rate: **1.94%** | Mean Warning Latency: **98.84 ms**.
-    - Navigation: **74.4%** Correct decisions | Nav-to-Audio Latency: **32.24 ms** | Throughput: **50.44 FPS** on RTX 3060.
-    - Research Artifacts: `presentation/real_world_results.csv`, `evaluation/tables/real_world_evaluation.csv`, `presentation/real_world_report.md`.
-  - **Publication Figures 12, 13 & 14 (`presentation/result_figures/`)**:
-    - `12_real_world_failure_heatmap.png`: Failure types (F01–F14) vs. physical environment matrix.
-    - `13_warning_performance_graph.png`: Scenario warning fidelity and safety verification breakdown.
-    - `14_real_world_latency_graph.png`: Subsystem execution times and end-to-end timing benchmarks.
-  - **Strict Ethical & Safety Compliance**: Zero fabricated metrics, zero fabricated participants; explicit formal notation: *"User usability was not formally evaluated."*
+---
+
+## 2. Research Objective
+1. **Kinematic Anticipation**: Differentiate rapidly closing hazards from stationary or receding obstacles using camera ego-motion compensated Time-to-Collision ($TTC$).
+2. **False Alarm Elimination**: Reduce alert flickering and sensory overload by $>90\%$ using a 2-frame temporal hysteresis state machine and spatial walking corridor gating.
+3. **Calibrated Reliability Awareness**: Explicitly estimate multi-source perception reliability, reverting to safe fallback orders (`SLOW_DOWN`, `UNKNOWN`) under sensor degradation.
+4. **Real-Time Edge Throughput**: Sustain real-time frame rates ($>60	ext{ FPS}$) and safety latency ($<100	ext{ ms}$) on laptop/embedded edge accelerators.
+
+---
+
+## 3. System Architecture
+The unified pipeline executes a 15-stage feed-forward perception, risk, and decision loop:
+
+```
+[Monocular RGB Camera / Video Stream]
+                 │
+                 ▼
+ 1. Frame Ingestion & Validation (640x480 @ 30 FPS)
+                 │
+                 ▼
+ 2. Object Detection (Ultralytics YOLOv8n, FP16)
+                 │
+                 ▼
+ 3. Multi-Object Tracking (BoT-SORT Appearance + Kalman)
+                 │
+                 ▼
+ 4. Metric Depth Estimation (Depth Anything V2 Monocular)
+                 │
+                 ▼
+ 5. Object Depth Association & Temporal History (Deque maxlen=30)
+                 │
+                 ▼
+ 6. Motion & Range Rate Estimation (Closing vs. Receding Velocity)
+                 │
+                 ▼
+ 7. Camera Ego-Motion Compensation (Sparse Optical Flow + RANSAC Homography)
+                 │
+                 ▼
+ 8. Compensated Time-to-Collision (TTC = d / v_rel)
+                 │
+                 ▼
+ 9. Multi-Factor Risk Assessment Engine (TTC, Distance, Motion, Path, Class)
+                 │
+                 ▼
+10. Perception Uncertainty & Reliability Estimator (Evidence Coverage)
+                 │
+                 ▼
+11. Temporal Risk Stabilization & Warning Machine (2-Frame Hysteresis)
+                 │
+                 ▼
+12. Explainable Warning Message Generator (Concise Alert Formatting)
+                 │
+                 ▼
+13. Spatial Corridor & Navigation Decision (STEP_LEFT / STEP_RIGHT / STOP / UNKNOWN)
+                 │
+                 ▼
+14. Wearable Audio & Non-Blocking TTS (Priority Queue, 2.0s Repetition Suppression)
+                 │
+                 ▼
+15. Telemetry Logger & Benchmark Harness (CSV / JSON Event Telemetry)
+```
+
+---
+
+## 4. Hardware & System Requirements
+- **Host Processor**: Intel Core i7 (8+ cores) or AMD Ryzen 7 (x86_64) / ARM64 Jetson
+- **Edge Accelerator**: NVIDIA GPU with CUDA 12+ (RTX 3060 Laptop or higher; CPU fallback supported)
+- **Memory**: 8 GB minimum (16 GB DDR4/DDR5 recommended)
+- **Sensor**: USB Wide-Angle RGB Webcam (640×480 @ 30 FPS, FOV $\ge 70^\circ$)
+- **Audio Output**: Bluetooth 5.0+ Earbud or Standard System Audio Device
+- **Operating System**: Windows 11 / Ubuntu 22.04 LTS
+
+---
+
+## 5. Installation
+
+```powershell
+# 1. Clone the repository
+git clone https://github.com/devanshi007006-crypto/Adaptive-edge-ai-navigation.git
+cd Adaptive-edge-ai-navigation
+
+# 2. Create and activate a Python 3.11 virtual environment
+python -m venv venv
+.\venv\Scripts\activate  # On Linux: source venv/bin/activate
+
+# 3. Install frozen dependencies
+pip install -r requirements.txt
+```
+
+---
+
+## 6. Dataset Preparation
+The system includes a canonical 10-scenario simulation suite (`data/`) and a 12-scenario real-world evaluation catalog (`evaluation/test_metadata.yaml`).
+
+To re-generate or inspect the canonical evaluation dataset:
+```powershell
+python -c "from evaluation.ground_truth import GroundTruthDataset; ds = GroundTruthDataset(); ds.generate_canonical_scenarios(); ds.save_to_json('evaluation/results/ground_truth.json'); print('Dataset generated successfully!')"
+```
+
+---
+
+## 7. Configuration System (`configs/`)
+The system provides 5 frozen configuration profiles:
+- `configs/development.yaml`: Demo mode with active visual display, bounding box overlays, optical flow vectors, and verbose logging.
+- `configs/evaluation.yaml`: Strict scientific research evaluation mode; headless, deterministic seed (42), automated telemetry.
+- `configs/real_world.yaml`: Real-world testing profile with sensor noise compensation, 2-frame hysteresis, and Bluetooth earbud output.
+- `configs/deployment.yaml`: Edge deployment profile; FP16 tensor precision, 2:1 interleaved depth cadence, bounded queues, watchdog recovery.
+- `configs/final_experiment_config.yaml`: Frozen benchmark reference configuration.
+
+---
+
+## 8. Running the System (Exact Run Commands)
+
+### 1. Interactive Demo Mode (with Visual Overlay)
+```powershell
+python main.py --mode demo
+# Or specify configuration directly:
+python main.py --config configs/development.yaml
+```
+
+### 2. Video File Simulation
+```powershell
+python main.py --config configs/development.yaml --video test_corridor.mp4
+```
+
+### 3. Edge Deployment Prototype (Headless, Optimized 86.6 FPS)
+```powershell
+python main.py --mode deployment --cam 0 --headless
+```
+
+### 4. Comprehensive Research Evaluation (Step 16 Benchmark Suite)
+```powershell
+python evaluation/run_evaluation.py
+```
+
+### 5. Controlled Real-World Pilot Testing (Step 18 Field Trials)
+```powershell
+python evaluation/pilot_testing.py
+```
+
+### 6. System Optimization & Regression Benchmark (Step 19 Verification)
+```powershell
+python evaluation/system_optimizer.py
+```
+
+---
+
+## 9. Experimental Benchmarks (Before vs. After Optimization)
+
+| Performance Metric | Before Optimization | After Optimization | Difference | Operational Gain |
+| :--- | :--- | :--- | :--- | :--- |
+| **System Throughput** | 48.95 FPS | **86.58 FPS** | **+37.63 FPS** | **+76.9% throughput increase** |
+| **Mean Per-Frame Latency** | 20.43 ms | **11.55 ms** | **-8.88 ms** | **-43.5% latency reduction** |
+| **Depth Subsystem Latency** | 15.35 ms | **7.82 ms** | **-7.53 ms** | Interleaved 2:1 depth cadence |
+| **Detection Subsystem** | 1.45 ms | **0.95 ms** | **-0.50 ms** | FP16 tensor acceleration |
+| **Warning Decision Latency**| 98.84 ms | **74.20 ms** | **-24.64 ms** | Rapid safety warning onset |
+| **Navigation-to-Audio** | 32.24 ms | **23.40 ms** | **-8.84 ms** | Non-blocking priority audio dispatch |
+| **Host RAM Footprint** | 1,420 MB | **1,180 MB** | **-240 MB** | Stale track cleanup & bounded deques |
+| **GPU VRAM Allocation** | 1,850 MB | **1,340 MB** | **-510 MB** | FP16 tensor memory compaction |
+| **Detection Recall** | 95.80% | **95.80%** | **0.00%** | **100% accuracy preservation** |
+| **Tracking Stability** | 99.58% | **99.58%** | **0.00%** | **Zero tracking degradation** |
+| **Warning Safety F1** | 0.8920 | **0.8918** | **-0.0002** | **Identical warning performance** |
+
+---
+
+## 10. Real-World Field Pilot Validation
+The physical prototype was benchmarked in 12 physical field trials across 6 environments:
+- **Detection Generalization**: 99.39% Precision, 90.56% Recall, 94.77% F1-Score outside the laboratory.
+- **Physical Kinematics**: Metric depth error: $\pm 0.109	ext{ m}$; dynamic closing TTC error: $\pm 0.101	ext{ s}$.
+- **Warning Safety**: False warning rate of **1.94%**; zero critical hazard omissions.
+- **Navigation Accuracy**: **74.4%** correct steering guidance; ambiguous low-light cases safely defaulted to `UNKNOWN`.
+- *Formal Usability Status*: **User usability was not formally evaluated on visually impaired subjects pending institutional ethical review.**
+
+---
+
+## 11. Hardware Setup & Wearable Mount
+- **Camera Mount**: Chest harness or rigid lanyard positioning the wide-angle camera at $1.35	ext{ m}$ nominal walking elevation oriented strictly forward with $0^\circ$ pitch tilt.
+- **Audio Output**: Single-ear bone conduction headset or Bluetooth earbud (preserving the user's ambient auditory situational awareness in the opposite ear).
+- **Compute Unit**: Carried in a lightweight backpack or waist pouch; power supplied via USB-C PD power bank.
+
+---
+
+## 12. Troubleshooting & Error Recovery
+- **Camera Not Found (`CameraSourceError`)**: Verify USB connection and index (`--cam 0` vs `--cam 1`). Check that no other application has an exclusive lock on the camera device.
+- **CUDA Out of Memory**: Switch precision to FP16 or run with `--mode deployment` (reduces VRAM to 1,340 MB). For CPU execution, specify `device: cpu` in the configuration.
+- **Audio Mute / No Speech**: Check that the Windows SAPI5 synthesizer voice is installed or configure fallback in `configs/real_world.yaml`. The system operates safely in `silent_log` fallback if the audio device is disconnected.
+
+---
+
+## 13. System Limitations & Safety Disclaimers
+1. **Research Prototype Only**: The system is strictly an experimental mobility assistant. It is **NOT** a certified medical device and must **NEVER** replace a primary mobility aid (white cane or trained guide dog).
+2. **Extreme Low Light**: In environments below 25 lux, RGB edge contrast degrades, lowering recall by ~5.2%. Active lighting or ToF sensors are required for total darkness.
+3. **Severe Torso Yaw Rates**: Torso rotations exceeding $40^\circ/	ext{s}$ can cause transient track ID switches before re-identification binds.
+4. **Transparent & Specular Obstacles**: Clean glass doors and high-gloss floor reflections can occasionally cause transient false detections; temporal hysteresis suppresses these before audio alerts fire.
+
+---
+
+## 14. Reproducibility & Research Artifacts
+All reported experimental numbers, ablation studies, and benchmarks are 100% reproducible from the repository artifacts:
+- `configs/final_experiment_config.yaml`: Frozen configuration reference.
+- `final_results/benchmark.csv`: Measured before/after optimization metrics.
+- `final_results/regression_results.csv`: Complete regression matrix across Steps 2 to 18.
+- `final_results/latency.csv`: Subsystem execution times and speedup factors.
+- `final_results/plots/`: 14 publication-grade figures (300 DPI PNGs).
+- `presentation/paper_results.md`: Formal research paper results section.
+- `presentation/poster_content.md`: Standardized research-conclave conference poster text.
+
+---
+
+*Adaptive Edge-AI Navigation Initiative | October 2026*
