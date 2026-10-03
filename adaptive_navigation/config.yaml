@@ -112,3 +112,12 @@ evaluation:
     compute_fps: true
     compute_latency: true
     track_decision_distribution: true
+motion:
+  minimum_dt_seconds: 0.01
+  minimum_history_observations: 3
+  smoothing_method: ema
+  smoothing_window: 5
+  stable_threshold: 0.05
+  minimum_depth_reliability: MEDIUM
+  max_valid_time_gap_seconds: 0.5
+  depth_convention: higher_is_closer

@@ -109,6 +109,7 @@ python main.py --dry-run
 - **Step 4**: BoT-SORT Object Tracking (Completed - Ultralytics BoT-SORT with persistent Track IDs)
 - **Step 5**: Depth Estimation (Completed - Depth Anything V2 ViT-S relative depth & object-level depth estimation)
 - **Step 6**: Temporal History Buffer (Completed - Rolling per-track observation buffers with bounded memory, TTL cleanup, and depth preservation)
+- **Step 7**: Velocity, Approach Estimation & Temporal Smoothing (Completed - Image-plane velocity, relative depth rate, EMA smoothing, and approach classification)
 
 ### Running the Integrated Pipeline (Step 5)
 `ash

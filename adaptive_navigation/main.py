@@ -10,7 +10,7 @@ import numpy as np
 # Ensure project root is in sys.path
 sys.path.insert(0, os.path.abspath(os.path.dirname(__file__)))
 
-from temporal import TemporalHistory, ObjectObservation
+from temporal import TemporalHistory, ObjectObservation, MotionEstimator, MotionEstimate
 from perception import (
     CameraSource,
     FramePacket,
@@ -42,7 +42,7 @@ def run_perception_pipeline(
     max_frames: int = None,
     headless: bool = False,
 ) -> None:
-    """Executes Step 6: Camera -> Frame Validation -> YOLO Detection -> BoT-SORT Tracking -> Depth Anything V2 -> Object-Level Depth -> Temporal History Buffer."""
+    """Executes Step 7: Camera -> Frame Validation -> YOLO Detection -> BoT-SORT Tracking -> Depth Anything V2 -> Object-Level Depth -> Temporal History -> Motion Estimation."""
     cam_cfg = config.get("camera", {})
     source = source_override if source_override is not None else cam_cfg.get("source", 0)
     width = cam_cfg.get("width", 640)
@@ -78,20 +78,31 @@ def run_perception_pipeline(
     cleanup_after = temporal_cfg.get("cleanup_after_seconds", 2.0)
     min_obs = temporal_cfg.get("minimum_observations", 3)
 
+    motion_cfg = config.get("motion", {})
+    min_dt = motion_cfg.get("minimum_dt_seconds", 0.01)
+    max_gap = motion_cfg.get("max_valid_time_gap_seconds", 0.5)
+    motion_min_obs = motion_cfg.get("minimum_history_observations", 3)
+    smoothing_method = motion_cfg.get("smoothing_method", "ema")
+    smoothing_window = motion_cfg.get("smoothing_window", 5)
+    stable_thresh = motion_cfg.get("stable_threshold", 0.05)
+    min_depth_rel = motion_cfg.get("minimum_depth_reliability", "MEDIUM")
+    depth_convention = motion_cfg.get("depth_convention", "higher_is_closer")
+
     debug_cfg = config.get("debug", {})
     display_enabled = debug_cfg.get("display", True) and not headless
     show_trails = debug_cfg.get("show_trails", True)
     show_depth_inset = debug_cfg.get("show_depth_inset", True)
-    window_name = debug_cfg.get("window_name", "Adaptive Navigation - YOLO + BoT-SORT + Depth + Temporal")
+    window_name = debug_cfg.get("window_name", "Adaptive Navigation - YOLO + BoT-SORT + Depth + Temporal + Motion")
 
     print("=" * 75)
-    print("STEP 6: CAMERA + YOLO + BoT-SORT + DEPTH ANYTHING V2 + TEMPORAL HISTORY")
+    print("STEP 7: CAMERA + YOLO + BoT-SORT + DEPTH ANYTHING V2 + TEMPORAL HISTORY + MOTION ESTIMATION")
     print("=" * 75)
     print(f"Camera Source:   {source} ({width}x{height} @ {fps} FPS)")
     print(f"YOLO Detector:   {model_name} | Conf: {conf_thresh} | Device: {det_device}")
     print(f"Tracker:         BoT-SORT (buffer={track_buffer}, match={match_thresh})")
     print(f"Depth Model:     Depth Anything V2 ({depth_type}) | Metric: {is_metric} | Stat: {obj_stat}")
     print(f"Temporal Buffer: MaxLen: {history_length} | MaxAge: {max_history_age}s | Cleanup: {cleanup_after}s | MinObs: {min_obs}")
+    print(f"Motion Estimator: Method: {smoothing_method} (win={smoothing_window}) | StableThresh: {stable_thresh} | Convention: {depth_convention}")
     print(f"Display Mode:    {'Active Window' if display_enabled else 'Headless'}")
     print("Press 'q' in preview window or Ctrl+C in terminal to stop.")
     print("-" * 75)
@@ -157,6 +168,18 @@ def run_perception_pipeline(
         minimum_observations=min_obs,
     )
 
+    # 6. Initialize Motion Estimator (Step 7)
+    motion_estimator = MotionEstimator(
+        minimum_dt_seconds=min_dt,
+        max_valid_time_gap_seconds=max_gap,
+        minimum_history_observations=motion_min_obs,
+        smoothing_method=smoothing_method,
+        smoothing_window=smoothing_window,
+        stable_threshold=stable_thresh,
+        minimum_depth_reliability=min_depth_rel,
+        depth_convention=depth_convention,
+    )
+
     frames_processed = 0
     loop_times = []
     last_loop_time = time.perf_counter()
@@ -204,6 +227,11 @@ def run_perception_pipeline(
             ]
             temporal_history.update(observations, current_timestamp=packet.timestamp)
 
+            # Stage 6: Estimate Velocity, Depth Rate, Approach State, and Temporal Smoothing
+            t_motion_start = time.perf_counter()
+            motion_estimates: dict[int, MotionEstimate] = motion_estimator.estimate_all(temporal_history)
+            motion_latency_ms = (time.perf_counter() - t_motion_start) * 1000.0
+
             frames_processed += 1
 
             # Overall loop FPS
@@ -250,7 +278,14 @@ def run_perception_pipeline(
                     depth_str = f"{obj.depth_value:.2f} (rel)" if obj.depth_valid else "N/A"
                     label = f"ID: {obj.track_id} | {obj.class_name} | depth: {depth_str}"
                     hist_len = temporal_history.get_length(obj.track_id)
-                    sub_label = f"conf: {obj.confidence:.2f} | rel: {obj.depth_reliability} | hist: {hist_len}f"
+                    m_est = motion_estimates.get(obj.track_id)
+                    if m_est and m_est.motion_valid:
+                        speed_str = f"{m_est.smoothed_speed:.0f}px/s"
+                        state_str = m_est.approach_state
+                    else:
+                        speed_str = "-- px/s"
+                        state_str = "UNKNOWN"
+                    sub_label = f"spd: {speed_str} | {state_str} | hist: {hist_len}f"
 
                     cv2.putText(display_frame, label, (x1, max(20, y1 - 22)), cv2.FONT_HERSHEY_SIMPLEX, 0.52, (255, 255, 255), 2)
                     cv2.putText(display_frame, sub_label, (x1, max(36, y1 - 6)), cv2.FONT_HERSHEY_SIMPLEX, 0.45, (0, 255, 255), 1)
@@ -268,7 +303,7 @@ def run_perception_pipeline(
 
                 # HUD Statistics
                 overlay_top = f"Frame: {packet.frame_index} | Tracks: {len(object_depths)} | Loop FPS: {overall_fps:.1f}"
-                overlay_sub = f"Det: {det_latency_ms:.0f}ms | Track: {track_latency_ms:.0f}ms | Depth: {depth_latency_ms:.0f}ms"
+                overlay_sub = f"Det:{det_latency_ms:.0f}ms | Trk:{track_latency_ms:.0f}ms | Dep:{depth_latency_ms:.0f}ms | Mot:{motion_latency_ms:.1f}ms"
                 cv2.putText(display_frame, overlay_top, (10, 25), cv2.FONT_HERSHEY_SIMPLEX, 0.65, (255, 255, 0), 2)
                 cv2.putText(display_frame, overlay_sub, (10, 52), cv2.FONT_HERSHEY_SIMPLEX, 0.65, (255, 255, 0), 2)
 
