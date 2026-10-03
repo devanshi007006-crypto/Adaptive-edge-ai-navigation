@@ -1,0 +1,127 @@
+# Step 18: Real-World Pilot Testing & User-Centric Validation Metadata
+# Controlled test protocol configuration - Research prototype testing
+
+metadata_version: "1.0"
+date_created: "2026-10-03"
+system_version: "v1.2.0-pilot"
+compliance: "Controlled scenario testing, zero-fabrication protocol"
+
+hardware_configuration:
+  compute_platform: "Intel Core i7-12700H @ 2.7GHz / 16GB DDR5 RAM"
+  edge_accelerator: "NVIDIA GeForce RTX 3060 Laptop GPU (CUDA 12.1 fallback CPU supported)"
+  camera_module: "USB Wide-Angle RGB Sensor (640x480 resolution @ 30 FPS, FOV: 78° H)"
+  audio_interface: "Bluetooth 5.2 Low-Latency Wearable Earbud / System Audio Fallback"
+  wearable_mount: "Chest / Lanyard Rig at 1.35m nominal walking elevation"
+
+software_stack:
+  python: "3.11.9"
+  torch: "2.1.2+cu121"
+  ultralytics_yolo: "8.1.0 (YOLOv8n default)"
+  opencv: "4.8.1"
+  tts_engine: "pyttsx3 (SAPI5 on Windows / eSpeak fallback)"
+
+privacy_and_safety_protocol:
+  no_personal_identifiable_information: true
+  no_facial_recognition_stored: true
+  no_voice_recording_stored: true
+  participant_hazard_exposure: "STRICTLY_PROHIBITED"
+  test_environment_safety: "Controlled, supervised transit zones only"
+  navigation_role: "Experimental secondary advisory prototype; NOT primary mobility aid"
+
+environments:
+  A:
+    name: "Indoor corridor"
+    description: "Enclosed university hallway with linoleum flooring, lockers, wall boundaries, and standard indoor fluorescent illumination (~350 lux)."
+    hazard_types: ["doors", "trash_cans", "pedestrians", "pillars"]
+  B:
+    name: "Indoor open area"
+    description: "Spacious lobby / atrium floor with high ceiling, diffused natural illumination, wide walking space, and dispersed furniture (~450 lux)."
+    hazard_types: ["tables", "chairs", "pillars", "dispersed_people"]
+  C:
+    name: "Outdoor walkway"
+    description: "Pedestrian-only paved asphalt / concrete walkway bordered by curbs and grass patches under overcast daylight (~1200 lux)."
+    hazard_types: ["bollards", "benches", "strollers", "pedestrians"]
+  D:
+    name: "Crowded walkway"
+    description: "Semi-dense pedestrian corridor with multiple dynamic individuals moving in bi-directional flows (~800 lux)."
+    hazard_types: ["multiple_pedestrians", "cross_traffic", "dynamic_occlusions"]
+  E:
+    name: "Low-light environment"
+    description: "Dim indoor corridor / evening transition space with low ambient illumination (~25 lux)."
+    hazard_types: ["stationary_obstacles", "dimly_lit_pedestrians"]
+  F:
+    name: "Strong-light environment"
+    description: "Outdoor courtyard with direct midday sunlight, high contrast, strong cast shadows, and occasional sensor lens flare (~8500 lux)."
+    hazard_types: ["high_contrast_hazards", "shadow_edges", "approaching_pedestrians"]
+  G:
+    name: "Camera-motion environment"
+    description: "Dynamic walking gait inducing continuous cyclic pitch (±4°), roll (±2.5°), and vertical displacement (±5cm) at 1.1 m/s nominal speed."
+    hazard_types: ["all_obstacle_types_under_gait_jitter"]
+  H:
+    name: "Multiple-object environment"
+    description: "Complex mixed zone featuring both static obstacles (cones/boxes) and dynamic crossing/approaching agents."
+    hazard_types: ["clustered_obstacles", "compound_hazards"]
+
+scenarios:
+  SCENARIO_1:
+    name: "Static obstacle"
+    description: "Stationary obstacle (box/chair) centered directly in user walking path at 3.5m initial distance."
+    target_risk: "MEDIUM -> HIGH as distance decreases"
+  SCENARIO_2:
+    name: "Person crossing the path"
+    description: "Pedestrian crossing perpendicular to walking path from left to right at 3.0m distance, 1.2 m/s."
+    target_risk: "Transient MEDIUM -> CLEAR once crossed"
+  SCENARIO_3:
+    name: "Person approaching the camera"
+    description: "Pedestrian walking head-on towards user along centerline from 6.0m to 1.5m at relative closing speed 2.2 m/s."
+    target_risk: "HIGH / CRITICAL (TTC < 2.0s)"
+  SCENARIO_4:
+    name: "Person moving away"
+    description: "Pedestrian walking ahead in same direction at 1.2 m/s from 2.5m opening to 4.5m."
+    target_risk: "LOW / NONE (receding motion)"
+  SCENARIO_5:
+    name: "Multiple obstacles"
+    description: "Left stationary cone at 2.5m, approaching pedestrian at 4.0m on right."
+    target_risk: "HIGH on nearest hazard with spatial differentiation"
+  SCENARIO_6:
+    name: "Obstacle partially occluded"
+    description: "Stationary hazard partially hidden behind corridor pillar, becoming visible upon approach."
+    target_risk: "LOW initially -> escalates to CAUTION upon unmasking"
+  SCENARIO_7:
+    name: "Obstacle entering the walking corridor"
+    description: "Pedestrian stepping out from a doorway or lateral margin into user corridor."
+    target_risk: "Abrupt transition from OUT_OF_PATH to IN_PATH (CAUTION/CRITICAL)"
+  SCENARIO_8:
+    name: "Obstacle leaving the walking corridor"
+    description: "Pedestrian initially blocking corridor who steps aside into adjacent doorway/margin."
+    target_risk: "De-escalates from CRITICAL to CLEAR with hysteresis stabilization"
+  SCENARIO_9:
+    name: "Camera movement"
+    description: "Wearable camera undergo cyclic gait wobble and brisk operator turn (yaw rate up to 45 deg/s)."
+    target_risk: "Ego-motion compensation active; reliability adjusted"
+  SCENARIO_10:
+    name: "Low-light condition"
+    description: "Stationary obstacle and slowly approaching individual under 25 lux illumination."
+    target_risk: "Low-confidence perception; reliability flagged as LOW/MEDIUM"
+  SCENARIO_11:
+    name: "Crowded environment"
+    description: "3 to 4 individuals simultaneously in view at varying lateral positions."
+    target_risk: "Corridor filtering prioritizes central hazard; audio suppression prevents chatter"
+  SCENARIO_12:
+    name: "No relevant obstacle"
+    description: "Clear hallway / unobstructed walkway path across 50 frames."
+    target_risk: "NONE / SAFE (silence maintained, no false warnings)"
+
+test_cases:
+  RW_001: { environment: "A", scenario: "SCENARIO_1", description: "Indoor corridor with static box" }
+  RW_002: { environment: "A", scenario: "SCENARIO_2", description: "Indoor corridor with crossing person" }
+  RW_003: { environment: "B", scenario: "SCENARIO_3", description: "Indoor open atrium with approaching person" }
+  RW_004: { environment: "B", scenario: "SCENARIO_4", description: "Indoor open area with receding person" }
+  RW_005: { environment: "C", scenario: "SCENARIO_5", description: "Outdoor walkway with multiple obstacles" }
+  RW_006: { environment: "A", scenario: "SCENARIO_6", description: "Indoor corridor with pillar-occluded obstacle" }
+  RW_007: { environment: "B", scenario: "SCENARIO_7", description: "Indoor open area with obstacle entering corridor" }
+  RW_008: { environment: "C", scenario: "SCENARIO_8", description: "Outdoor walkway with obstacle leaving corridor" }
+  RW_009: { environment: "G", scenario: "SCENARIO_9", description: "Walking gait pitch/roll camera movement" }
+  RW_010: { environment: "E", scenario: "SCENARIO_10", description: "Low-light hallway obstacle" }
+  RW_011: { environment: "D", scenario: "SCENARIO_11", description: "Crowded walkway multiple pedestrians" }
+  RW_012: { environment: "B", scenario: "SCENARIO_12", description: "Clear unobstructed indoor walkway" }

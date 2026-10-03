@@ -1,0 +1,13 @@
+Test ID,Environment,Scenario,Objects,Risk,Reliability,Warning,Navigation,Result,Failure Type
+RW_001,A (Indoor corridor),Static obstacle,box,HIGH / CRITICAL,HIGH,DISPATCHED,STEP_LEFT,PASSED,None
+RW_002,A (Indoor corridor),Person crossing the path,person,HIGH / CRITICAL,HIGH,DISPATCHED,CLEAR,PASSED,None
+RW_003,B (Indoor open area),Person approaching the camera,person,HIGH / CRITICAL,HIGH,DISPATCHED,STEP_RIGHT,PASSED,None
+RW_004,B (Indoor open area),Person moving away,person,LOW / NONE,HIGH,SILENT,CLEAR,PASSED,None
+RW_005,C (Outdoor walkway),Multiple obstacles,mixed,HIGH / CRITICAL,HIGH,DISPATCHED,STOP,PASSED,None
+RW_006,A (Indoor corridor),Obstacle partially occluded,chair,HIGH / CRITICAL,LOW,DISPATCHED,STEP_RIGHT,PASSED,F04
+RW_007,B (Indoor open area),Obstacle entering walking corridor,person,HIGH / CRITICAL,HIGH,DISPATCHED,STEP_LEFT,PASSED,None
+RW_008,C (Outdoor walkway),Obstacle leaving walking corridor,person,LOW / NONE,HIGH,SILENT,CLEAR,PASSED,None
+RW_009,G (Camera-motion environment),Camera movement (gait pitch/roll),bollard,HIGH / CRITICAL,HIGH,DISPATCHED,STEP_LEFT,PASSED,F03
+RW_010,E (Low-light environment),Low-light condition (~25 lux),person,HIGH / CRITICAL,LOW,DISPATCHED,UNKNOWN,MARGINAL,F01
+RW_011,D (Crowded walkway),Crowded environment (4 pedestrians),pedestrians,HIGH / CRITICAL,LOW,DISPATCHED,STOP,PASSED,None
+RW_012,B (Indoor open area),No relevant obstacle (clear pathway),none,LOW / NONE,HIGH,SILENT,CLEAR,PASSED,F02

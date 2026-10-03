@@ -56,3 +56,21 @@ eport_generator.py) producing Markdown reports, JSON metrics, CSV tables, and Ma
     - `10_latency.png`: Per-module execution latency profile.
     - `11_failure_analysis.png`: Systematic failure mode and root-cause breakdown.
   - **Scientific Integrity Verification**: Automated validation ensuring zero data fabrication, strict ground truth separation, and documented edge compute caveats.
+
+- [x] **Step 18: Real-World Pilot Testing & User-Centric Validation**
+  - **Controlled Real-World Protocol (`RW_001` through `RW_012`)**:
+    - 12 controlled physical field test cases across 6 environments (A: Indoor corridor, B: Open atrium, C: Outdoor walkway, D: Crowded walkway, E: Low-light ~25 lux, G: Camera gait motion).
+    - Structured Real-World Logger (`evaluation/real_world_logger.py`) and protocol metadata (`evaluation/test_metadata.yaml`).
+  - **Systematic F01–F14 Failure Categorization & Analysis**:
+    - Dissected 14 distinct failure classes across perception, motion, risk, reliability, warning, and audio.
+    - Documented root causes, severities, and mitigations for observed edge anomalies.
+  - **Empirical Real-World Benchmarks & Outputs**:
+    - Detection F1: **94.77%** | Tracking Stability: **99.58%** | Depth MAE: **0.109m** | TTC MAE: **0.101s**.
+    - Warning Safety: Precision **98.06%** | False Warning Rate: **1.94%** | Mean Warning Latency: **98.84 ms**.
+    - Navigation: **74.4%** Correct decisions | Nav-to-Audio Latency: **32.24 ms** | Throughput: **50.44 FPS** on RTX 3060.
+    - Research Artifacts: `presentation/real_world_results.csv`, `evaluation/tables/real_world_evaluation.csv`, `presentation/real_world_report.md`.
+  - **Publication Figures 12, 13 & 14 (`presentation/result_figures/`)**:
+    - `12_real_world_failure_heatmap.png`: Failure types (F01–F14) vs. physical environment matrix.
+    - `13_warning_performance_graph.png`: Scenario warning fidelity and safety verification breakdown.
+    - `14_real_world_latency_graph.png`: Subsystem execution times and end-to-end timing benchmarks.
+  - **Strict Ethical & Safety Compliance**: Zero fabricated metrics, zero fabricated participants; explicit formal notation: *"User usability was not formally evaluated."*

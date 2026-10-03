@@ -1,5 +1,5 @@
 """
-Evaluation, Benchmarking & Experimental Validation Suite (Step 16).
+Evaluation, Benchmarking & Experimental Validation Suite (Step 16-18).
 """
 
 from .ground_truth import (
@@ -29,6 +29,7 @@ from .benchmark import (
 )
 from .report_generator import ResearchReportGenerator
 from .logger import ExperimentLogger, ExperimentEventRecord, NavigationLogger, FrameLogRecord
+from .real_world_logger import RealWorldLogger, RealWorldEventRecord
 
 __all__ = [
     "GroundTruthBBox",
@@ -51,4 +52,6 @@ __all__ = [
     "ExperimentEventRecord",
     "NavigationLogger",
     "FrameLogRecord",
+    "RealWorldLogger",
+    "RealWorldEventRecord",
 ]
