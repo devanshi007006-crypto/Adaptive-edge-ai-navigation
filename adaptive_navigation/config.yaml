@@ -97,18 +97,25 @@ navigation:
     clearance_weight: 0.6
     depth_weight: 0.4
 warning:
-  priority_state_machine:
-    candidate_persistence_frames: 3
-    cooldown_seconds: 3.0
-    interrupt_on_escalation: true
-    suppress_p1: true
-  messages:
-    p4_critical: STOP. Obstacle ahead.
-    p3_left: Move right.
-    p3_right: Move left.
-    p3_center: Obstacle in center.
-    p2_medium: Caution. Obstacle nearby.
-    p1_low: Path clear.
+  enabled: true
+  history_length: 10
+  minimum_persistence_frames: 3
+  escalation_frames:
+    caution: 2
+    warning: 3
+    critical: 3
+  deescalation_frames:
+    warning_to_caution: 2
+    caution_to_no_warning: 3
+    critical_to_warning: 2
+  hysteresis:
+    warning_enter: 0.7
+    warning_exit: 0.55
+    critical_enter: 0.85
+    critical_exit: 0.7
+  lost_track_grace_seconds: 0.5
+  minimum_reliability_for_warning: 0.5
+  minimum_reliability_for_critical: 0.75
 feedback:
   tts:
     enabled: true

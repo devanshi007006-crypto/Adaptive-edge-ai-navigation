@@ -16,3 +16,4 @@ CAMERA -> PERCEPTION (YOLO + BoT-SORT + Depth) -> TEMPORAL (History + Motion + C
 - [x] **Step 9 — Time-to-Collision (TTC) Estimation**: Constant-velocity projection, calibrated metric seconds calculation, and explicit relative closing flags (RELATIVE_DEPTH_ONLY).
 - [x] **Step 10 — Multi-Factor Risk Assessment Engine**: Multi-criteria hazard scoring fusing TTC, depth, approach dynamics, path corridor relevance, class criticality weights, and evidence coverage.
 - [x] **Step 11 — Uncertainty & Reliability Estimation Layer**: 8-component runtime evidence quality evaluation, composite heuristic reliability and uncertainty indicators, consistency conflict detection, and global system health monitoring.
+- [x] **Step 12 — Temporal Risk Stabilization & Warning Decision State Machine**: Per-track risk history, persistence counters, hysteresis thresholds, reliability gating, track disappearance grace period, and global threat priority selector.
