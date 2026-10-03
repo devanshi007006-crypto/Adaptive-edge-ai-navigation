@@ -1,0 +1,7 @@
+Experiment,Condition A,Condition B,Metric,Val A,Val B,Abs Diff,Rel Diff %,Statistical Test,p-value,Sample Size
+Temporal Stabilization Ablation,Raw Warnings (No Stabilization),Temporally Stabilized (Step 12),False Warning Count,8.0,2.0,-6.0,-75.0,Paired Wilcoxon Signed-Rank,0.0143,100
+Temporal Stabilization Ablation,Raw Warnings (No Stabilization),Temporally Stabilized (Step 12),Warning State Flutter Count,13.0,9.0,-4.0,-30.77,Paired Count Difference,0.0143,100
+TTC Ablation,Risk Without TTC,Risk With TTC,Mean Risk Score on Fast Closing Targets,0.6222,0.8861,0.2639,42.41,Paired Student t-test,0.0000,36
+Camera Motion Compensation Ablation,Uncompensated Raw Motion,Compensated Motion (Step 8),Closing Velocity MAE,0.096,0.0369,-0.059,-61.52,Wilcoxon Signed-Rank Test,0.2025,130
+Reliability Gating Ablation,Direct Warning (No Reliability Gate),Reliability-Gated Warning (Step 11-13),False Warnings in High-Uncertainty Scenes,71.0,71.0,0.0,0.0,Count Comparison,1.0000,130
+Full System Benchmark,Baseline (Detection + Simple Proximity),Proposed (15-Stage Adaptive Navigation),End-to-End Decision Accuracy,0.35,0.94,0.59,168.57,Paired t-test,0.0000,100

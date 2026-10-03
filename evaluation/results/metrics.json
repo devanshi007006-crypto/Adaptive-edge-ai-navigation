@@ -1,0 +1,561 @@
+{
+  "dataset_quality": {
+    "total_samples": 100,
+    "valid_samples": 100,
+    "missing_labels": 0,
+    "invalid_frames": 0,
+    "skipped_samples": 0,
+    "class_distribution": {
+      "chair": 10,
+      "person": 60,
+      "car": 10,
+      "trash bin": 10,
+      "bench": 10,
+      "pole": 10,
+      "bicycle": 10,
+      "dog": 10
+    },
+    "class_imbalance_ratio": 6.0,
+    "available_annotations": {
+      "detection": true,
+      "tracking": true,
+      "depth": true,
+      "motion": true,
+      "ttc": true,
+      "risk": true,
+      "warning": true,
+      "navigation": true
+    },
+    "unavailable_annotations": []
+  },
+  "metrics": {
+    "detection_precision": {
+      "name": "Detection Precision",
+      "evaluated": true,
+      "value": 1.0,
+      "unit": "ratio",
+      "details": {
+        "tp": 130,
+        "fp": 0,
+        "fn": 0
+      },
+      "reason_if_not_evaluated": null
+    },
+    "detection_recall": {
+      "name": "Detection Recall",
+      "evaluated": true,
+      "value": 1.0,
+      "unit": "ratio",
+      "details": {
+        "tp": 130,
+        "fp": 0,
+        "fn": 0
+      },
+      "reason_if_not_evaluated": null
+    },
+    "detection_f1": {
+      "name": "Detection F1",
+      "evaluated": true,
+      "value": 1.0,
+      "unit": "ratio",
+      "details": {},
+      "reason_if_not_evaluated": null
+    },
+    "mean_iou": {
+      "name": "Mean IoU",
+      "evaluated": true,
+      "value": 0.9576,
+      "unit": "ratio",
+      "details": {
+        "evaluated_tps": 130
+      },
+      "reason_if_not_evaluated": null
+    },
+    "tracking_stability": {
+      "name": "Tracking Stability",
+      "evaluated": false,
+      "value": null,
+      "unit": "",
+      "details": {},
+      "reason_if_not_evaluated": "No valid track IDs."
+    },
+    "depth_mae": {
+      "name": "Depth MAE",
+      "evaluated": true,
+      "value": 0.0962,
+      "unit": "meters",
+      "details": {
+        "sample_size": 130
+      },
+      "reason_if_not_evaluated": null
+    },
+    "depth_rmse": {
+      "name": "Depth RMSE",
+      "evaluated": true,
+      "value": 0.1311,
+      "unit": "meters",
+      "details": {},
+      "reason_if_not_evaluated": null
+    },
+    "depth_median_ae": {
+      "name": "Depth Median Absolute Error",
+      "evaluated": true,
+      "value": 0.0662,
+      "unit": "meters",
+      "details": {},
+      "reason_if_not_evaluated": null
+    },
+    "depth_relative_error": {
+      "name": "Depth Relative Error",
+      "evaluated": true,
+      "value": 0.0265,
+      "unit": "ratio",
+      "details": {},
+      "reason_if_not_evaluated": null
+    },
+    "ttc_mae": {
+      "name": "TTC MAE",
+      "evaluated": true,
+      "value": 0.1285,
+      "unit": "seconds",
+      "details": {
+        "sample_size": 46
+      },
+      "reason_if_not_evaluated": null
+    },
+    "ttc_rmse": {
+      "name": "TTC RMSE",
+      "evaluated": true,
+      "value": 0.1489,
+      "unit": "seconds",
+      "details": {},
+      "reason_if_not_evaluated": null
+    },
+    "ttc_median_error": {
+      "name": "TTC Median Error",
+      "evaluated": true,
+      "value": 0.1299,
+      "unit": "seconds",
+      "details": {},
+      "reason_if_not_evaluated": null
+    },
+    "ttc_within_0.5s_accuracy": {
+      "name": "TTC Accuracy (within \u00b10.5s)",
+      "evaluated": true,
+      "value": 1.0,
+      "unit": "ratio",
+      "details": {},
+      "reason_if_not_evaluated": null
+    },
+    "risk_accuracy": {
+      "name": "Risk Accuracy",
+      "evaluated": true,
+      "value": 0.9538,
+      "unit": "ratio",
+      "details": {
+        "total_evaluated": 130,
+        "correct": 124
+      },
+      "reason_if_not_evaluated": null
+    },
+    "risk_macro_f1": {
+      "name": "Risk Macro F1",
+      "evaluated": true,
+      "value": 0.955,
+      "unit": "ratio",
+      "details": {
+        "per_class": {
+          "LOW": {
+            "precision": 1.0,
+            "recall": 0.9487,
+            "f1": 0.9737,
+            "support": 39
+          },
+          "MEDIUM": {
+            "precision": 0.8909,
+            "recall": 1.0,
+            "f1": 0.9423,
+            "support": 49
+          },
+          "HIGH": {
+            "precision": 1.0,
+            "recall": 0.9,
+            "f1": 0.9474,
+            "support": 30
+          },
+          "CRITICAL": {
+            "precision": 1.0,
+            "recall": 0.9167,
+            "f1": 0.9565,
+            "support": 12
+          }
+        }
+      },
+      "reason_if_not_evaluated": null
+    },
+    "risk_confusion_matrix": {
+      "name": "Risk Confusion Matrix",
+      "evaluated": true,
+      "value": null,
+      "unit": "matrix",
+      "details": {
+        "matrix": {
+          "LOW": {
+            "LOW": 37,
+            "MEDIUM": 2,
+            "HIGH": 0,
+            "CRITICAL": 0
+          },
+          "MEDIUM": {
+            "LOW": 0,
+            "MEDIUM": 49,
+            "HIGH": 0,
+            "CRITICAL": 0
+          },
+          "HIGH": {
+            "LOW": 0,
+            "MEDIUM": 3,
+            "HIGH": 27,
+            "CRITICAL": 0
+          },
+          "CRITICAL": {
+            "LOW": 0,
+            "MEDIUM": 1,
+            "HIGH": 0,
+            "CRITICAL": 11
+          }
+        },
+        "classes": [
+          "LOW",
+          "MEDIUM",
+          "HIGH",
+          "CRITICAL"
+        ]
+      },
+      "reason_if_not_evaluated": null
+    },
+    "expected_calibration_error": {
+      "name": "Expected Calibration Error (ECE)",
+      "evaluated": true,
+      "value": 0.1305,
+      "unit": "ratio",
+      "details": {
+        "buckets": [
+          {
+            "range": "[0.00-0.25]",
+            "count": 0,
+            "confidence": 0.0,
+            "accuracy": 0.0,
+            "calibration_gap": 0.0
+          },
+          {
+            "range": "[0.25-0.50]",
+            "count": 15,
+            "confidence": 0.379,
+            "accuracy": 0.7333,
+            "calibration_gap": 0.3544
+          },
+          {
+            "range": "[0.50-0.75]",
+            "count": 5,
+            "confidence": 0.5347,
+            "accuracy": 0.2,
+            "calibration_gap": 0.3347
+          },
+          {
+            "range": "[0.75-1.00]",
+            "count": 110,
+            "confidence": 0.8548,
+            "accuracy": 0.9455,
+            "calibration_gap": 0.0907
+          }
+        ]
+      },
+      "reason_if_not_evaluated": null
+    },
+    "warning_precision": {
+      "name": "Warning Precision",
+      "evaluated": true,
+      "value": 0.9583,
+      "unit": "ratio",
+      "details": {
+        "tp": 46,
+        "fp": 2,
+        "fn": 0,
+        "tn": 52
+      },
+      "reason_if_not_evaluated": null
+    },
+    "warning_recall": {
+      "name": "Warning Recall",
+      "evaluated": true,
+      "value": 1.0,
+      "unit": "ratio",
+      "details": {
+        "tp": 46,
+        "fp": 2,
+        "fn": 0,
+        "tn": 52
+      },
+      "reason_if_not_evaluated": null
+    },
+    "warning_f1": {
+      "name": "Warning F1",
+      "evaluated": true,
+      "value": 0.9787,
+      "unit": "ratio",
+      "details": {},
+      "reason_if_not_evaluated": null
+    },
+    "false_warning_rate": {
+      "name": "False Warning Rate",
+      "evaluated": true,
+      "value": 0.037,
+      "unit": "ratio",
+      "details": {},
+      "reason_if_not_evaluated": null
+    },
+    "missed_warning_rate": {
+      "name": "Missed Warning Rate",
+      "evaluated": true,
+      "value": 0.0,
+      "unit": "ratio",
+      "details": {},
+      "reason_if_not_evaluated": null
+    },
+    "navigation_accuracy": {
+      "name": "Navigation Accuracy",
+      "evaluated": true,
+      "value": 0.94,
+      "unit": "ratio",
+      "details": {
+        "total_evaluated": 100,
+        "correct": 94
+      },
+      "reason_if_not_evaluated": null
+    },
+    "navigation_macro_f1": {
+      "name": "Navigation Macro F1",
+      "evaluated": true,
+      "value": 0.9255,
+      "unit": "ratio",
+      "details": {
+        "per_class": {
+          "CONTINUE": {
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0,
+            "support": 24
+          },
+          "CAUTION": {
+            "precision": 0.625,
+            "recall": 1.0,
+            "f1": 0.7692,
+            "support": 10
+          },
+          "AVOID_LEFT": {
+            "precision": 1.0,
+            "recall": 0.9,
+            "f1": 0.9474,
+            "support": 30
+          },
+          "AVOID_RIGHT": {
+            "precision": 1.0,
+            "recall": 0.92,
+            "f1": 0.9583,
+            "support": 25
+          },
+          "STOP": {
+            "precision": 1.0,
+            "recall": 0.9091,
+            "f1": 0.9524,
+            "support": 11
+          }
+        }
+      },
+      "reason_if_not_evaluated": null
+    },
+    "navigation_confusion_matrix": {
+      "name": "Navigation Confusion Matrix",
+      "evaluated": true,
+      "value": null,
+      "unit": "matrix",
+      "details": {
+        "matrix": {
+          "CONTINUE": {
+            "CONTINUE": 24,
+            "CAUTION": 0,
+            "AVOID_LEFT": 0,
+            "AVOID_RIGHT": 0,
+            "STOP": 0
+          },
+          "CAUTION": {
+            "CONTINUE": 0,
+            "CAUTION": 10,
+            "AVOID_LEFT": 0,
+            "AVOID_RIGHT": 0,
+            "STOP": 0
+          },
+          "AVOID_LEFT": {
+            "CONTINUE": 0,
+            "CAUTION": 3,
+            "AVOID_LEFT": 27,
+            "AVOID_RIGHT": 0,
+            "STOP": 0
+          },
+          "AVOID_RIGHT": {
+            "CONTINUE": 0,
+            "CAUTION": 2,
+            "AVOID_LEFT": 0,
+            "AVOID_RIGHT": 23,
+            "STOP": 0
+          },
+          "STOP": {
+            "CONTINUE": 0,
+            "CAUTION": 1,
+            "AVOID_LEFT": 0,
+            "AVOID_RIGHT": 0,
+            "STOP": 10
+          }
+        },
+        "classes": [
+          "CONTINUE",
+          "CAUTION",
+          "AVOID_LEFT",
+          "AVOID_RIGHT",
+          "STOP"
+        ]
+      },
+      "reason_if_not_evaluated": null
+    }
+  },
+  "latencies": [
+    {
+      "module_name": "Detection (YOLO11n)",
+      "count": 100,
+      "mean_ms": 3.21,
+      "median_ms": 2.5,
+      "min_ms": 2.26,
+      "max_ms": 20.46,
+      "p95_ms": 4.95
+    },
+    {
+      "module_name": "Tracking (BoT-SORT)",
+      "count": 100,
+      "mean_ms": 1.85,
+      "median_ms": 1.54,
+      "min_ms": 1.34,
+      "max_ms": 23.23,
+      "p95_ms": 2.07
+    },
+    {
+      "module_name": "Depth (Depth Anything V2)",
+      "count": 100,
+      "mean_ms": 17.39,
+      "median_ms": 17.28,
+      "min_ms": 17.04,
+      "max_ms": 18.71,
+      "p95_ms": 18.06
+    },
+    {
+      "module_name": "Temporal Buffer",
+      "count": 0,
+      "mean_ms": 0.0,
+      "median_ms": 0.0,
+      "min_ms": 0.0,
+      "max_ms": 0.0,
+      "p95_ms": 0.0
+    },
+    {
+      "module_name": "Motion Estimation",
+      "count": 100,
+      "mean_ms": 1.5,
+      "median_ms": 1.04,
+      "min_ms": 0.58,
+      "max_ms": 46.39,
+      "p95_ms": 1.63
+    },
+    {
+      "module_name": "Camera Compensation",
+      "count": 100,
+      "mean_ms": 1.23,
+      "median_ms": 1.02,
+      "min_ms": 0.7,
+      "max_ms": 11.73,
+      "p95_ms": 1.53
+    },
+    {
+      "module_name": "TTC Calculation",
+      "count": 100,
+      "mean_ms": 1.17,
+      "median_ms": 0.85,
+      "min_ms": 0.4,
+      "max_ms": 27.64,
+      "p95_ms": 1.2
+    },
+    {
+      "module_name": "Risk Engine",
+      "count": 100,
+      "mean_ms": 1.14,
+      "median_ms": 0.83,
+      "min_ms": 0.35,
+      "max_ms": 18.97,
+      "p95_ms": 1.79
+    },
+    {
+      "module_name": "Reliability Layer",
+      "count": 100,
+      "mean_ms": 0.99,
+      "median_ms": 0.71,
+      "min_ms": 0.27,
+      "max_ms": 21.85,
+      "p95_ms": 1.02
+    },
+    {
+      "module_name": "Temporal Warning Machine",
+      "count": 100,
+      "mean_ms": 1.49,
+      "median_ms": 0.71,
+      "min_ms": 0.28,
+      "max_ms": 71.4,
+      "p95_ms": 1.16
+    },
+    {
+      "module_name": "Spatial & Navigation",
+      "count": 100,
+      "mean_ms": 1.81,
+      "median_ms": 0.71,
+      "min_ms": 0.32,
+      "max_ms": 96.09,
+      "p95_ms": 1.28
+    },
+    {
+      "module_name": "Message & Audio Dispatch",
+      "count": 100,
+      "mean_ms": 1.35,
+      "median_ms": 0.73,
+      "min_ms": 0.31,
+      "max_ms": 56.93,
+      "p95_ms": 1.16
+    },
+    {
+      "module_name": "End-to-End Pipeline",
+      "count": 100,
+      "mean_ms": 33.12,
+      "median_ms": 28.78,
+      "min_ms": 26.54,
+      "max_ms": 372.39,
+      "p95_ms": 40.35
+    }
+  ],
+  "resources": {
+    "cpu_percent_mean": 53.3,
+    "cpu_percent_peak": 100.0,
+    "ram_used_mb_mean": 7218.8,
+    "ram_used_mb_peak": 7225.4,
+    "gpu_available": false,
+    "gpu_device_name": "None (CPU Execution)",
+    "gpu_vram_mb_peak": null
+  },
+  "effective_fps": 30.19
+}
