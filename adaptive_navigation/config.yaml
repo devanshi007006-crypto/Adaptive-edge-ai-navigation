@@ -87,15 +87,22 @@ risk:
     bus: 1.3
     truck: 1.3
 navigation:
-  corridor:
-    center_min_ratio: 0.33
-    center_max_ratio: 0.67
-    critical_proximity_thresh: 0.8
+  enabled: true
+  path:
+    enabled: true
+    center_x: 0.5
+    width_ratio: 0.4
+  zones:
+    left_boundary: 0.33
+    right_boundary: 0.66
+  persistence:
+    minimum_frames: 3
+    direction_change_frames: 3
+  minimum_reliability: 0.7
   free_space:
-    grid_rows: 10
-    grid_cols: 10
-    clearance_weight: 0.6
-    depth_weight: 0.4
+    enabled: true
+  safe_direction:
+    require_both_side_analysis: true
 warning:
   enabled: true
   history_length: 10

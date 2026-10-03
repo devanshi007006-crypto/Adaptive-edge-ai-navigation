@@ -15,6 +15,15 @@ from uncertainty.reliability import ReliabilityEstimator, ReliabilityAssessment,
 from warning.state_machine import WarningStateMachine, WarningDecision, GlobalWarningDecision
 from warning.message_generator import WarningMessageGenerator, WarningMessage
 from audio.tts import TTSEngine
+from navigation import (
+    SpatialAnalyzer,
+    SpatialObjectRepresentation,
+    PathGeometryAnalyzer,
+    PathOverlapAssessment,
+    NavigationEngine,
+    NavigationDecision,
+    SceneNavigationState,
+)
 from temporal import (
     TemporalHistory,
     ObjectObservation,
@@ -55,7 +64,7 @@ def run_perception_pipeline(
     max_frames: int = None,
     headless: bool = False,
 ) -> None:
-    """Executes Step 13: Camera -> Frame Validation -> YOLO Detection -> BoT-SORT Tracking -> Depth Anything V2 -> Object-Level Depth -> Temporal History -> Motion Estimation -> Camera Motion Compensation -> TTC Estimation -> Multi-Factor Risk Assessment -> Uncertainty & Reliability -> Warning Decision State Machine -> User-Facing Audio/TTS Layer."""
+    """Executes Step 14: Camera -> Frame Validation -> YOLO Detection -> BoT-SORT Tracking -> Depth Anything V2 -> Object-Level Depth -> Temporal History -> Motion Estimation -> Camera Motion Compensation -> TTC Estimation -> Multi-Factor Risk Assessment -> Uncertainty & Reliability -> Warning Decision State Machine -> Audio/TTS -> Spatial Position & Navigation Decision."""
     cam_cfg = config.get("camera", {})
     source = source_override if source_override is not None else cam_cfg.get("source", 0)
     width = cam_cfg.get("width", 640)
@@ -133,10 +142,10 @@ def run_perception_pipeline(
     display_enabled = debug_cfg.get("display", True) and not headless
     show_trails = debug_cfg.get("show_trails", True)
     show_depth_inset = debug_cfg.get("show_depth_inset", True)
-    window_name = debug_cfg.get("window_name", "Adaptive Navigation - User-Facing Warning & TTS Layer")
+    window_name = debug_cfg.get("window_name", "Adaptive Navigation - Safe Navigation Decision Engine")
 
     print("=" * 75)
-    print("STEP 13: CAMERA + YOLO + BoT-SORT + DEPTH + TEMPORAL + MOTION + CAM COMP + TTC + RISK + UNCERTAINTY + WARNING + TTS")
+    print("STEP 14: CAMERA + YOLO + BoT-SORT + DEPTH + TEMPORAL + MOTION + CAM COMP + TTC + RISK + UNCERTAINTY + WARNING + TTS + NAVIGATION DECISION")
     print("=" * 75)
     print(f"Camera Source:   {source} ({width}x{height} @ {fps} FPS)")
     print(f"YOLO Detector:   {model_name} | Conf: {conf_thresh} | Device: {det_device}")
@@ -272,6 +281,13 @@ def run_perception_pipeline(
     tts_engine = TTSEngine(config)
     print(f"Message Gen:      RepeatInterval: {config.get('audio', {}).get('repeat_interval_seconds', 2.0)}s")
     print(f"TTS Engine:       Backend: {tts_engine.active_backend} | Available: {tts_engine.is_available()}")
+
+    # 13. Initialize Spatial, Path Geometry, and Navigation Engine (Step 14)
+    nav_cfg = config.get("navigation", {})
+    spatial_analyzer = SpatialAnalyzer(nav_cfg)
+    path_geometry_analyzer = PathGeometryAnalyzer(nav_cfg)
+    navigation_engine = NavigationEngine(config)
+    print(f"Navigation:       Enabled: {nav_cfg.get('enabled', True)} | Corridor: {nav_cfg.get('path', {}).get('width_ratio', 0.40)} | MinRel: {nav_cfg.get('minimum_reliability', 0.70)}")
 
     # 9. Initialize Multi-Factor Risk Assessment Engine (Step 10)
     risk_engine = RiskEngine(
@@ -438,6 +454,35 @@ def run_perception_pipeline(
                 tts_engine.speak(warning_message.text, priority=warning_message.priority)
             tts_latency_ms = (time.perf_counter() - t_tts_start) * 1000.0
 
+            # Stage 13: Spatial Position, Path Geometry & Navigation Decision (Step 14)
+            t_nav_start = time.perf_counter()
+            spatial_objects = {}
+            for obj in object_depths:
+                comp_m = compensated_estimates.get(obj.track_id)
+                spatial_objects[obj.track_id] = spatial_analyzer.analyze_object(
+                    track_id=obj.track_id,
+                    bbox=obj.bbox,
+                    frame_width=fw,
+                    frame_height=fh,
+                    horizontal_motion=comp_m.compensated_vx if comp_m else None,
+                    vertical_motion=comp_m.compensated_vy if comp_m else None,
+                )
+            path_assessments = path_geometry_analyzer.assess_all(spatial_objects)
+            avg_rel = (
+                sum(r.reliability_score for r in reliability_assessments.values()) / len(reliability_assessments)
+                if reliability_assessments
+                else 0.90
+            )
+            nav_decisions, scene_nav_state = navigation_engine.evaluate(
+                spatial_objects=spatial_objects,
+                path_assessments=path_assessments,
+                warning_decisions=warning_decisions,
+                global_warning=global_warning,
+                system_reliability_score=avg_rel,
+            )
+            spatial_analyzer.cleanup_stale_tracks([obj.track_id for obj in object_depths])
+            nav_latency_ms = (time.perf_counter() - t_nav_start) * 1000.0
+
             frames_processed += 1
 
             # Overall loop FPS
@@ -470,10 +515,9 @@ def run_perception_pipeline(
                     f"Track: {track_latency_ms:3.0f}ms | "
                     f"Depth: {depth_latency_ms:4.0f}ms | "
                     f"Risk: {risk_latency_ms:3.1f}ms | "
-                    f"Rel: {rel_latency_ms:3.1f}ms | "
-                    f"Warn: {warn_latency_ms:3.1f}ms | "
-                    f"TTS: {tts_latency_ms:3.1f}ms | "
-                    f"Alert: [{global_warning.state}] | {speech_info} | "
+                    f"Nav: {nav_latency_ms:3.1f}ms | "
+                    f"NAV: [{scene_nav_state.navigation_state}](Dir={scene_nav_state.safe_direction}) | "
+                    f"{speech_info} | "
                     f"Objects ({len(object_depths)}): [{depth_info}]"
                 )
 
@@ -564,24 +608,25 @@ def run_perception_pipeline(
 
                 # HUD Statistics
                 overlay_top = f"Frame: {packet.frame_index} | Tracks: {len(object_depths)} | Loop FPS: {overall_fps:.1f}"
-                overlay_sub = f"Det:{det_latency_ms:.0f}ms|Trk:{track_latency_ms:.0f}ms|Dep:{depth_latency_ms:.0f}ms|Mot:{motion_latency_ms:.1f}ms|Cam:{cam_latency_ms:.1f}ms|TTC:{ttc_latency_ms:.1f}ms|Risk:{risk_latency_ms:.1f}ms|Rel:{rel_latency_ms:.1f}ms|Warn:{warn_latency_ms:.1f}ms|TTS:{tts_latency_ms:.1f}ms"
-                overlay_cam = f"Camera Motion: dx={camera_motion.dx:+.1f}px dy={camera_motion.dy:+.1f}px | SysHealth: [{system_reliability.system_status}]"
-                alert_color_map = {
-                    "CRITICAL": (0, 0, 255),
-                    "WARNING": (0, 140, 255),
-                    "CAUTION": (0, 255, 255),
-                    "NO_WARNING": (0, 255, 0),
-                    "UNKNOWN": (200, 200, 200),
+                overlay_sub = f"Det:{det_latency_ms:.0f}ms|Trk:{track_latency_ms:.0f}ms|Dep:{depth_latency_ms:.0f}ms|Risk:{risk_latency_ms:.1f}ms|Rel:{rel_latency_ms:.1f}ms|Warn:{warn_latency_ms:.1f}ms|TTS:{tts_latency_ms:.1f}ms|Nav:{nav_latency_ms:.1f}ms"
+                nav_color_map = {
+                    "CONTINUE": (0, 255, 0),     # Green
+                    "CAUTION": (0, 255, 255),    # Yellow
+                    "AVOID_LEFT": (255, 180, 0), # Cyan/Blue
+                    "AVOID_RIGHT": (255, 180, 0),# Cyan/Blue
+                    "STOP": (0, 0, 255),         # Red
+                    "UNKNOWN": (200, 200, 200),  # Gray
                 }
-                a_color = alert_color_map.get(global_warning.state, (255, 255, 255))
-                overlay_alert = f"GLOBAL ALERT: [{global_warning.state}] (TID:{global_warning.selected_track_id}) - {global_warning.reason}"
+                n_color = nav_color_map.get(scene_nav_state.navigation_state, (255, 255, 255))
+                overlay_nav = f"NAV: [{scene_nav_state.navigation_state}] (Dir: {scene_nav_state.safe_direction}) - {scene_nav_state.reason}"
+                overlay_space = f"FreeSpace: L:{scene_nav_state.left_free_space:.2f} C:{scene_nav_state.center_free_space:.2f} R:{scene_nav_state.right_free_space:.2f} | Blocked:{scene_nav_state.path_blocked}"
                 speech_text = warning_message.text if warning_message.text else "(Silent)"
-                overlay_speech = f"TTS: \"{speech_text}\" [{warning_message.priority}] (Spoke: {warning_message.should_speak})"
+                overlay_speech = f"TTS: \"{speech_text}\" | Alert: [{global_warning.state}]"
                 cv2.putText(display_frame, overlay_top, (10, 25), cv2.FONT_HERSHEY_SIMPLEX, 0.65, (255, 255, 0), 2)
-                cv2.putText(display_frame, overlay_sub, (10, 52), cv2.FONT_HERSHEY_SIMPLEX, 0.56, (255, 255, 0), 2)
-                cv2.putText(display_frame, overlay_cam, (10, 76), cv2.FONT_HERSHEY_SIMPLEX, 0.52, (0, 255, 255), 2)
-                cv2.putText(display_frame, overlay_alert, (10, 100), cv2.FONT_HERSHEY_SIMPLEX, 0.52, a_color, 2)
-                cv2.putText(display_frame, overlay_speech, (10, 124), cv2.FONT_HERSHEY_SIMPLEX, 0.50, (255, 255, 255), 1)
+                cv2.putText(display_frame, overlay_sub, (10, 52), cv2.FONT_HERSHEY_SIMPLEX, 0.54, (255, 255, 0), 2)
+                cv2.putText(display_frame, overlay_nav, (10, 78), cv2.FONT_HERSHEY_SIMPLEX, 0.56, n_color, 2)
+                cv2.putText(display_frame, overlay_space, (10, 102), cv2.FONT_HERSHEY_SIMPLEX, 0.50, (0, 255, 255), 1)
+                cv2.putText(display_frame, overlay_speech, (10, 126), cv2.FONT_HERSHEY_SIMPLEX, 0.50, (255, 255, 255), 1)
 
                                 # Show optical flow inliers if requested
                 if show_flow and camera_motion.feature_points_curr is not None:
