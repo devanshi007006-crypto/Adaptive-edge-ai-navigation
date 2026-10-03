@@ -1,19 +1,14 @@
 """Main pipeline orchestrator for the Adaptive Edge-AI Navigation System."""
 import argparse
-import time
 import sys
 import os
 import yaml
+import cv2
 
 # Ensure project root is in sys.path
 sys.path.insert(0, os.path.abspath(os.path.dirname(__file__)))
 
-from perception import FramePreprocessor, YOLOObjectDetector, BoTSORTTracker, DepthAnythingV2Estimator
-from temporal import RollingTrackHistory, NumericalVelocityEstimator, ExponentialMovingAverageSmoother, OpticalFlowMotionCompensator
-from risk import AnalyticalTTCEstimator, RiskFeatureExtractor, UncertaintyEstimator, RiskScorer, RiskStateMachine
-from navigation import ZoneDivider, FreeSpaceAnalyzer, NavigationEngine
-from feedback import Pyttsx3SpeechEngine, MessageGenerator, WarningManager
-from evaluation import NavigationLogger, MetricsCalculator, ReportGenerator, FrameLogRecord
+from perception import CameraSource, FramePacket, FramePreprocessor
 
 def load_config(config_path: str = "config.yaml") -> dict:
     if not os.path.isabs(config_path) and not os.path.exists(config_path):
@@ -26,74 +21,114 @@ def load_config(config_path: str = "config.yaml") -> dict:
     with open(config_path, "r", encoding="utf-8") as f:
         return yaml.safe_load(f)
 
-def run_dry_run_validation(config: dict) -> bool:
-    print("=" * 60)
-    print("ADAPTIVE NAVIGATION PIPELINE - DRY RUN VALIDATION")
-    print("=" * 60)
-    print("[1/6] Validating Config Schema...")
-    required_sections = ["camera", "perception", "temporal", "risk", "navigation", "feedback", "evaluation"]
-    for s in required_sections:
-        assert s in config, f"Missing required config section: {s}"
-    print("       Config validated successfully.")
+def run_camera_pipeline(config: dict, source_override=None, max_frames: int = None, headless: bool = False) -> None:
+    """Executes Step 2: Camera Acquisition, Validation, Timestamping, FPS measurement, and Preview."""
+    cam_cfg = config.get("camera", {})
+    source = source_override if source_override is not None else cam_cfg.get("source", 0)
+    width = cam_cfg.get("width", 640)
+    height = cam_cfg.get("height", 480)
+    fps = cam_cfg.get("fps", 30)
 
-    print("[2/6] Instantiating Perception modules...")
+    debug_cfg = config.get("debug", {})
+    display_enabled = debug_cfg.get("display", True) and not headless
+    window_name = debug_cfg.get("window_name", "Adaptive Navigation - Camera Stream")
+
+    print("=" * 60)
+    print("STEP 2: CAMERA ACQUISITION LAYER")
+    print("=" * 60)
+    print(f"Connecting to camera source: {source}")
+    print(f"Target Resolution: {width}x{height} @ {fps} FPS")
+    print(f"Debug Display: {'Enabled' if display_enabled else 'Disabled (Headless)'}")
+    print("Press 'q' in preview window or Ctrl+C in terminal to stop.")
+    print("-" * 60)
+
     preprocessor = FramePreprocessor()
-    detector = YOLOObjectDetector()
-    tracker = BoTSORTTracker()
-    depth_estimator = DepthAnythingV2Estimator()
-    print("       Perception modules instantiated.")
+    camera = CameraSource(source=source, width=width, height=height, target_fps=fps)
 
-    print("[3/6] Instantiating Temporal modules...")
-    history = RollingTrackHistory()
-    velocity = NumericalVelocityEstimator()
-    smoother = ExponentialMovingAverageSmoother()
-    camera_motion = OpticalFlowMotionCompensator()
-    print("       Temporal modules instantiated.")
+    try:
+        camera.open()
+    except Exception as e:
+        print(f"\nERROR: Unable to open camera source: {e}")
+        return
 
-    print("[4/6] Instantiating Risk modules...")
-    ttc = AnalyticalTTCEstimator()
-    features = RiskFeatureExtractor()
-    uncertainty = UncertaintyEstimator()
-    scorer = RiskScorer(config["risk"]["weights"], config["risk"]["score_thresholds"])
-    risk_fsm = RiskStateMachine()
-    print("       Risk modules instantiated.")
+    frames_processed = 0
 
-    print("[5/6] Instantiating Navigation modules...")
-    zones = ZoneDivider()
-    free_space = FreeSpaceAnalyzer()
-    nav_engine = NavigationEngine()
-    print("       Navigation modules instantiated.")
+    try:
+        while True:
+            packet: FramePacket = camera.read_frame()
 
-    print("[6/6] Instantiating Feedback & Evaluation modules...")
-    tts = Pyttsx3SpeechEngine()
-    msg_gen = MessageGenerator()
-    warning_mgr = WarningManager(tts)
-    logger = NavigationLogger(config["evaluation"]["logging"]["output_dir"])
-    metrics_calc = MetricsCalculator()
-    reporter = ReportGenerator()
-    print("       Feedback and Evaluation modules instantiated.")
+            if packet is None:
+                # Video reached end or camera disconnected
+                if camera.is_video_file:
+                    print("\nEnd of video stream reached.")
+                else:
+                    print("\nWarning: Failed to capture frame from camera.")
+                break
 
-    print("=" * 60)
-    print("ALL MODULE INTERFACES VERIFIED SUCCESSFULLY (STEP 1 PASS)")
-    print("=" * 60)
-    return True
+            # Frame validation
+            if not preprocessor.validate_frame(packet.frame):
+                print(f"Warning: Dropped invalid frame at index {packet.frame_index}")
+                continue
+
+            frames_processed += 1
+
+            # Log frame capture progress periodically in console
+            if frames_processed % 30 == 0 or frames_processed == 1:
+                print(
+                    f"[Frame {packet.frame_index:05d}] "
+                    f"Res: {packet.resolution[0]}x{packet.resolution[1]} | "
+                    f"Capture FPS: {packet.capture_fps:5.1f} | "
+                    f"Timestamp: {packet.timestamp:12.3f}s"
+                )
+
+            # Debug visual overlay
+            if display_enabled:
+                display_frame = packet.frame.copy()
+                overlay_text_1 = f"Frame: {packet.frame_index} | Res: {packet.resolution[0]}x{packet.resolution[1]}"
+                overlay_text_2 = f"Capture FPS: {packet.capture_fps:.1f} | T: {packet.timestamp:.2f}s"
+                
+                cv2.putText(display_frame, overlay_text_1, (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 0), 2)
+                cv2.putText(display_frame, overlay_text_2, (10, 60), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 0), 2)
+                cv2.imshow(window_name, display_frame)
+
+                key = cv2.waitKey(1) & 0xFF
+                if key == ord('q'):
+                    print("\nUser requested exit via 'q'.")
+                    break
+
+            if max_frames is not None and frames_processed >= max_frames:
+                print(f"\nReached maximum requested frame count ({max_frames}). Stopping.")
+                break
+
+    except KeyboardInterrupt:
+        print("\nInterrupted by user (Ctrl+C).")
+    finally:
+        # Resource cleanup
+        camera.release()
+        if display_enabled:
+            cv2.destroyAllWindows()
+        print("-" * 60)
+        print(f"Camera released. Total frames captured: {frames_processed}")
+        print("=" * 60)
 
 def main():
-    parser = argparse.ArgumentParser(description="Adaptive Edge-AI Navigation Prototype")
+    parser = argparse.ArgumentParser(description="Adaptive Edge-AI Navigation Prototype - Step 2")
     parser.add_argument("--config", type=str, default="config.yaml", help="Path to config file")
     parser.add_argument("--video", type=str, default=None, help="Path to test video file")
     parser.add_argument("--cam", type=int, default=None, help="Camera index")
-    parser.add_argument("--debug", action="store_true", help="Enable visualization debug view")
-    parser.add_argument("--dry-run", action="store_true", help="Run module instantiation validation")
+    parser.add_argument("--max-frames", type=int, default=None, help="Limit frames captured (for tests)")
+    parser.add_argument("--headless", action="store_true", help="Run without opening GUI preview window")
     args = parser.parse_args()
 
     config = load_config(args.config)
+    source = args.cam if args.cam is not None else args.video
 
-    if args.dry_run:
-        run_dry_run_validation(config)
-        return
-
-    print("System initialized. Run with --dry-run for Step 1 validation.")
+    run_camera_pipeline(
+        config=config,
+        source_override=source,
+        max_frames=args.max_frames,
+        headless=args.headless,
+    )
 
 if __name__ == "__main__":
     main()

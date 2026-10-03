@@ -1,5 +1,5 @@
 # Adaptive Edge-AI Navigation System Configuration
-# All thresholds and settings are centralized here. Prototype values subject to empirical calibration.
+# Centralized configuration parameters.
 
 system:
   device: "auto"              # "auto", "cuda", or "cpu"
@@ -12,15 +12,19 @@ camera:
   height: 480
   fps: 30
 
+debug:
+  display: true               # Display live camera preview window
+  window_name: "Adaptive Navigation - Camera Stream"
+
 perception:
   preprocessing:
-    target_width: 640
-    target_height: 640
+    target_width: null        # null = keep native resolution for Step 2
+    target_height: null
     normalize: false
-    rgb_conversion: true
+    to_rgb: false
 
   detector:
-    model_name: "yolo11n.pt"  # Or "yolo11s.pt", "yolov8n.pt"
+    model_name: "yolo11n.pt"
     confidence_threshold: 0.35
     iou_threshold: 0.45
     classes_of_interest:
@@ -45,7 +49,7 @@ perception:
       - pole
 
   tracker:
-    tracker_type: "botsort.yaml" # "botsort.yaml" or "bytetrack.yaml"
+    tracker_type: "botsort.yaml"
     track_high_thresh: 0.5
     track_low_thresh: 0.1
     new_track_thresh: 0.6
@@ -55,22 +59,22 @@ perception:
   depth:
     model_name: "depth_anything_v2_vits"
     model_path: "models/depth/depth_anything_v2_vits.pth"
-    is_metric: false          # Explicitly distinguish relative depth from metric scale
+    is_metric: false
     input_size: 518
-    relative_depth_inverted: true # If true: smaller values = closer; if false: larger values = closer
+    relative_depth_inverted: true
 
 temporal:
-  history_length: 15          # Number of past frames to track per object
+  history_length: 15
   smoothing:
-    position_alpha: 0.7       # Exponential smoothing factor for bbox center (0-1)
-    depth_alpha: 0.6          # Exponential smoothing factor for depth (0-1)
-    velocity_window: 5        # Rolling window size for velocity estimation
+    position_alpha: 0.7
+    depth_alpha: 0.6
+    velocity_window: 5
   approach:
-    approaching_speed_min: 0.05 # Minimum rate of depth decrease to classify as APPROACHING
-    receding_speed_min: -0.05   # Rate of depth increase to classify as RECEDING
+    approaching_speed_min: 0.05
+    receding_speed_min: -0.05
   camera_motion:
-    enabled: false            # Optical-flow based ego-motion compensation
-    method: "farneback"       # "farneback" or "lucas_kanade"
+    enabled: false
+    method: "farneback"
 
 risk:
   weights:
@@ -80,9 +84,9 @@ risk:
     path_overlap_weight: 0.15
     confidence_weight: 0.05
   ttc_thresholds:
-    critical: 1.5             # seconds
-    warning: 3.0              # seconds
-    cautious: 5.0             # seconds
+    critical: 1.5
+    warning: 3.0
+    cautious: 5.0
   score_thresholds:
     critical: 0.75
     high: 0.55
@@ -92,9 +96,9 @@ risk:
 
 navigation:
   corridor:
-    center_min_ratio: 0.33    # Left boundary of center corridor (0.0 - 1.0)
-    center_max_ratio: 0.67    # Right boundary of center corridor (0.0 - 1.0)
-    critical_proximity_thresh: 0.8 # Proximity threshold triggering STOP
+    center_min_ratio: 0.33
+    center_max_ratio: 0.67
+    critical_proximity_thresh: 0.8
   free_space:
     grid_rows: 10
     grid_cols: 10
@@ -103,10 +107,10 @@ navigation:
 
 warning:
   priority_state_machine:
-    candidate_persistence_frames: 3 # Frames hazard must persist before speaking
-    cooldown_seconds: 3.0          # Minimum delay before repeating non-escalated warning
-    interrupt_on_escalation: true  # Allow P4 critical to interrupt ongoing speech
-    suppress_p1: true              # Suppress low-priority ambient notifications
+    candidate_persistence_frames: 3
+    cooldown_seconds: 3.0
+    interrupt_on_escalation: true
+    suppress_p1: true
   messages:
     p4_critical: "STOP. Obstacle ahead."
     p3_left: "Move right."
@@ -118,9 +122,9 @@ warning:
 feedback:
   tts:
     enabled: true
-    rate: 175                 # Words per minute
-    volume: 1.0               # 0.0 to 1.0
-    voice_index: 0            # System voice index
+    rate: 175
+    volume: 1.0
+    voice_index: 0
 
 evaluation:
   logging:

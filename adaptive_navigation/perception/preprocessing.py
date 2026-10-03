@@ -14,19 +14,42 @@ class PreprocessedFrame:
     frame_index: int
 
 class FramePreprocessor:
-    """Preprocesses input video frames for downstream computer vision models."""
-    def __init__(self, target_size: Optional[Tuple[int, int]] = (640, 640), normalize: bool = False, to_rgb: bool = True):
+    """Preprocesses input video frames for downstream computer vision models.
+    
+    Adheres to Step 2 specification: keeps preprocessing separate from camera acquisition
+    and avoids detector-specific transformations until Step 3.
+    """
+    def __init__(
+        self,
+        target_size: Optional[Tuple[int, int]] = None,
+        to_rgb: bool = False,
+    ):
         self.target_size = target_size
-        self.normalize = normalize
         self.to_rgb = to_rgb
 
+    @staticmethod
+    def validate_frame(frame: np.ndarray) -> bool:
+        """Validate that the frame exists, has positive dimensions, and contains valid pixel data."""
+        if frame is None:
+            return False
+        if not isinstance(frame, np.ndarray):
+            return False
+        if frame.size == 0 or len(frame.shape) < 2:
+            return False
+        if frame.shape[0] <= 0 or frame.shape[1] <= 0:
+            return False
+        return True
+
     def process(self, frame: np.ndarray, timestamp: float, frame_index: int) -> PreprocessedFrame:
-        if frame is None or frame.size == 0:
-            raise ValueError(f"Invalid frame received at index {frame_index}")
+        if not self.validate_frame(frame):
+            raise ValueError(f"ERROR: Invalid frame received at index {frame_index}")
+
         h, w = frame.shape[:2]
         processed = frame.copy()
+
         if self.to_rgb:
             processed = cv2.cvtColor(processed, cv2.COLOR_BGR2RGB)
+
         if self.target_size is not None and (w, h) != self.target_size:
             processed = cv2.resize(processed, self.target_size, interpolation=cv2.INTER_LINEAR)
             scale_x = self.target_size[0] / float(w)
@@ -34,14 +57,11 @@ class FramePreprocessor:
         else:
             scale_x, scale_y = 1.0, 1.0
 
-        if self.normalize:
-            processed = processed.astype(np.float32) / 255.0
-
         return PreprocessedFrame(
             original_frame=frame,
             processed_frame=processed,
             original_shape=(h, w),
             scale_factor=(scale_x, scale_y),
             timestamp=timestamp,
-            frame_index=frame_index
+            frame_index=frame_index,
         )
