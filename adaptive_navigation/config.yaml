@@ -150,3 +150,20 @@ ttc:
   minimum_closing_speed: 0.05
   maximum_time_gap_seconds: 0.5
   max_ttc_seconds: 30.0
+uncertainty:
+  enabled: true
+  weights:
+    detection: 0.1
+    tracking: 0.15
+    depth: 0.2
+    temporal: 0.1
+    motion: 0.15
+    camera_motion: 0.1
+    ttc: 0.1
+    evidence_coverage: 0.1
+  thresholds:
+    high: 0.75
+    medium: 0.5
+    low: 0.25
+  consistency:
+    enabled: true

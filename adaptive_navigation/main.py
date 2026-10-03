@@ -11,6 +11,7 @@ import numpy as np
 sys.path.insert(0, os.path.abspath(os.path.dirname(__file__)))
 
 from risk import TTCEstimator, TTCResult, RiskEngine, RiskFeatures, RiskAssessment
+from uncertainty.reliability import ReliabilityEstimator, ReliabilityAssessment, SystemReliability
 from temporal import (
     TemporalHistory,
     ObjectObservation,
@@ -51,7 +52,7 @@ def run_perception_pipeline(
     max_frames: int = None,
     headless: bool = False,
 ) -> None:
-    """Executes Step 10: Camera -> Frame Validation -> YOLO Detection -> BoT-SORT Tracking -> Depth Anything V2 -> Object-Level Depth -> Temporal History -> Motion Estimation -> Camera Motion Compensation -> TTC Estimation -> Multi-Factor Risk Assessment Engine."""
+    """Executes Step 11: Camera -> Frame Validation -> YOLO Detection -> BoT-SORT Tracking -> Depth Anything V2 -> Object-Level Depth -> Temporal History -> Motion Estimation -> Camera Motion Compensation -> TTC Estimation -> Multi-Factor Risk Assessment -> Uncertainty & Reliability Estimation."""
     cam_cfg = config.get("camera", {})
     source = source_override if source_override is not None else cam_cfg.get("source", 0)
     width = cam_cfg.get("width", 640)
@@ -129,10 +130,10 @@ def run_perception_pipeline(
     display_enabled = debug_cfg.get("display", True) and not headless
     show_trails = debug_cfg.get("show_trails", True)
     show_depth_inset = debug_cfg.get("show_depth_inset", True)
-    window_name = debug_cfg.get("window_name", "Adaptive Navigation - Multi-Factor Risk Assessment Engine")
+    window_name = debug_cfg.get("window_name", "Adaptive Navigation - Uncertainty & Reliability Layer")
 
     print("=" * 75)
-    print("STEP 10: CAMERA + YOLO + BoT-SORT + DEPTH ANYTHING V2 + TEMPORAL + MOTION + CAM COMP + TTC + RISK ENGINE")
+    print("STEP 11: CAMERA + YOLO + BoT-SORT + DEPTH + TEMPORAL + MOTION + CAM COMP + TTC + RISK + UNCERTAINTY & RELIABILITY")
     print("=" * 75)
     print(f"Camera Source:   {source} ({width}x{height} @ {fps} FPS)")
     print(f"YOLO Detector:   {model_name} | Conf: {conf_thresh} | Device: {det_device}")
@@ -241,6 +242,21 @@ def run_perception_pipeline(
         maximum_time_gap_seconds=ttc_max_gap,
         max_ttc_seconds=ttc_max_sec,
     )
+
+    # 10. Initialize Uncertainty & Reliability Estimator (Step 11)
+    unc_cfg = config.get("uncertainty", {})
+    unc_enabled = unc_cfg.get("enabled", True)
+    unc_weights = unc_cfg.get("weights", None)
+    unc_thresholds = unc_cfg.get("thresholds", None)
+    unc_consistency = unc_cfg.get("consistency", {}).get("enabled", True)
+
+    reliability_estimator = ReliabilityEstimator(
+        enabled=unc_enabled,
+        weights=unc_weights,
+        thresholds=unc_thresholds,
+        consistency_enabled=unc_consistency,
+    )
+    print(f"Uncertainty:      Enabled: {unc_enabled} | Consistency: {unc_consistency} | Weights: {list(unc_weights.keys()) if unc_weights else 'default'}")
 
     # 9. Initialize Multi-Factor Risk Assessment Engine (Step 10)
     risk_engine = RiskEngine(
@@ -364,6 +380,26 @@ def run_perception_pipeline(
             risk_assessments: dict[int, RiskAssessment] = risk_engine.assess_all(risk_features_map)
             risk_latency_ms = (time.perf_counter() - t_risk_start) * 1000.0
 
+            # Stage 10: Uncertainty & Reliability Estimation Layer (Step 11)
+            t_rel_start = time.perf_counter()
+            obs_map = {obj.track_id: temporal_history.get(obj.track_id) for obj in object_depths}
+            reliability_assessments: dict[int, ReliabilityAssessment] = reliability_estimator.assess_all(
+                observations_map=obs_map,
+                compensated_motion_map=compensated_estimates,
+                camera_motion=camera_motion,
+                ttc_map=ttc_results,
+                risk_map=risk_assessments,
+            )
+            system_reliability = reliability_estimator.assess_system(
+                camera_healthy=(packet is not None and packet.frame is not None),
+                fps=overall_fps if 'overall_fps' in locals() else 0.0,
+                detector_ok=True,
+                depth_model_ok=True,
+                camera_motion=camera_motion,
+                active_tracks=len(object_depths),
+            )
+            rel_latency_ms = (time.perf_counter() - t_rel_start) * 1000.0
+
             frames_processed += 1
 
             # Overall loop FPS
@@ -378,13 +414,22 @@ def run_perception_pipeline(
 
             # Periodic console report
             if frames_processed % 10 == 0 or frames_processed == 1:
-                depth_info = ", ".join(f"ID:{o.track_id}({o.class_name}):depth={o.depth_value:.2f}[rel,{o.depth_reliability}]" for o in object_depths) if object_depths else "No active tracks"
+                def _obj_summary(o):
+                    r_item = risk_assessments.get(o.track_id)
+                    rel_item = reliability_assessments.get(o.track_id)
+                    r_str = f"Risk={r_item.risk_level}({r_item.risk_score:.2f})" if r_item else "Risk=N/A"
+                    rel_str = f"Rel={rel_item.reliability_level}({rel_item.reliability_score:.2f}) Unc={rel_item.uncertainty_score:.2f}" if rel_item else "Rel=N/A"
+                    return f"ID:{o.track_id}({o.class_name})[{r_str} | {rel_str}]"
+
+                depth_info = ", ".join(_obj_summary(o) for o in object_depths) if object_depths else "No active tracks"
                 print(
                     f"[Frame {packet.frame_index:05d}] "
                     f"Loop FPS: {overall_fps:4.1f} | "
                     f"Det: {det_latency_ms:4.0f}ms | "
                     f"Track: {track_latency_ms:3.0f}ms | "
                     f"Depth: {depth_latency_ms:4.0f}ms | "
+                    f"Risk: {risk_latency_ms:3.1f}ms | "
+                    f"Rel: {rel_latency_ms:3.1f}ms | "
                     f"Objects ({len(object_depths)}): [{depth_info}]"
                 )
 
@@ -431,16 +476,20 @@ def run_perception_pipeline(
 
                     cv2.rectangle(display_frame, (x1, y1), (x2, y2), risk_color, 2)
 
-                    if risk_ass:
-                        sub_label = f"Risk: {risk_ass.risk_score:.2f} [{risk_ass.risk_level}] | {ttc_str}"
-                        third_label = f"Path: {risk_ass.path_state} | {risk_ass.primary_reason}"
+                    rel_ass = reliability_assessments.get(obj.track_id)
+                    if risk_ass and rel_ass:
+                        sub_label = f"Risk:{risk_ass.risk_level}({risk_ass.risk_score:.2f}) | Rel:{rel_ass.reliability_level}({rel_ass.reliability_score:.2f}) Unc:{rel_ass.uncertainty_score:.2f}"
+                        third_label = f"{ttc_str} | {rel_ass.primary_reason}"
+                    elif risk_ass:
+                        sub_label = f"Risk:{risk_ass.risk_level}({risk_ass.risk_score:.2f}) | {ttc_str}"
+                        third_label = f"Path:{risk_ass.path_state} | {risk_ass.primary_reason}"
                     else:
                         sub_label = f"{ttc_str} | hist:{hist_len}f"
                         third_label = "Risk: UNKNOWN"
 
                     cv2.putText(display_frame, label, (x1, max(20, y1 - 28)), cv2.FONT_HERSHEY_SIMPLEX, 0.50, (255, 255, 255), 2)
-                    cv2.putText(display_frame, sub_label, (x1, max(34, y1 - 14)), cv2.FONT_HERSHEY_SIMPLEX, 0.45, risk_color, 1)
-                    cv2.putText(display_frame, third_label, (x1, max(48, y1 - 2)), cv2.FONT_HERSHEY_SIMPLEX, 0.42, (220, 220, 220), 1)
+                    cv2.putText(display_frame, sub_label, (x1, max(34, y1 - 14)), cv2.FONT_HERSHEY_SIMPLEX, 0.43, risk_color, 1)
+                    cv2.putText(display_frame, third_label, (x1, max(48, y1 - 2)), cv2.FONT_HERSHEY_SIMPLEX, 0.40, (220, 220, 220), 1)
                     cv2.circle(display_frame, (int(obj.center_x), int(obj.center_y)), 4, color, -1)
 
                 # Show colorized depth inset in bottom-right corner if enabled
@@ -455,11 +504,11 @@ def run_perception_pipeline(
 
                 # HUD Statistics
                 overlay_top = f"Frame: {packet.frame_index} | Tracks: {len(object_depths)} | Loop FPS: {overall_fps:.1f}"
-                overlay_sub = f"Det:{det_latency_ms:.0f}ms|Trk:{track_latency_ms:.0f}ms|Dep:{depth_latency_ms:.0f}ms|Mot:{motion_latency_ms:.1f}ms|Cam:{cam_latency_ms:.1f}ms|TTC:{ttc_latency_ms:.1f}ms|Risk:{risk_latency_ms:.1f}ms"
-                overlay_cam = f"Camera Motion: dx={camera_motion.dx:+.1f}px dy={camera_motion.dy:+.1f}px | v={camera_motion.camera_speed:.0f}px/s | [{camera_motion.confidence}]"
-                cv2.putText(display_frame, overlay_cam, (10, 78), cv2.FONT_HERSHEY_SIMPLEX, 0.58, (0, 255, 255), 2)
+                overlay_sub = f"Det:{det_latency_ms:.0f}ms|Trk:{track_latency_ms:.0f}ms|Dep:{depth_latency_ms:.0f}ms|Mot:{motion_latency_ms:.1f}ms|Cam:{cam_latency_ms:.1f}ms|TTC:{ttc_latency_ms:.1f}ms|Risk:{risk_latency_ms:.1f}ms|Rel:{rel_latency_ms:.1f}ms"
+                overlay_cam = f"Camera Motion: dx={camera_motion.dx:+.1f}px dy={camera_motion.dy:+.1f}px | SysHealth: [{system_reliability.system_status}]"
+                cv2.putText(display_frame, overlay_cam, (10, 78), cv2.FONT_HERSHEY_SIMPLEX, 0.55, (0, 255, 255), 2)
                 cv2.putText(display_frame, overlay_top, (10, 25), cv2.FONT_HERSHEY_SIMPLEX, 0.65, (255, 255, 0), 2)
-                cv2.putText(display_frame, overlay_sub, (10, 52), cv2.FONT_HERSHEY_SIMPLEX, 0.65, (255, 255, 0), 2)
+                cv2.putText(display_frame, overlay_sub, (10, 52), cv2.FONT_HERSHEY_SIMPLEX, 0.58, (255, 255, 0), 2)
 
                                 # Show optical flow inliers if requested
                 if show_flow and camera_motion.feature_points_curr is not None:
