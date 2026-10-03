@@ -132,3 +132,9 @@ camera_motion:
   inlier_threshold: 3.0
   max_dt_seconds: 0.5
   show_flow: false
+ttc:
+  enabled: true
+  minimum_history_observations: 3
+  minimum_closing_speed: 0.05
+  maximum_time_gap_seconds: 0.5
+  max_ttc_seconds: 30.0

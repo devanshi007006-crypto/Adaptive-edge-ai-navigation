@@ -10,6 +10,7 @@ import numpy as np
 # Ensure project root is in sys.path
 sys.path.insert(0, os.path.abspath(os.path.dirname(__file__)))
 
+from risk import TTCEstimator, TTCResult
 from temporal import (
     TemporalHistory,
     ObjectObservation,
@@ -50,7 +51,7 @@ def run_perception_pipeline(
     max_frames: int = None,
     headless: bool = False,
 ) -> None:
-    """Executes Step 8: Camera -> Frame Validation -> YOLO Detection -> BoT-SORT Tracking -> Depth Anything V2 -> Object-Level Depth -> Temporal History -> Motion Estimation -> Camera Motion Compensation."""
+    """Executes Step 9: Camera -> Frame Validation -> YOLO Detection -> BoT-SORT Tracking -> Depth Anything V2 -> Object-Level Depth -> Temporal History -> Motion Estimation -> Camera Motion Compensation -> TTC Estimation."""
     cam_cfg = config.get("camera", {})
     source = source_override if source_override is not None else cam_cfg.get("source", 0)
     width = cam_cfg.get("width", 640)
@@ -108,14 +109,21 @@ def run_perception_pipeline(
     cam_max_dt = cam_motion_cfg.get("max_dt_seconds", 0.5)
     show_flow = cam_motion_cfg.get("show_flow", False)
 
+    ttc_cfg = config.get("ttc", {})
+    ttc_enabled = ttc_cfg.get("enabled", True)
+    ttc_min_obs = ttc_cfg.get("minimum_history_observations", 3)
+    ttc_min_close_spd = ttc_cfg.get("minimum_closing_speed", 0.05)
+    ttc_max_gap = ttc_cfg.get("maximum_time_gap_seconds", 0.5)
+    ttc_max_sec = ttc_cfg.get("max_ttc_seconds", 30.0)
+
     debug_cfg = config.get("debug", {})
     display_enabled = debug_cfg.get("display", True) and not headless
     show_trails = debug_cfg.get("show_trails", True)
     show_depth_inset = debug_cfg.get("show_depth_inset", True)
-    window_name = debug_cfg.get("window_name", "Adaptive Navigation - YOLO + BoT-SORT + Depth + Motion + Camera Compensation")
+    window_name = debug_cfg.get("window_name", "Adaptive Navigation - YOLO + BoT-SORT + Depth + Motion + Camera Comp + TTC")
 
     print("=" * 75)
-    print("STEP 8: CAMERA + YOLO + BoT-SORT + DEPTH ANYTHING V2 + TEMPORAL HISTORY + MOTION + CAMERA COMPENSATION")
+    print("STEP 9: CAMERA + YOLO + BoT-SORT + DEPTH ANYTHING V2 + TEMPORAL HISTORY + MOTION + CAMERA COMPENSATION + TTC")
     print("=" * 75)
     print(f"Camera Source:   {source} ({width}x{height} @ {fps} FPS)")
     print(f"YOLO Detector:   {model_name} | Conf: {conf_thresh} | Device: {det_device}")
@@ -124,6 +132,7 @@ def run_perception_pipeline(
     print(f"Temporal Buffer: MaxLen: {history_length} | MaxAge: {max_history_age}s | Cleanup: {cleanup_after}s | MinObs: {min_obs}")
     print(f"Motion Estimator: Method: {smoothing_method} (win={smoothing_window}) | StableThresh: {stable_thresh} | Convention: {depth_convention}")
     print(f"Camera Motion:    Enabled: {cam_motion_enabled} | Method: {cam_method} | MaxFeat: {cam_max_feat} | RANSAC: {cam_ransac}")
+    print(f"TTC Estimator:    Enabled: {ttc_enabled} | MinClosingSpd: {ttc_min_close_spd} | MaxTTC: {ttc_max_sec}s")
     print(f"Display Mode:    {'Active Window' if display_enabled else 'Headless'}")
     print("Press 'q' in preview window or Ctrl+C in terminal to stop.")
     print("-" * 75)
@@ -214,6 +223,15 @@ def run_perception_pipeline(
         max_dt_seconds=cam_max_dt,
     )
 
+    # 8. Initialize TTC Estimator (Step 9)
+    ttc_estimator = TTCEstimator(
+        enabled=ttc_enabled,
+        minimum_history_observations=ttc_min_obs,
+        minimum_closing_speed=ttc_min_close_spd,
+        maximum_time_gap_seconds=ttc_max_gap,
+        max_ttc_seconds=ttc_max_sec,
+    )
+
     frames_processed = 0
     loop_times = []
     last_loop_time = time.perf_counter()
@@ -280,6 +298,14 @@ def run_perception_pipeline(
             )
             cam_latency_ms = (time.perf_counter() - t_cam_start) * 1000.0
 
+            # Stage 8: Estimate Time-to-Collision (TTC) for each Track ID (Step 9)
+            t_ttc_start = time.perf_counter()
+            ttc_results: dict[int, TTCResult] = ttc_estimator.estimate_all(
+                temporal_history,
+                compensated_estimates,
+            )
+            ttc_latency_ms = (time.perf_counter() - t_ttc_start) * 1000.0
+
             frames_processed += 1
 
             # Overall loop FPS
@@ -327,14 +353,20 @@ def run_perception_pipeline(
                     label = f"ID: {obj.track_id} | {obj.class_name} | depth: {depth_str}"
                     hist_len = temporal_history.get_length(obj.track_id)
                     comp_m = compensated_estimates.get(obj.track_id)
+                    ttc_res = ttc_results.get(obj.track_id)
+                    if ttc_res and ttc_res.ttc_valid and ttc_res.ttc_seconds is not None:
+                        ttc_str = f"TTC: {ttc_res.ttc_seconds:.1f}s"
+                    elif ttc_res:
+                        ttc_str = f"TTC: {ttc_res.ttc_state}"
+                    else:
+                        ttc_str = "TTC: UNKNOWN"
+
                     if comp_m and comp_m.motion_valid:
-                        raw_spd = f"{comp_m.raw_speed:.0f}" if comp_m.raw_speed is not None else "--"
                         comp_spd = f"{comp_m.compensated_speed:.0f}px/s" if comp_m.compensated_speed is not None else "--"
                         state_str = comp_m.approach_state
-                        rel_str = comp_m.reliability
-                        sub_label = f"spd: {comp_spd}(raw:{raw_spd}) | {state_str} | {rel_str}"
+                        sub_label = f"spd: {comp_spd} | {ttc_str} | {comp_m.reliability}"
                     else:
-                        sub_label = f"spd: --px/s | UNKNOWN | hist:{hist_len}f"
+                        sub_label = f"spd: --px/s | {ttc_str} | hist:{hist_len}f"
 
                     cv2.putText(display_frame, label, (x1, max(20, y1 - 22)), cv2.FONT_HERSHEY_SIMPLEX, 0.52, (255, 255, 255), 2)
                     cv2.putText(display_frame, sub_label, (x1, max(36, y1 - 6)), cv2.FONT_HERSHEY_SIMPLEX, 0.45, (0, 255, 255), 1)
@@ -352,7 +384,7 @@ def run_perception_pipeline(
 
                 # HUD Statistics
                 overlay_top = f"Frame: {packet.frame_index} | Tracks: {len(object_depths)} | Loop FPS: {overall_fps:.1f}"
-                overlay_sub = f"Det:{det_latency_ms:.0f}ms | Trk:{track_latency_ms:.0f}ms | Dep:{depth_latency_ms:.0f}ms | Mot:{motion_latency_ms:.1f}ms | Cam:{cam_latency_ms:.1f}ms"
+                overlay_sub = f"Det:{det_latency_ms:.0f}ms|Trk:{track_latency_ms:.0f}ms|Dep:{depth_latency_ms:.0f}ms|Mot:{motion_latency_ms:.1f}ms|Cam:{cam_latency_ms:.1f}ms|TTC:{ttc_latency_ms:.1f}ms"
                 overlay_cam = f"Camera Motion: dx={camera_motion.dx:+.1f}px dy={camera_motion.dy:+.1f}px | v={camera_motion.camera_speed:.0f}px/s | [{camera_motion.confidence}]"
                 cv2.putText(display_frame, overlay_cam, (10, 78), cv2.FONT_HERSHEY_SIMPLEX, 0.58, (0, 255, 255), 2)
                 cv2.putText(display_frame, overlay_top, (10, 25), cv2.FONT_HERSHEY_SIMPLEX, 0.65, (255, 255, 0), 2)

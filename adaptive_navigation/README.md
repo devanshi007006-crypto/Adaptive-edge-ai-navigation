@@ -111,6 +111,7 @@ python main.py --dry-run
 - **Step 6**: Temporal History Buffer (Completed - Rolling per-track observation buffers with bounded memory, TTL cleanup, and depth preservation)
 - **Step 7**: Velocity, Approach Estimation & Temporal Smoothing (Completed - Image-plane velocity, relative depth rate, EMA smoothing, and approach classification)
 - **Step 8**: Camera Motion Compensation (Completed - Lucas-Kanade sparse optical flow with RANSAC outlier rejection, foreground obstacle masking, and compensated velocity estimation)
+- **Step 9**: Time-to-Collision (TTC) Estimation (Completed - Analytical closing speed calculation, explicit metric vs relative depth distinction, out-of-range clamping, and state reporting)
 
 ### Running the Integrated Pipeline (Step 5)
 `ash
