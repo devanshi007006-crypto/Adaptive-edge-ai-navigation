@@ -7,15 +7,26 @@ from .history import (
     RollingTrackHistory,
 )
 from .motion import MotionEstimate, MotionEstimator
+from .camera_motion import (
+    CameraMotionEstimate,
+    CameraMotionEstimator,
+    CompensatedMotionEstimate,
+    CameraMotionCompensatorInterface,
+    OpticalFlowMotionCompensator,
+)
 from .velocity import ApproachState, VelocityEstimate, VelocityEstimatorInterface, NumericalVelocityEstimator
 from .smoothing import TemporalSmootherInterface, ExponentialMovingAverageSmoother
-from .camera_motion import CameraMotionEstimate, CameraMotionCompensatorInterface, OpticalFlowMotionCompensator
 
 __all__ = [
     "ObjectObservation",
     "TemporalHistory",
     "MotionEstimate",
     "MotionEstimator",
+    "CameraMotionEstimate",
+    "CameraMotionEstimator",
+    "CompensatedMotionEstimate",
+    "CameraMotionCompensatorInterface",
+    "OpticalFlowMotionCompensator",
     "TrackSnapshot",
     "TrackHistoryRecord",
     "RollingTrackHistory",
@@ -25,7 +36,4 @@ __all__ = [
     "NumericalVelocityEstimator",
     "TemporalSmootherInterface",
     "ExponentialMovingAverageSmoother",
-    "CameraMotionEstimate",
-    "CameraMotionCompensatorInterface",
-    "OpticalFlowMotionCompensator",
 ]

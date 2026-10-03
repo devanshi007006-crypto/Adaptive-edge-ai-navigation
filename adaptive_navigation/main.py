@@ -10,7 +10,15 @@ import numpy as np
 # Ensure project root is in sys.path
 sys.path.insert(0, os.path.abspath(os.path.dirname(__file__)))
 
-from temporal import TemporalHistory, ObjectObservation, MotionEstimator, MotionEstimate
+from temporal import (
+    TemporalHistory,
+    ObjectObservation,
+    MotionEstimator,
+    MotionEstimate,
+    CameraMotionEstimator,
+    CameraMotionEstimate,
+    CompensatedMotionEstimate,
+)
 from perception import (
     CameraSource,
     FramePacket,
@@ -42,7 +50,7 @@ def run_perception_pipeline(
     max_frames: int = None,
     headless: bool = False,
 ) -> None:
-    """Executes Step 7: Camera -> Frame Validation -> YOLO Detection -> BoT-SORT Tracking -> Depth Anything V2 -> Object-Level Depth -> Temporal History -> Motion Estimation."""
+    """Executes Step 8: Camera -> Frame Validation -> YOLO Detection -> BoT-SORT Tracking -> Depth Anything V2 -> Object-Level Depth -> Temporal History -> Motion Estimation -> Camera Motion Compensation."""
     cam_cfg = config.get("camera", {})
     source = source_override if source_override is not None else cam_cfg.get("source", 0)
     width = cam_cfg.get("width", 640)
@@ -88,14 +96,26 @@ def run_perception_pipeline(
     min_depth_rel = motion_cfg.get("minimum_depth_reliability", "MEDIUM")
     depth_convention = motion_cfg.get("depth_convention", "higher_is_closer")
 
+    cam_motion_cfg = config.get("camera_motion", {})
+    cam_motion_enabled = cam_motion_cfg.get("enabled", True)
+    cam_method = cam_motion_cfg.get("method", "sparse_optical_flow")
+    cam_max_feat = cam_motion_cfg.get("max_features", 300)
+    cam_qual = cam_motion_cfg.get("quality_level", 0.01)
+    cam_min_dist = cam_motion_cfg.get("min_distance", 7.0)
+    cam_ransac = cam_motion_cfg.get("ransac_enabled", True)
+    cam_min_feat = cam_motion_cfg.get("minimum_features", 20)
+    cam_inlier_th = cam_motion_cfg.get("inlier_threshold", 3.0)
+    cam_max_dt = cam_motion_cfg.get("max_dt_seconds", 0.5)
+    show_flow = cam_motion_cfg.get("show_flow", False)
+
     debug_cfg = config.get("debug", {})
     display_enabled = debug_cfg.get("display", True) and not headless
     show_trails = debug_cfg.get("show_trails", True)
     show_depth_inset = debug_cfg.get("show_depth_inset", True)
-    window_name = debug_cfg.get("window_name", "Adaptive Navigation - YOLO + BoT-SORT + Depth + Temporal + Motion")
+    window_name = debug_cfg.get("window_name", "Adaptive Navigation - YOLO + BoT-SORT + Depth + Motion + Camera Compensation")
 
     print("=" * 75)
-    print("STEP 7: CAMERA + YOLO + BoT-SORT + DEPTH ANYTHING V2 + TEMPORAL HISTORY + MOTION ESTIMATION")
+    print("STEP 8: CAMERA + YOLO + BoT-SORT + DEPTH ANYTHING V2 + TEMPORAL HISTORY + MOTION + CAMERA COMPENSATION")
     print("=" * 75)
     print(f"Camera Source:   {source} ({width}x{height} @ {fps} FPS)")
     print(f"YOLO Detector:   {model_name} | Conf: {conf_thresh} | Device: {det_device}")
@@ -103,6 +123,7 @@ def run_perception_pipeline(
     print(f"Depth Model:     Depth Anything V2 ({depth_type}) | Metric: {is_metric} | Stat: {obj_stat}")
     print(f"Temporal Buffer: MaxLen: {history_length} | MaxAge: {max_history_age}s | Cleanup: {cleanup_after}s | MinObs: {min_obs}")
     print(f"Motion Estimator: Method: {smoothing_method} (win={smoothing_window}) | StableThresh: {stable_thresh} | Convention: {depth_convention}")
+    print(f"Camera Motion:    Enabled: {cam_motion_enabled} | Method: {cam_method} | MaxFeat: {cam_max_feat} | RANSAC: {cam_ransac}")
     print(f"Display Mode:    {'Active Window' if display_enabled else 'Headless'}")
     print("Press 'q' in preview window or Ctrl+C in terminal to stop.")
     print("-" * 75)
@@ -180,6 +201,19 @@ def run_perception_pipeline(
         depth_convention=depth_convention,
     )
 
+    # 7. Initialize Camera Motion Estimator (Step 8)
+    camera_motion_estimator = CameraMotionEstimator(
+        enabled=cam_motion_enabled,
+        method=cam_method,
+        max_features=cam_max_feat,
+        quality_level=cam_qual,
+        min_distance=cam_min_dist,
+        ransac_enabled=cam_ransac,
+        minimum_features=cam_min_feat,
+        inlier_threshold=cam_inlier_th,
+        max_dt_seconds=cam_max_dt,
+    )
+
     frames_processed = 0
     loop_times = []
     last_loop_time = time.perf_counter()
@@ -232,6 +266,20 @@ def run_perception_pipeline(
             motion_estimates: dict[int, MotionEstimate] = motion_estimator.estimate_all(temporal_history)
             motion_latency_ms = (time.perf_counter() - t_motion_start) * 1000.0
 
+            # Stage 7: Estimate Global Camera Motion & Compensate Object Velocity (Step 8)
+            t_cam_start = time.perf_counter()
+            obstacle_bboxes = [obj.bbox for obj in tracked_objects]
+            camera_motion: CameraMotionEstimate = camera_motion_estimator.estimate(
+                packet.frame,
+                timestamp=packet.timestamp,
+                object_bboxes=obstacle_bboxes,
+            )
+            compensated_estimates: dict[int, CompensatedMotionEstimate] = camera_motion_estimator.compensate_all(
+                motion_estimates,
+                camera_motion,
+            )
+            cam_latency_ms = (time.perf_counter() - t_cam_start) * 1000.0
+
             frames_processed += 1
 
             # Overall loop FPS
@@ -278,14 +326,15 @@ def run_perception_pipeline(
                     depth_str = f"{obj.depth_value:.2f} (rel)" if obj.depth_valid else "N/A"
                     label = f"ID: {obj.track_id} | {obj.class_name} | depth: {depth_str}"
                     hist_len = temporal_history.get_length(obj.track_id)
-                    m_est = motion_estimates.get(obj.track_id)
-                    if m_est and m_est.motion_valid:
-                        speed_str = f"{m_est.smoothed_speed:.0f}px/s"
-                        state_str = m_est.approach_state
+                    comp_m = compensated_estimates.get(obj.track_id)
+                    if comp_m and comp_m.motion_valid:
+                        raw_spd = f"{comp_m.raw_speed:.0f}" if comp_m.raw_speed is not None else "--"
+                        comp_spd = f"{comp_m.compensated_speed:.0f}px/s" if comp_m.compensated_speed is not None else "--"
+                        state_str = comp_m.approach_state
+                        rel_str = comp_m.reliability
+                        sub_label = f"spd: {comp_spd}(raw:{raw_spd}) | {state_str} | {rel_str}"
                     else:
-                        speed_str = "-- px/s"
-                        state_str = "UNKNOWN"
-                    sub_label = f"spd: {speed_str} | {state_str} | hist: {hist_len}f"
+                        sub_label = f"spd: --px/s | UNKNOWN | hist:{hist_len}f"
 
                     cv2.putText(display_frame, label, (x1, max(20, y1 - 22)), cv2.FONT_HERSHEY_SIMPLEX, 0.52, (255, 255, 255), 2)
                     cv2.putText(display_frame, sub_label, (x1, max(36, y1 - 6)), cv2.FONT_HERSHEY_SIMPLEX, 0.45, (0, 255, 255), 1)
@@ -303,9 +352,19 @@ def run_perception_pipeline(
 
                 # HUD Statistics
                 overlay_top = f"Frame: {packet.frame_index} | Tracks: {len(object_depths)} | Loop FPS: {overall_fps:.1f}"
-                overlay_sub = f"Det:{det_latency_ms:.0f}ms | Trk:{track_latency_ms:.0f}ms | Dep:{depth_latency_ms:.0f}ms | Mot:{motion_latency_ms:.1f}ms"
+                overlay_sub = f"Det:{det_latency_ms:.0f}ms | Trk:{track_latency_ms:.0f}ms | Dep:{depth_latency_ms:.0f}ms | Mot:{motion_latency_ms:.1f}ms | Cam:{cam_latency_ms:.1f}ms"
+                overlay_cam = f"Camera Motion: dx={camera_motion.dx:+.1f}px dy={camera_motion.dy:+.1f}px | v={camera_motion.camera_speed:.0f}px/s | [{camera_motion.confidence}]"
+                cv2.putText(display_frame, overlay_cam, (10, 78), cv2.FONT_HERSHEY_SIMPLEX, 0.58, (0, 255, 255), 2)
                 cv2.putText(display_frame, overlay_top, (10, 25), cv2.FONT_HERSHEY_SIMPLEX, 0.65, (255, 255, 0), 2)
                 cv2.putText(display_frame, overlay_sub, (10, 52), cv2.FONT_HERSHEY_SIMPLEX, 0.65, (255, 255, 0), 2)
+
+                                # Show optical flow inliers if requested
+                if show_flow and camera_motion.feature_points_curr is not None:
+                    pts = camera_motion.feature_points_curr
+                    inliers = camera_motion.inliers_mask if camera_motion.inliers_mask is not None else np.ones(len(pts), dtype=bool)
+                    for idx, pt in enumerate(pts):
+                        color = (0, 255, 0) if inliers[idx] else (0, 0, 255)
+                        cv2.circle(display_frame, (int(pt[0][0]), int(pt[0][1])), 2, color, -1)
 
                 cv2.imshow(window_name, display_frame)
                 key = cv2.waitKey(1) & 0xFF

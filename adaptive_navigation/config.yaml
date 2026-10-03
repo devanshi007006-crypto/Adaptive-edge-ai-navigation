@@ -121,3 +121,14 @@ motion:
   minimum_depth_reliability: MEDIUM
   max_valid_time_gap_seconds: 0.5
   depth_convention: higher_is_closer
+camera_motion:
+  enabled: true
+  method: sparse_optical_flow
+  max_features: 300
+  quality_level: 0.01
+  min_distance: 7.0
+  ransac_enabled: true
+  minimum_features: 20
+  inlier_threshold: 3.0
+  max_dt_seconds: 0.5
+  show_flow: false

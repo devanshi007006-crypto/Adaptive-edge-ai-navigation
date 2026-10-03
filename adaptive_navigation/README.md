@@ -110,6 +110,7 @@ python main.py --dry-run
 - **Step 5**: Depth Estimation (Completed - Depth Anything V2 ViT-S relative depth & object-level depth estimation)
 - **Step 6**: Temporal History Buffer (Completed - Rolling per-track observation buffers with bounded memory, TTL cleanup, and depth preservation)
 - **Step 7**: Velocity, Approach Estimation & Temporal Smoothing (Completed - Image-plane velocity, relative depth rate, EMA smoothing, and approach classification)
+- **Step 8**: Camera Motion Compensation (Completed - Lucas-Kanade sparse optical flow with RANSAC outlier rejection, foreground obstacle masking, and compensated velocity estimation)
 
 ### Running the Integrated Pipeline (Step 5)
 `ash
