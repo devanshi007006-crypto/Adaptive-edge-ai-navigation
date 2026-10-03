@@ -1,0 +1,43 @@
+Table 1: Overall System Performance
+Module,Metric,Result,Unit,Dataset,Evaluation Protocol,Notes
+Object Detection,Precision,1.0000,ratio,Canonical Suite (10 Scenarios),IoU >= 0.50 greedy bipartite matching,130 physical target annotations
+Object Detection,Recall,1.0000,ratio,Canonical Suite (10 Scenarios),IoU >= 0.50 greedy bipartite matching,Zero false negatives on clear obstacles
+Object Detection,F1-Score,1.0000,ratio,Canonical Suite (10 Scenarios),IoU >= 0.50 greedy bipartite matching,Balanced detection accuracy
+Object Detection,Mean IoU,0.9576,ratio,Canonical Suite (10 Scenarios),True positive box overlap,Bounding box localization quality
+Multi-Object Tracking,Stability Rate,0.9200,ratio,Canonical Suite (10 Scenarios),Observation continuity (>=3 frames),Proxy stability metric (Global Re-ID GT unavailable)
+Multi-Object Tracking,Benchmark (MOTA/IDF1),Not evaluated / Ground truth unavailable,N/A,Canonical Suite (10 Scenarios),Requires global identity matching GT,Unannotated in current dataset
+Depth Estimation,MAE,0.0962,meters,Canonical Suite (10 Scenarios),Physical metric distance comparison,Monocular Depth Anything V2 Small
+Depth Estimation,RMSE,0.1311,meters,Canonical Suite (10 Scenarios),Root-mean-squared distance error,130 metric ground truth pairs
+Depth Estimation,Median AE,0.0662,meters,Canonical Suite (10 Scenarios),Median absolute distance error,Robust to occasional outlier depths
+Depth Estimation,Relative Error,0.0265,ratio,Canonical Suite (10 Scenarios),Percentage relative depth deviation,2.65% mean relative error
+TTC Kinematics,MAE,0.1285,seconds,Canonical Suite (10 Scenarios),Physical closing kinematic formula (d/v),Evaluated on 46 closing hazard targets
+TTC Kinematics,RMSE,0.1489,seconds,Canonical Suite (10 Scenarios),Root-mean-squared time error,Kinematic physics model
+TTC Kinematics,Median Error,0.1299,seconds,Canonical Suite (10 Scenarios),Median absolute time error,Kinematic physics model
+TTC Kinematics,Accuracy (within ±0.50s),1.0000,ratio,Canonical Suite (10 Scenarios),Error tolerance boundary ±0.50s,All closing predictions within 0.5s window
+Risk Classification,Accuracy,0.9538,ratio,Canonical Suite (10 Scenarios),4-class threat matrix (LOW/MED/HIGH/CRIT),124/130 correct threat categorizations
+Risk Classification,Macro F1,0.9550,ratio,Canonical Suite (10 Scenarios),Unweighted class F1 average,LOW:0.9737 MED:0.9423 HIGH:0.9474 CRIT:0.9565
+Reliability Layer,Expected Calibration Error (ECE),0.1305,ratio,Canonical Suite (10 Scenarios),4-bucket reliability vs accuracy calibration,Calibration gap across [0.0-1.0] confidence
+Warning System,Warning Precision,0.9583,ratio,Canonical Suite (10 Scenarios),True hazard warnings vs audible alerts,46 true alerts / 2 false alarms
+Warning System,Warning Recall,1.0000,ratio,Canonical Suite (10 Scenarios),Hazard detection sensitivity,Zero missed imminent hazards
+Warning System,Warning F1,0.9787,ratio,Canonical Suite (10 Scenarios),Harmonic alert quality,Temporal hysteresis stabilized
+Warning System,False Warning Rate (FWR),0.0370,ratio,Canonical Suite (10 Scenarios),Audible alerts on benign scenes,3.70% false alarm rate (reduced from 14.8%)
+Warning System,Missed Warning Rate (MWR),0.0000,ratio,Canonical Suite (10 Scenarios),Undetected hazard rate,Zero safety-critical misses
+Safe Navigation,Directional Accuracy,0.9400,ratio,Canonical Suite (10 Scenarios),5-class decision matching,94/100 correct navigation recommendations
+Safe Navigation,Macro F1,0.9255,ratio,Canonical Suite (10 Scenarios),Unweighted navigation action F1,CONTINUE:1.00 CAUTION:0.77 AVOID_L:0.95 AVOID_R:0.96 STOP:0.95
+Computational Efficiency,Effective Throughput,30.19,FPS,Host Hardware (Intel/AMD Multi-Core CPU),Simulated test harness pipeline,Subsystem compute throughput benchmark
+Computational Efficiency,End-to-End Latency,33.12,ms,Host Hardware (Intel/AMD Multi-Core CPU),Camera capture to audio dispatch,Mean simulated end-to-end response time
+
+Table 2: Baseline vs Proposed System
+Metric,Baseline (Simple Proximity),Proposed (15-Stage Adaptive Navigation),Absolute Difference,Relative Difference (%),Dataset,Notes
+End-to-End Decision Accuracy,0.3500 (35.0%),0.9400 (94.0%),+0.5900,+168.57%,Canonical Suite (10 Scenarios),Paired t-test p < 0.0001 (Statistically Significant)
+False Warning Rate (FWR),0.1481 (14.8%),0.0370 (3.7%),-0.1111,-75.00%,Canonical Suite (10 Scenarios),Temporal hysteresis suppresses transient alert flutter
+Hazard Detection Sensitivity (Recall),0.6522 (65.2%),1.0000 (100.0%),+0.3478,+53.33%,Canonical Suite (10 Scenarios),TTC anticipation detects fast vehicles before proximity breach
+Context-Aware Evasive Steering,0.0000 (0.0%),0.9400 (94.0%),+0.9400,N/A (New Capability),Canonical Suite (10 Scenarios),Baseline only supports binary STOP/CONTINUE
+
+Table 3: Ablation Study
+Configuration / Experiment,Metric,Value A (Unablated / Baseline),Value B (Ablated / Proposed),Absolute Delta,Relative Delta (%),Statistical Test,Scientific Observation
+Temporal Risk Stabilization,False Warning Count,8.0 alerts,2.0 alerts,-6.0 alerts,-75.00%,Wilcoxon p = 0.0143,Hysteresis holdover and grace period eliminate sensor jitter spikes
+Temporal Risk Stabilization,Warning State Flutter,13.0 switches,9.0 switches,-4.0 switches,-30.77%,Count Diff p = 0.0143,Prevents user sensory fatigue from rapid alert toggling
+Time-to-Collision (TTC) Closing Physics,Mean Hazard Risk Score,0.6222,0.8861,+0.2639,+42.41%,Paired t-test p < 0.0001,Kinematic derivative escalates fast closing targets prior to near-field
+Optical Flow Ego-Motion Compensation,Closing Velocity MAE,0.0960 m/s,0.0369 m/s,-0.0591 m/s,-61.52%,Wilcoxon p = 0.2025,Pyramidal Lucas-Kanade + RANSAC removes forward user walk bias
+Reliability Evidence Gating,False Warnings in High Uncertainty,Controlled,Gated,Suppressed,-100% false spikes,Count Comp p = 0.0100,Low perception reliability downgrades/mutes dubious detections
