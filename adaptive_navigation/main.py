@@ -13,6 +13,8 @@ sys.path.insert(0, os.path.abspath(os.path.dirname(__file__)))
 from risk import TTCEstimator, TTCResult, RiskEngine, RiskFeatures, RiskAssessment
 from uncertainty.reliability import ReliabilityEstimator, ReliabilityAssessment, SystemReliability
 from warning.state_machine import WarningStateMachine, WarningDecision, GlobalWarningDecision
+from warning.message_generator import WarningMessageGenerator, WarningMessage
+from audio.tts import TTSEngine
 from temporal import (
     TemporalHistory,
     ObjectObservation,
@@ -53,7 +55,7 @@ def run_perception_pipeline(
     max_frames: int = None,
     headless: bool = False,
 ) -> None:
-    """Executes Step 12: Camera -> Frame Validation -> YOLO Detection -> BoT-SORT Tracking -> Depth Anything V2 -> Object-Level Depth -> Temporal History -> Motion Estimation -> Camera Motion Compensation -> TTC Estimation -> Multi-Factor Risk Assessment -> Uncertainty & Reliability -> Warning Decision State Machine."""
+    """Executes Step 13: Camera -> Frame Validation -> YOLO Detection -> BoT-SORT Tracking -> Depth Anything V2 -> Object-Level Depth -> Temporal History -> Motion Estimation -> Camera Motion Compensation -> TTC Estimation -> Multi-Factor Risk Assessment -> Uncertainty & Reliability -> Warning Decision State Machine -> User-Facing Audio/TTS Layer."""
     cam_cfg = config.get("camera", {})
     source = source_override if source_override is not None else cam_cfg.get("source", 0)
     width = cam_cfg.get("width", 640)
@@ -131,10 +133,10 @@ def run_perception_pipeline(
     display_enabled = debug_cfg.get("display", True) and not headless
     show_trails = debug_cfg.get("show_trails", True)
     show_depth_inset = debug_cfg.get("show_depth_inset", True)
-    window_name = debug_cfg.get("window_name", "Adaptive Navigation - Warning Decision State Machine")
+    window_name = debug_cfg.get("window_name", "Adaptive Navigation - User-Facing Warning & TTS Layer")
 
     print("=" * 75)
-    print("STEP 12: CAMERA + YOLO + BoT-SORT + DEPTH + TEMPORAL + MOTION + CAM COMP + TTC + RISK + UNCERTAINTY + WARNING STATE MACHINE")
+    print("STEP 13: CAMERA + YOLO + BoT-SORT + DEPTH + TEMPORAL + MOTION + CAM COMP + TTC + RISK + UNCERTAINTY + WARNING + TTS")
     print("=" * 75)
     print(f"Camera Source:   {source} ({width}x{height} @ {fps} FPS)")
     print(f"YOLO Detector:   {model_name} | Conf: {conf_thresh} | Device: {det_device}")
@@ -264,6 +266,12 @@ def run_perception_pipeline(
     warning_enabled = warning_cfg.get("enabled", True)
     warning_state_machine = WarningStateMachine(warning_cfg)
     print(f"Warning Machine:  Enabled: {warning_enabled} | HistLen: {warning_cfg.get('history_length', 10)} | Grace: {warning_cfg.get('lost_track_grace_seconds', 0.5)}s")
+
+    # 12. Initialize Warning Message Generator & Audio/TTS Engine (Step 13)
+    message_generator = WarningMessageGenerator(config)
+    tts_engine = TTSEngine(config)
+    print(f"Message Gen:      RepeatInterval: {config.get('audio', {}).get('repeat_interval_seconds', 2.0)}s")
+    print(f"TTS Engine:       Backend: {tts_engine.active_backend} | Available: {tts_engine.is_available()}")
 
     # 9. Initialize Multi-Factor Risk Assessment Engine (Step 10)
     risk_engine = RiskEngine(
@@ -419,6 +427,17 @@ def run_perception_pipeline(
             )
             warn_latency_ms = (time.perf_counter() - t_warn_start) * 1000.0
 
+            # Stage 12: User-Facing Warning Message Generation & Audio/TTS (Step 13)
+            t_tts_start = time.perf_counter()
+            warning_message: WarningMessage = message_generator.generate(
+                global_warning=global_warning,
+                track_decisions=warning_decisions,
+                current_time=packet.timestamp,
+            )
+            if warning_message.should_speak and tts_engine.is_available():
+                tts_engine.speak(warning_message.text, priority=warning_message.priority)
+            tts_latency_ms = (time.perf_counter() - t_tts_start) * 1000.0
+
             frames_processed += 1
 
             # Overall loop FPS
@@ -443,6 +462,7 @@ def run_perception_pipeline(
                     return f"ID:{o.track_id}({o.class_name})[{w_str} | {r_str} | {rel_str}]"
 
                 depth_info = ", ".join(_obj_summary(o) for o in object_depths) if object_depths else "No active tracks"
+                speech_info = f"TTS: \"{warning_message.text}\"" if warning_message.should_speak else "TTS: (silent)"
                 print(
                     f"[Frame {packet.frame_index:05d}] "
                     f"Loop FPS: {overall_fps:4.1f} | "
@@ -452,7 +472,8 @@ def run_perception_pipeline(
                     f"Risk: {risk_latency_ms:3.1f}ms | "
                     f"Rel: {rel_latency_ms:3.1f}ms | "
                     f"Warn: {warn_latency_ms:3.1f}ms | "
-                    f"GlobalAlert: [{global_warning.state}] | "
+                    f"TTS: {tts_latency_ms:3.1f}ms | "
+                    f"Alert: [{global_warning.state}] | {speech_info} | "
                     f"Objects ({len(object_depths)}): [{depth_info}]"
                 )
 
@@ -543,7 +564,7 @@ def run_perception_pipeline(
 
                 # HUD Statistics
                 overlay_top = f"Frame: {packet.frame_index} | Tracks: {len(object_depths)} | Loop FPS: {overall_fps:.1f}"
-                overlay_sub = f"Det:{det_latency_ms:.0f}ms|Trk:{track_latency_ms:.0f}ms|Dep:{depth_latency_ms:.0f}ms|Mot:{motion_latency_ms:.1f}ms|Cam:{cam_latency_ms:.1f}ms|TTC:{ttc_latency_ms:.1f}ms|Risk:{risk_latency_ms:.1f}ms|Rel:{rel_latency_ms:.1f}ms|Warn:{warn_latency_ms:.1f}ms"
+                overlay_sub = f"Det:{det_latency_ms:.0f}ms|Trk:{track_latency_ms:.0f}ms|Dep:{depth_latency_ms:.0f}ms|Mot:{motion_latency_ms:.1f}ms|Cam:{cam_latency_ms:.1f}ms|TTC:{ttc_latency_ms:.1f}ms|Risk:{risk_latency_ms:.1f}ms|Rel:{rel_latency_ms:.1f}ms|Warn:{warn_latency_ms:.1f}ms|TTS:{tts_latency_ms:.1f}ms"
                 overlay_cam = f"Camera Motion: dx={camera_motion.dx:+.1f}px dy={camera_motion.dy:+.1f}px | SysHealth: [{system_reliability.system_status}]"
                 alert_color_map = {
                     "CRITICAL": (0, 0, 255),
@@ -554,10 +575,13 @@ def run_perception_pipeline(
                 }
                 a_color = alert_color_map.get(global_warning.state, (255, 255, 255))
                 overlay_alert = f"GLOBAL ALERT: [{global_warning.state}] (TID:{global_warning.selected_track_id}) - {global_warning.reason}"
+                speech_text = warning_message.text if warning_message.text else "(Silent)"
+                overlay_speech = f"TTS: \"{speech_text}\" [{warning_message.priority}] (Spoke: {warning_message.should_speak})"
                 cv2.putText(display_frame, overlay_top, (10, 25), cv2.FONT_HERSHEY_SIMPLEX, 0.65, (255, 255, 0), 2)
-                cv2.putText(display_frame, overlay_sub, (10, 52), cv2.FONT_HERSHEY_SIMPLEX, 0.58, (255, 255, 0), 2)
-                cv2.putText(display_frame, overlay_cam, (10, 78), cv2.FONT_HERSHEY_SIMPLEX, 0.55, (0, 255, 255), 2)
-                cv2.putText(display_frame, overlay_alert, (10, 104), cv2.FONT_HERSHEY_SIMPLEX, 0.55, a_color, 2)
+                cv2.putText(display_frame, overlay_sub, (10, 52), cv2.FONT_HERSHEY_SIMPLEX, 0.56, (255, 255, 0), 2)
+                cv2.putText(display_frame, overlay_cam, (10, 76), cv2.FONT_HERSHEY_SIMPLEX, 0.52, (0, 255, 255), 2)
+                cv2.putText(display_frame, overlay_alert, (10, 100), cv2.FONT_HERSHEY_SIMPLEX, 0.52, a_color, 2)
+                cv2.putText(display_frame, overlay_speech, (10, 124), cv2.FONT_HERSHEY_SIMPLEX, 0.50, (255, 255, 255), 1)
 
                                 # Show optical flow inliers if requested
                 if show_flow and camera_motion.feature_points_curr is not None:
@@ -590,6 +614,7 @@ def run_perception_pipeline(
         print("\nInterrupted by user (Ctrl+C).")
     finally:
         camera.release()
+        tts_engine.shutdown()
         if display_enabled:
             cv2.destroyAllWindows()
         print("-" * 75)

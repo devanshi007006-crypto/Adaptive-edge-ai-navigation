@@ -174,3 +174,15 @@ uncertainty:
     low: 0.25
   consistency:
     enabled: true
+audio:
+  enabled: true
+  backend: auto
+  language: en
+  volume: 1.0
+  repeat_interval_seconds: 2.0
+  allow_priority_interrupt: true
+  max_queue_size: 2
+warning_messages:
+  caution: Please be cautious.
+  warning: Obstacle ahead.
+  critical: Immediate obstacle ahead.
