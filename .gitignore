@@ -1,0 +1,40 @@
+﻿# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*.class
+
+# Virtual environments
+venv/
+.venv/
+env/
+
+# IDE / Editor artifacts
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Large model weights (track via download instructions, not direct repo commit)
+models/detector/*.pt
+models/detector/*.pth
+models/detector/*.onnx
+models/depth/*.pth
+models/depth/*.pt
+models/depth/*.onnx
+*.pth
+*.pt
+
+# Evaluation logs and temp results
+adaptive_navigation/data/results/*.csv
+adaptive_navigation/data/raw/*
+!adaptive_navigation/data/raw/.gitkeep
+adaptive_navigation/data/processed/*
+!adaptive_navigation/data/processed/.gitkeep
+adaptive_navigation/data/annotations/*
+!adaptive_navigation/data/annotations/.gitkeep
+adaptive_navigation/data/results/*
+!adaptive_navigation/data/results/.gitkeep
+adaptive_navigation/models/detector/*
+!adaptive_navigation/models/detector/.gitkeep
+adaptive_navigation/models/depth/*
+!adaptive_navigation/models/depth/.gitkeep
