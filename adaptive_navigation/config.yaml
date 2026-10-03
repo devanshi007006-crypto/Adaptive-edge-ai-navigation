@@ -13,15 +13,27 @@ camera:
   fps: 30
 
 detector:
-  model: "yolo11n.pt"         # Ultralytics model (e.g. yolo11n.pt, yolo11s.pt, yolov8n.pt)
+  model: "models/detector/yolo11n.pt" # Ultralytics model checkpoint
   confidence_threshold: 0.25
   iou_threshold: 0.45
   image_size: 640
   device: "auto"
 
+tracker:
+  enabled: true
+  type: "botsort"
+  tracker_config: "botsort.yaml"
+  track_high_thresh: 0.25
+  track_low_thresh: 0.1
+  new_track_thresh: 0.25
+  match_thresh: 0.8
+  track_buffer: 30
+
 debug:
   display: true               # Display live camera preview window
-  window_name: "Adaptive Navigation - YOLO Detection Preview"
+  window_name: "Adaptive Navigation - BoT-SORT Tracking"
+  show_trails: true           # Display short trajectory trail for active tracks
+  trail_length: 15
 
 perception:
   preprocessing:
@@ -29,14 +41,6 @@ perception:
     target_height: null
     normalize: false
     to_rgb: false
-
-  tracker:
-    tracker_type: "botsort.yaml"
-    track_high_thresh: 0.5
-    track_low_thresh: 0.1
-    new_track_thresh: 0.6
-    match_thresh: 0.8
-    track_buffer: 30
 
   depth:
     model_name: "depth_anything_v2_vits"
