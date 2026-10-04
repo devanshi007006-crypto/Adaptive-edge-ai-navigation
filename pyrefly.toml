@@ -1,0 +1,16 @@
+# Pyrefly Language Server & Static Type Checker Configuration
+python-version = "3.11"
+python-interpreter-path = "C:/Users/Devanshi/python311/python.exe"
+
+search-path = [
+    ".",
+    "adaptive_navigation",
+    "C:/Users/Devanshi/python311/Lib/site-packages",
+    "C:/Users/Devanshi/AppData/Local/Python/pythoncore-3.14-64/Lib/site-packages"
+]
+
+[errors]
+disabled = [
+    "missing-import",
+    "untyped-import"
+]

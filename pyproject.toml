@@ -1,0 +1,20 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "adaptive-navigation"
+version = "1.0.0"
+
+[tool.pyrefly]
+python-version = "3.11"
+python-interpreter-path = "C:/Users/Devanshi/python311/python.exe"
+search-path = [
+    ".",
+    "adaptive_navigation",
+    "C:/Users/Devanshi/python311/Lib/site-packages",
+    "C:/Users/Devanshi/AppData/Local/Python/pythoncore-3.14-64/Lib/site-packages"
+]
+
+[tool.pyrefly.errors]
+disabled = ["missing-import", "untyped-import"]
