@@ -9,9 +9,9 @@ search-path = [
     "C:/Users/Devanshi/AppData/Local/Python/pythoncore-3.14-64/Lib/site-packages"
 ]
 
-[errors]
-disabled = [
-    "missing-import",
-    "untyped-import",
-    "invalid-import"
+# Tell Pyrefly to silence missing import warnings across all modules
+ignore-missing-imports = [
+    "*"
 ]
+
+replace-untyped-imports-with-any = true

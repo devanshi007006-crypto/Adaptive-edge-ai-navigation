@@ -15,6 +15,5 @@ search-path = [
     "C:/Users/Devanshi/python311/Lib/site-packages",
     "C:/Users/Devanshi/AppData/Local/Python/pythoncore-3.14-64/Lib/site-packages"
 ]
-
-[tool.pyrefly.errors]
-disabled = ["missing-import", "untyped-import", "invalid-import"]
+ignore-missing-imports = ["*"]
+replace-untyped-imports-with-any = true
