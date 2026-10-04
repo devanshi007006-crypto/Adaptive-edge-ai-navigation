@@ -8,8 +8,8 @@
 
 * **Project Title**: An Adaptive Multimodal Edge-AI Framework for Safe Navigation and Dynamic-Time Risk Prediction for Visually Impaired Users
 * **Short Name**: `Adaptive-edge-ai-navigation`
-* **Current Development Stage**: **Phase 2C** — Throughput & Forward Ego-Motion Validation
-* **Current Validation Stage**: **Phase 2C revalidation completed across 5 controlled video scenarios (5,235 frames).** 2:1 depth cadence achieved **13.1–14.0 FPS** (+68.7% speedup, ~33 ms p50), radial optical flow divergence forward ego-motion compensation achieved **70.0% reduction** in receding approach spikes, with 100% hazard preservation.
+* **Current Development Stage**: **Phase 3A** — HEADS-UP Exploratory External Validation
+* **Current Validation Stage**: **Exploratory external validation on three representative HEADS-UP sequences (250 frames).** Evaluated head-mounted video behavior on RTX 4050 (`cuda:0`). Measured 7.08–10.44 FPS real throughput, 98.7% optical flow ego-motion tracking validity (up to 100 px/frame displacement), 1,288 raw detector proposals filtered down to 941 active detections, zero active false-warning detections after the configured indoor navigation class policy on the selected sequences, 100% track persistence on primary hazards, and context-aware warning/evasion escalation. Not a statistically representative sample of the full 43,213-frame benchmark.
 * **Primary Repository**: `Adaptive-edge-ai-navigation`
 * **Active Git Branch**: `By-Vivek-for-testing-and-improvement`
 * **Target Hardware**: Intel Core i7 / NVIDIA RTX Laptop GPU / Edge Jetson ARM64 / Host CPU fallback
@@ -228,17 +228,26 @@ The canonical feed-forward perception and decision pipeline operates through 15 
 | `validation/results/phase2b_behavioral_validation_report.md` | Validation | Phase 2B comparative report analyzing failure mode fixes | Video runs 2B | Phase 2B | **ACTIVE** |
 | `validation/results/phase2c_validation_report.md` | Validation | Phase 2C comprehensive throughput and ego-motion report | Video runs 2C | Phase 2C | **ACTIVE** |
 | `validation/results/video_inventory.csv` | Validation | Manifest of 5 controlled test videos with codecs & resolutions | `cv2.VideoCapture` | Inventory | **ACTIVE** |
-| `validation/datasets/heads_up/`| Validation | Target directory for HEADS-UP benchmark cache | External Data | Phase 2C Evaluators | **ACTIVE (Reserved)** |
+| `validation/datasets/heads_up/README.md`| Docs | HEADS-UP dataset guide, git hygiene & credential policy | None | Researchers | **ACTIVE** |
+| `validation/datasets/heads_up/heads_up_adapter.py`| Dataset | Adapter exposing 1280x720 frames, 6-DOF poses, trajectories | OpenCV / CSV | Phase 3A Runners | **ACTIVE** |
+| `validation/datasets/heads_up/metadata/`| Data | Sliced camera poses, trajectories, and calibration CSVs | HEADS-UP repo | Adapters | **ACTIVE (Tracked)** |
+| `validation/datasets/heads_up/sequences/`| Data | Extracted 250 frames & MP4s for 3 target episodes (Local Only) | HEADS-UP tar | Validation | **ACTIVE (Ignored)** |
+| `validation/results/heads_up/` | Validation | Phase 3A GPU telemetry (JSON, CSVs) and per-sequence reports | Models / GPU | Phase 3A | **ACTIVE (Tracked)** |
+| `validation/results/phase3a_heads_up_report.md` | Validation | Phase 3A master report on egocentric generalization | Telemetry | Phase 3A | **ACTIVE** |
 | `validation/calibration/` | Validation | Camera intrinsic matrices & metric scale parameters | Sensor Rig | Pipeline | **ACTIVE (Empty)** |
 
 ### Diagnostic & Execution Scripts (`scripts/`)
 | File | Category | Purpose | Depends On | Used By | Status |
 | :--- | :--- | :--- | :--- | :--- | :--- |
 | `scripts/tools/check_environment.py`| Tool | Diagnostics for Python, PyTorch, CUDA, and weights | `torch`, `cv2` | Developers | **ACTIVE** |
+| `scripts/tools/download_heads_up_unconstrained.py`| Tool | Gated HEADS-UP archive downloader (reads `HF_TOKEN`) | `urllib` | Researchers | **ACTIVE** |
+| `scripts/tools/resume_heads_up_unconstrained.py`| Tool | Resumable chunk downloader with retry logic (reads `HF_TOKEN`) | `urllib` | Researchers | **ACTIVE** |
+| `scripts/tools/finalize_heads_up_sequences.py`| Tool | Prunes placeholder frames & compiles sequence MP4 videos | `cv2`, `json` | Pipeline | **ACTIVE** |
 | `scripts/run/run_pipeline.py`| Runner | Convenience wrapper for root `main.py` | `main.py` | CLI Users | **ACTIVE** |
 | `scripts/run/run_phase2a_validation.py`| Runner | Phase 2A automated execution runner across 5 videos | `main.py` | Phase 2A | **ACTIVE** |
 | `scripts/run/run_phase2b_validation.py`| Runner | Phase 2B automated execution runner across 5 videos | `main.py` | Phase 2B | **ACTIVE** |
 | `scripts/run/run_phase2c_validation.py`| Runner | Phase 2C automated execution runner (2:1 cadence & ego-motion) | `main.py` | Phase 2C | **ACTIVE** |
+| `scripts/run/run_phase3a_heads_up_validation.py`| Runner | Phase 3A automated execution runner across HEADS-UP episodes | `main.py` | Phase 3A | **ACTIVE** |
 
 ### Tests (`tests/`)
 | File | Category | Purpose | Depends On | Used By | Status |
@@ -355,11 +364,26 @@ python evaluation/pilot_testing.py
 | Dataset Identifier | Local? | Storage Location | Purpose | Annotation Schema | Current Status |
 | :--- | :--- | :--- | :--- | :--- | :--- |
 | **Test Clip MP4** | **Yes** | `data/test_clip.mp4` | 60-frame 640x480 video for video-file simulation | None (Raw Video) | **AVAILABLE** |
+| **Controlled Real-World Footage**| **Yes** | `validation/videos/` | 5 recorded indoor pedestrian scenarios (5,235 frames) | Physical Markers | **VERIFIED (Phases 2A–2C)** |
+| **HEADS-UP Representative Sample**| **Local Only** | `validation/datasets/heads_up/sequences/` | 3 targeted unconstrained egocentric episodes (250 frames) | Machine Pseudo-Labels | **VERIFIED (Phase 3A)** |
 | **Canonical 10-Scenario Suite** | **No** (Virtual) | `evaluation/ground_truth.py` | Programmatic kinematic trajectory generation | Python dataclass | **DEPRECATED (Synthetic)** |
 | **Real-World Trial Catalog** | **No** (Virtual) | `evaluation/test_metadata.yaml` | Catalog of 12 simulated test cases (`RW_001`–`RW_012`)| YAML metadata | **DEPRECATED (Simulated)** |
-| **HEADS-UP Benchmark** | **No** | `validation/datasets/heads_up/` | Wearable egocentric obstacle benchmark for visually impaired | 2D/3D BBox, Class | **PLANNED (Phase 1)** |
-| **NYU-Depth V2 / KITTI Depth** | **No** | `validation/datasets/depth/` | Monocular metric depth ground-truth evaluation | Dense Depth Maps | **PLANNED (Phase 1)** |
-| **Controlled Real-World Footage**| **No** | `validation/videos/` | Locally recorded pedestrian video with distance markers | Calibrated Grid | **PLANNED (Phase 1)** |
+| **NYU-Depth V2 / KITTI Depth** | **No** | `validation/datasets/depth/` | Monocular metric depth ground-truth evaluation | Dense Depth Maps | **PLANNED** |
+
+### Dataset Git Hygiene & Credential Security Policy (HEADS-UP)
+
+1. **Local-Only Raw Data Mandate**:
+   - The official 102 GB HEADS-UP dataset archive is strictly prohibited from being downloaded in full or committed to the repository.
+   - All raw archives (`validation/datasets/heads_up/*.tar`, `*.tar.gz`, `*.zip`), raw staging areas (`raw/`, `cache/`), and extracted image frame sequences (`validation/datasets/heads_up/sequences/`) are permanently ignored by Git via `.gitignore`.
+2. **Tracked Lightweight Assets**:
+   - Lightweight metadata CSVs (`validation/datasets/heads_up/metadata/`: camera poses, trajectory labels, calibrations).
+   - Dataset adapter code (`validation/datasets/heads_up/heads_up_adapter.py`).
+   - Dataset documentation and reproduction guide ([`validation/datasets/heads_up/README.md`](file:///c:/My%20sep_stuffs/Research%20Conclave/Adaptive-edge-ai-navigation/validation/datasets/heads_up/README.md)).
+   - Validation outputs and telemetry logs (`validation/results/heads_up/` and [`validation/results/phase3a_heads_up_report.md`](file:///c:/My%20sep_stuffs/Research%20Conclave/Adaptive-edge-ai-navigation/validation/results/phase3a_heads_up_report.md)).
+3. **Strict Credential-Handling Policy**:
+   - Hugging Face authentication tokens (`hf_...`) must **NEVER** be hardcoded or committed into source code, scripts, configs, documentation, or reports.
+   - All dataset tools read exclusively from the environment variable: `os.environ.get("HF_TOKEN")`.
+   - Scripts terminate with an explicit error if the required token is absent, preventing silent fallback or accidental exposure.
 
 ---
 
@@ -466,11 +490,11 @@ Audit of all previously published experimental claims:
   - Preserved full sensitivity to true closing hazards in `S03_approaching_r01` and `S02_static_r01`.
   - Compiled master comparative report in `validation/results/phase2b_behavioral_validation_report.md`.
 
-### NEXT (Phase 2C & Beyond)
-- [x] Implement adaptive 2:1 depth subsampling cadence for edge operation (Completed in Phase 2C: achieved 13.38 FPS, 70% throughput boost).
-- [x] Implement optical flow background forward ego-motion compensation (Completed in Phase 2C: radial divergence compensation).
-- Implement ground-plane calibration for metric distance estimation.
-- Download and prepare HEADS-UP benchmark dataset for Mode B testing.
+### NEXT (Phase 3B & Beyond)
+- [x] Download and prepare representative HEADS-UP benchmark dataset for egocentric testing (Completed in Phase 3A: 250 frames across 3 unconstrained episodes).
+- [ ] Implement asynchronous audio TTS queue to resolve Windows COM event loop contention.
+- [ ] Implement ground-plane calibration for metric distance estimation.
+- [ ] Integrate wearable 6-DOF IMU gyro fusion for angular ego-motion compensation.
 
 ### BLOCKED
 - Human-subject testing with visually impaired users (Strictly blocked pending institutional ethical review and technical safety certification).
@@ -478,6 +502,25 @@ Audit of all previously published experimental claims:
 ---
 
 ## 14. Change Log
+
+### 2026-10-04 (Phase 3A — HEADS-UP Exploratory External Validation)
+- **Dataset Audit & Selection**: Inspected official HEADS-UP benchmark (`Yassaman/HEADS-UP`, *Head-Mounted Egocentric Dataset for Trajectory Prediction in Blind Assistance Systems*, arXiv:2409.20324v1, EPFL VITA Lab). Verified sensor specs (ZED Mini stereo, 1280x720 @ 30 FPS, 800 Hz IMU, visual odometry poses). Documented crucial provenance limitation: trajectory labels are machine pseudo-labels (YOLOv8 + ByteTrack + Kalman), NOT ground-truth human annotations.
+- **Exploratory Extraction & Zero-Bloat Management**: Downloaded and verified archive slice without downloading the full 102 GB dataset. Extracted 250 valid frames across 3 targeted unconstrained episodes (8.33 seconds total):
+  - `HU_unconstrained_s01_multiped`: 73 frames, multi-agent density (Agents 1, 2, 3 active).
+  - `HU_unconstrained_s02_approach`: 102 frames, closing oncoming pedestrian (Agent 5, 10.5m -> 6.5m).
+  - `HU_unconstrained_s03_headmotion`: 75 frames, severe head scanning (>60°/s) with close hazard (Agent 74, 1.7m -> 4.4m).
+  *Explicit Scope Demarcation*: These 250 frames are not a statistically representative sample of the full 43,213-frame benchmark; evaluation represents exploratory behavioral stress testing. Reclaimed the 11.51 GB temporary download immediately following extraction.
+- **Created Adapter & Tools**:
+  - `validation/datasets/heads_up/heads_up_adapter.py`: standard adapter yielding 1280x720 frames, synchronized 6-DOF poses, and machine reference trajectories.
+  - `scripts/tools/finalize_heads_up_sequences.py`: cleans placeholder frames and compiles MP4 video assets.
+  - `scripts/run/run_phase3a_heads_up_validation.py`: automated runner and latency profiler for HEADS-UP sequences.
+- **Executed on GPU (`cuda:0`, RTX 4050)**:
+  - `s01_multiped`: 73 frames in 10.31s @ **7.08 FPS** (p50: 135.56 ms). Track IDs: 7. Valid TTC: 170. Evasive steering `AVOID_RIGHT` on 38 frames (52.1%).
+  - `s02_approach`: 102 frames in 9.77s @ **10.44 FPS** (p50: 92.80 ms). Track ID 1 persisted 102/102 frames (100%). Valid TTC: 125 down to 2.30s. Sustained `CAUTION` warning on 101 frames (99.0%).
+  - `s03_headmotion`: 75 frames in 7.63s @ **9.82 FPS** (p50: 137.18 ms). Measured optical flow displacement up to **100.26 px/frame** (98.7% valid flow). 72 `WARNING` frames (96.0%), `AVOID_RIGHT` (41 frames), `AVOID_LEFT` (15 frames), and emergency `STOP` (17 frames, 22.7%).
+- **Detection & Class Filtering**: Clearly distinguished raw detector output (1,288 candidate proposals) from filtered active detections (941 proposals, 347 rejected by policy). Zero active false-warning detections after the configured indoor navigation class policy on the selected sequences (active hazards: `person`: 725, `bicycle`: 67, `backpack`: 16).
+- **Master Report Compiled**: `validation/results/phase3a_heads_up_report.md` (Sections A through N).
+- **Status**: Phase 3A exploratory external egocentric validation successfully completed.
 
 ### 2026-10-04 (Phase 2C — Throughput + Forward Ego-Motion Validation)
 - **Investigated & Verified**: Detailed track lifetime and class identity for Track 1 in `S04_receding_r01`. Confirmed Track 1 is 100% `person` on all 857 frames. Resolved that the 144 approach frames belonged to Track 1 across 10 discrete intervals (frames 6–36 initial camera acceleration, walking gait torso pitch oscillations, and frames 767–793 hall termination deceleration), while background obstacles (Tracks 7, 10, 15) contributed 356 additional false approach frames.

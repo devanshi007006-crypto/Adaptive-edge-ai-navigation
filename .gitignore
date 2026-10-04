@@ -1,4 +1,4 @@
-﻿# Byte-compiled / optimized / DLL files
+# Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
 *.class
@@ -38,3 +38,13 @@ adaptive_navigation/models/detector/*
 !adaptive_navigation/models/detector/.gitkeep
 adaptive_navigation/models/depth/*
 !adaptive_navigation/models/depth/.gitkeep
+
+# HEADS-UP dataset — raw/large data is local-only
+# Do not commit downloaded archives, extracted frame sequences, or caches.
+# Keep metadata, adapters, documentation and validation results tracked.
+validation/datasets/heads_up/*.tar
+validation/datasets/heads_up/*.tar.gz
+validation/datasets/heads_up/*.zip
+validation/datasets/heads_up/raw/
+validation/datasets/heads_up/cache/
+validation/datasets/heads_up/sequences/
