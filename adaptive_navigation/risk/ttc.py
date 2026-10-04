@@ -248,8 +248,10 @@ class TTCEstimator:
         # Relative closing rate = (d_curr - d_prev) / dt
         relative_closing_rate = (curr.depth_value - prev.depth_value) / dt
 
-        # Check closing state in relative depth space
-        is_closing_relative = relative_closing_rate > self.minimum_closing_speed
+        # Check closing state in relative depth space:
+        # Validated either by direct depth rate OR temporally smoothed approach classification
+        is_motion_approaching = (compensated_motion is not None and compensated_motion.approach_state == "APPROACHING")
+        is_closing_relative = (relative_closing_rate > self.minimum_closing_speed) or is_motion_approaching
 
         if not is_closing_relative:
             return self._build_result(

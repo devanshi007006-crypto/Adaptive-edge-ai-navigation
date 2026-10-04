@@ -270,11 +270,13 @@ class RiskEngine:
                 else:
                     dist_contrib = max(0.0, 1.0 - (d_val / 12.0))
             else:
-                # Relative depth (Depth Anything V2): HIGHER = CLOSER
-                # Normalize relative depth value in [0, 25]
-                norm_rel = min(1.0, max(0.0, d_val / 20.0))
-                dist_contrib = norm_rel
-                if norm_rel > 0.65:
+                # Relative depth (Depth Anything V2) + visual looming scale:
+                # Depth Anything V2 typical range is [0.0, 5.0]
+                norm_depth = min(1.0, max(0.0, d_val / 5.0))
+                # Visual scale proximity: obstacle height relative to camera frame height
+                norm_scale = min(1.0, max(0.0, float(features.object_height) / max(1.0, float(features.frame_height))))
+                dist_contrib = max(norm_depth, norm_scale)
+                if dist_contrib > 0.60:
                     secondary_reasons.append("HIGH_RELATIVE_PROXIMITY")
             weighted_sum += w_dist * dist_contrib
 
