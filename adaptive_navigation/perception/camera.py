@@ -80,15 +80,22 @@ class CameraSource:
         if not ret or frame is None or frame.size == 0:
             return None
 
-        # Measure capture FPS based on inter-frame interval
-        capture_fps = 0.0
-        if self._last_frame_time is not None:
-            delta_t = current_time - self._last_frame_time
-            if delta_t > 0:
-                instant_fps = 1.0 / delta_t
-                self._fps_history.append(instant_fps)
-                capture_fps = sum(self._fps_history) / len(self._fps_history)
-        self._last_frame_time = current_time
+        # Measure capture FPS based on inter-frame interval (or video stream time)
+        if self.is_video_file:
+            video_fps = self.cap.get(cv2.CAP_PROP_FPS)
+            if not video_fps or video_fps <= 0 or np.isnan(video_fps):
+                video_fps = float(self.target_fps) if self.target_fps is not None else 30.0
+            current_time = float(self.frame_index) / float(video_fps)
+            capture_fps = float(video_fps)
+        else:
+            capture_fps = 0.0
+            if self._last_frame_time is not None:
+                delta_t = current_time - self._last_frame_time
+                if delta_t > 0:
+                    instant_fps = 1.0 / delta_t
+                    self._fps_history.append(instant_fps)
+                    capture_fps = sum(self._fps_history) / len(self._fps_history)
+            self._last_frame_time = current_time
 
         h, w = frame.shape[:2]
         packet = FramePacket(

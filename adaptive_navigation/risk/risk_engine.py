@@ -236,8 +236,21 @@ class RiskEngine:
             available_weight += w_ttc
             ttc_contrib = 0.0  # Explicitly zero risk for receding/static
             secondary_reasons.append("OBJECT_NOT_CLOSING")
+        elif features.ttc_state == "RELATIVE_DEPTH_ONLY":
+            # Relative depth is active: use relative closing & proximity proxy
+            available_weight += w_ttc
+            if features.approach_state == "APPROACHING":
+                d_val = float(features.depth_value) if (features.depth_valid and features.depth_value is not None) else 10.0
+                norm_d = min(1.0, max(0.0, d_val / 20.0))
+                ttc_contrib = min(1.0, 0.50 + 0.50 * norm_d)
+                secondary_reasons.append("RELATIVE_CLOSING_PROXIMITY")
+            elif features.approach_state == "STABLE":
+                ttc_contrib = 0.15
+            else:
+                ttc_contrib = 0.0
+            weighted_sum += w_ttc * ttc_contrib
         else:
-            # RELATIVE_DEPTH_ONLY, INSUFFICIENT_HISTORY, etc. -> evidence missing
+            # INSUFFICIENT_HISTORY, etc. -> evidence missing
             ttc_contrib = 0.0
 
         # --- B. Distance / Proximity Contribution ---
@@ -353,9 +366,11 @@ class RiskEngine:
 
         # 7. Select Explainable Primary Reason
         if risk_level in ("CRITICAL", "HIGH"):
-            if ttc_contrib >= 0.80:
+            if ttc_contrib >= 0.80 and features.ttc_valid:
                 primary_reason = "SHORT_TTC"
             elif app_contrib >= 0.80 and path_state == "HIGH":
+                primary_reason = "APPROACHING_OBJECT_IN_PATH"
+            elif ttc_contrib >= 0.70 and path_state in ("HIGH", "MEDIUM"):
                 primary_reason = "APPROACHING_OBJECT_IN_PATH"
             elif path_state == "HIGH":
                 primary_reason = "HIGH_PATH_RELEVANCE"
