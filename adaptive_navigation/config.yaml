@@ -13,6 +13,43 @@ detector:
   iou_threshold: 0.45
   image_size: 640
   device: auto
+  class_filter:
+    enabled: true
+    policy: "indoor_navigation"
+    # Documented indoor navigation policy for visually impaired mobility assistance:
+    # 1. Human agents / pedestrians: person
+    # 2. Indoor mobility vehicles: bicycle, motorcycle, wheelchair
+    # 3. Structural furniture hazards: chair, couch, bed, dining table, bench
+    # 4. Ground-level trip / snag hazards: suitcase, backpack, handbag, umbrella
+    # 5. Domestic / service animals: dog
+    allowed_classes:
+      - person
+      - bicycle
+      - motorcycle
+      - dog
+      - chair
+      - couch
+      - bed
+      - dining table
+      - bench
+      - suitcase
+      - backpack
+      - handbag
+      - umbrella
+    # Explicit suppression of out-of-context COCO classes prone to architectural false alarms:
+    suppressed_classes:
+      - cat
+      - toilet
+      - refrigerator
+      - microwave
+      - oven
+      - toaster
+      - sink
+      - tv
+      - potted plant
+      - airplane
+      - boat
+      - train
 tracker:
   enabled: true
   type: botsort
@@ -30,6 +67,7 @@ depth:
   input_size: 518
   is_metric: false
   object_statistic: median
+  cadence: 1  # Depth inference cadence: 1 = every frame, 2 = every 2nd frame (2:1 cadence)
 debug:
   display: true
   window_name: Adaptive Navigation - YOLO + BoT-SORT + Depth
@@ -57,6 +95,20 @@ temporal:
   max_history_age_seconds: 2.0
   cleanup_after_seconds: 2.0
   minimum_observations: 3
+camera_motion:
+  enabled: true
+  method: sparse_optical_flow
+  max_features: 300
+  quality_level: 0.01
+  min_distance: 7.0
+  ransac_enabled: true
+  minimum_features: 20
+  inlier_threshold: 3.0
+  max_dt_seconds: 0.5
+  forward_compensation:
+    enabled: true
+    divergence_threshold: 0.015
+    divergence_weight: 1.0
 risk:
   enabled: true
   weights:
@@ -142,11 +194,19 @@ motion:
   minimum_dt_seconds: 0.01
   minimum_history_observations: 3
   smoothing_method: ema
-  smoothing_window: 5
-  stable_threshold: 0.05
+  smoothing_window: 8
+  stable_threshold: 0.08
   minimum_depth_reliability: MEDIUM
   max_valid_time_gap_seconds: 0.5
   depth_convention: higher_is_closer
+  # Temporal stabilization parameters (Phase 2B)
+  temporal_stabilization:
+    enabled: true
+    min_consecutive_approaching: 5
+    min_consecutive_receding: 5
+    window_observations: 8
+    optical_crossval_enabled: true
+    area_shrink_threshold: -0.15 # Normalized area rate threshold indicating receding optical geometry
 camera_motion:
   enabled: true
   method: sparse_optical_flow

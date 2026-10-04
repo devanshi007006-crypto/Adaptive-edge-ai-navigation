@@ -1,0 +1,2 @@
+frame_index,timestamp_sec,track_id,class_name,confidence,bbox_x1,bbox_y1,bbox_x2,bbox_y2,depth_value,depth_valid,approach_state,closing_speed,ttc_seconds,ttc_state,ttc_valid,risk_score,risk_level,risk_primary_reason,warning_state
+815,14.1362,10,dog,0.31,437.8,276.2,511.2,309.3,1.672,True,UNKNOWN,,,INSUFFICIENT_HISTORY,False,0.667,MEDIUM,MODERATE_PROXIMITY,NO_WARNING

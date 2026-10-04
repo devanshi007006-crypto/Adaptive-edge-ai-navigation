@@ -19,6 +19,8 @@ class Detection:
     width: float
     height: float
     timestamp: float
+    policy_accepted: bool = True             # False if filtered by indoor navigation class policy
+    filter_reason: Optional[str] = None      # Documented reason if policy_accepted is False
 
 class DetectorInterface(ABC):
     """Abstract interface for object detection models."""
@@ -40,6 +42,7 @@ class YOLOObjectDetector(DetectorInterface):
         image_size: int = 640,
         device: str = "auto",
         classes_of_interest: Optional[List[str]] = None,
+        class_filter_config: Optional[dict] = None,
     ):
         self.model_name_or_path = model_name_or_path
         self.confidence_threshold = float(confidence_threshold)
@@ -47,6 +50,15 @@ class YOLOObjectDetector(DetectorInterface):
         self.image_size = int(image_size)
         self.device_config = device
         self.classes_of_interest = set(classes_of_interest) if classes_of_interest else None
+        
+        # Indoor Navigation Class Policy Configuration
+        self.class_filter_config = class_filter_config or {}
+        self.filter_enabled = bool(self.class_filter_config.get("enabled", False))
+        self.policy_name = str(self.class_filter_config.get("policy", "indoor_navigation"))
+        allowed = self.class_filter_config.get("allowed_classes")
+        self.allowed_classes = set(allowed) if allowed is not None else None
+        suppressed = self.class_filter_config.get("suppressed_classes")
+        self.suppressed_classes = set(suppressed) if suppressed is not None else set()
 
         self.model: Optional[YOLO] = None
         self.resolved_device: str = "cpu"
@@ -159,6 +171,17 @@ class YOLOObjectDetector(DetectorInterface):
             center_x = (x1 + x2) / 2.0
             center_y = (y1 + y2) / 2.0
 
+            # Evaluate Indoor Navigation Class Policy (records metadata without destroying raw evidence)
+            policy_accepted = True
+            filter_reason = None
+            if self.filter_enabled:
+                if cls_name in self.suppressed_classes:
+                    policy_accepted = False
+                    filter_reason = f"suppressed_by_{self.policy_name}_policy"
+                elif self.allowed_classes is not None and cls_name not in self.allowed_classes:
+                    policy_accepted = False
+                    filter_reason = f"unsupported_by_{self.policy_name}_policy"
+
             detections.append(
                 Detection(
                     bbox=(x1, y1, x2, y2),
@@ -170,6 +193,8 @@ class YOLOObjectDetector(DetectorInterface):
                     width=box_width,
                     height=box_height,
                     timestamp=timestamp,
+                    policy_accepted=policy_accepted,
+                    filter_reason=filter_reason,
                 )
             )
 

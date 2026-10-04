@@ -1,0 +1,6 @@
+relative_path,filename,scenario,resolution,fps,frame_count,duration_sec,file_size_bytes,decode_status,notes
+validation/videos/approaching/S03_approaching_r01.mp4,S03_approaching_r01.mp4,approaching,848x478,59.17,788,13.32,2719683,SUCCESS,Frames matched metadata
+validation/videos/clear_path/S01_clear_r01.mp4,S01_clear_r01.mp4,clear_path,848x478,57.65,1524,26.43,5385749,SUCCESS,Frames matched metadata
+validation/videos/crossing/S05_crossing_r01.mp4,S05_crossing_r01.mp4,crossing,848x478,58.45,908,15.53,3187183,SUCCESS,Frames matched metadata
+validation/videos/receding/S04_receding_r01.mp4,S04_receding_r01.mp4,receding,848x478,59.31,857,14.45,2947922,SUCCESS,Frames matched metadata
+validation/videos/static_obstacle/S02_static_r01.mp4,S02_static_r01.mp4,static_obstacle,848x478,59.18,1158,19.57,3991608,SUCCESS,Frames matched metadata

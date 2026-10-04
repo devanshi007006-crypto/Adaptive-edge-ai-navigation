@@ -1,0 +1,4602 @@
+[
+  {
+    "frame_index": 0,
+    "timestamp_sec": 0.0,
+    "active_tracks_count": 1,
+    "latencies_ms": {
+      "detector": 493.24,
+      "tracker": 16.7,
+      "depth": 124.11,
+      "motion": 0.04,
+      "camera_motion": 0.73,
+      "ttc": 0.03,
+      "risk": 0.07,
+      "reliability": 0.1,
+      "warning": 0.08,
+      "navigation": 0.07,
+      "tts": 0.01,
+      "total_frame": 643.93
+    },
+    "camera_motion": {
+      "dx": 0.0,
+      "dy": 0.0,
+      "valid": false
+    },
+    "device": {
+      "canonical": "cuda:0",
+      "detector": "cuda:0",
+      "depth": "cuda:0",
+      "cuda_available": true,
+      "device_name": "NVIDIA GeForce RTX 4050 Laptop GPU",
+      "vram_allocated_mb": 138.25,
+      "vram_reserved_mb": 438.0
+    },
+    "system_health": "DEGRADED",
+    "global_warning": {
+      "state": "NO_WARNING",
+      "selected_track_id": 1,
+      "reason": "No immediate hazard requiring avoidance"
+    },
+    "navigation": {
+      "state": "CONTINUE",
+      "safe_direction": "NONE",
+      "reason": "CENTER_PATH_CLEAR"
+    },
+    "audio": {
+      "spoken": false,
+      "text": "",
+      "priority": "NONE"
+    },
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.896,
+        "bbox": [
+          267.8,
+          151.3,
+          372.7,
+          329.9
+        ],
+        "depth_value": 1.964,
+        "depth_valid": true,
+        "approach_state": "UNKNOWN",
+        "closing_speed": null,
+        "ttc_seconds": null,
+        "ttc_state": "INSUFFICIENT_HISTORY",
+        "ttc_valid": false,
+        "risk_score": 0.69,
+        "risk_level": "MEDIUM",
+        "risk_primary_reason": "MODERATE_PROXIMITY",
+        "warning_state": "NO_WARNING"
+      }
+    ]
+  },
+  {
+    "frame_index": 1,
+    "timestamp_sec": 0.0333,
+    "active_tracks_count": 1,
+    "latencies_ms": {
+      "detector": 10.01,
+      "tracker": 3.38,
+      "depth": 80.79,
+      "motion": 0.02,
+      "camera_motion": 8.01,
+      "ttc": 0.02,
+      "risk": 0.05,
+      "reliability": 0.06,
+      "warning": 0.04,
+      "navigation": 0.04,
+      "tts": 0.04,
+      "total_frame": 103.77
+    },
+    "camera_motion": {
+      "dx": -0.17,
+      "dy": 0.09,
+      "valid": true
+    },
+    "device": {
+      "canonical": "cuda:0",
+      "detector": "cuda:0",
+      "depth": "cuda:0",
+      "cuda_available": true,
+      "device_name": "NVIDIA GeForce RTX 4050 Laptop GPU",
+      "vram_allocated_mb": 138.25,
+      "vram_reserved_mb": 438.0
+    },
+    "system_health": "DEGRADED",
+    "global_warning": {
+      "state": "CAUTION",
+      "selected_track_id": 1,
+      "reason": "Moderate hazard under temporal observation"
+    },
+    "navigation": {
+      "state": "CONTINUE",
+      "safe_direction": "NONE",
+      "reason": "CENTER_PATH_CLEAR"
+    },
+    "audio": {
+      "spoken": true,
+      "text": "Caution, person nearby.",
+      "priority": "LOW"
+    },
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.895,
+        "bbox": [
+          267.0,
+          150.6,
+          374.3,
+          332.4
+        ],
+        "depth_value": 1.937,
+        "depth_valid": true,
+        "approach_state": "UNKNOWN",
+        "closing_speed": null,
+        "ttc_seconds": null,
+        "ttc_state": "INSUFFICIENT_HISTORY",
+        "ttc_valid": false,
+        "risk_score": 0.688,
+        "risk_level": "MEDIUM",
+        "risk_primary_reason": "MODERATE_PROXIMITY",
+        "warning_state": "CAUTION"
+      }
+    ]
+  },
+  {
+    "frame_index": 2,
+    "timestamp_sec": 0.0667,
+    "active_tracks_count": 1,
+    "latencies_ms": {
+      "detector": 17.37,
+      "tracker": 3.07,
+      "depth": 75.27,
+      "motion": 0.04,
+      "camera_motion": 9.18,
+      "ttc": 0.03,
+      "risk": 0.04,
+      "reliability": 0.06,
+      "warning": 0.04,
+      "navigation": 0.03,
+      "tts": 0.02,
+      "total_frame": 106.54
+    },
+    "camera_motion": {
+      "dx": 0.02,
+      "dy": 0.23,
+      "valid": true
+    },
+    "device": {
+      "canonical": "cuda:0",
+      "detector": "cuda:0",
+      "depth": "cuda:0",
+      "cuda_available": true,
+      "device_name": "NVIDIA GeForce RTX 4050 Laptop GPU",
+      "vram_allocated_mb": 138.25,
+      "vram_reserved_mb": 438.0
+    },
+    "system_health": "HEALTHY",
+    "global_warning": {
+      "state": "CAUTION",
+      "selected_track_id": 1,
+      "reason": "Moderate hazard under temporal observation"
+    },
+    "navigation": {
+      "state": "AVOID_LEFT",
+      "safe_direction": "LEFT",
+      "reason": "LEFT_SIDE_AVAILABLE"
+    },
+    "audio": {
+      "spoken": false,
+      "text": "",
+      "priority": "LOW"
+    },
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.903,
+        "bbox": [
+          265.1,
+          150.7,
+          375.2,
+          336.1
+        ],
+        "depth_value": 1.947,
+        "depth_valid": true,
+        "approach_state": "APPROACHING",
+        "closing_speed": 0.317,
+        "ttc_seconds": 6.14,
+        "ttc_state": "VALID",
+        "ttc_valid": true,
+        "risk_score": 0.701,
+        "risk_level": "MEDIUM",
+        "risk_primary_reason": "APPROACHING_NEAR_PATH",
+        "warning_state": "CAUTION"
+      }
+    ]
+  },
+  {
+    "frame_index": 3,
+    "timestamp_sec": 0.1,
+    "active_tracks_count": 1,
+    "latencies_ms": {
+      "detector": 16.09,
+      "tracker": 4.71,
+      "depth": 76.9,
+      "motion": 0.06,
+      "camera_motion": 10.57,
+      "ttc": 0.03,
+      "risk": 0.04,
+      "reliability": 0.06,
+      "warning": 0.04,
+      "navigation": 0.03,
+      "tts": 0.01,
+      "total_frame": 110.82
+    },
+    "camera_motion": {
+      "dx": 0.1,
+      "dy": 0.25,
+      "valid": true
+    },
+    "device": {
+      "canonical": "cuda:0",
+      "detector": "cuda:0",
+      "depth": "cuda:0",
+      "cuda_available": true,
+      "device_name": "NVIDIA GeForce RTX 4050 Laptop GPU",
+      "vram_allocated_mb": 138.25,
+      "vram_reserved_mb": 438.0
+    },
+    "system_health": "HEALTHY",
+    "global_warning": {
+      "state": "CAUTION",
+      "selected_track_id": 1,
+      "reason": "Moderate hazard under temporal observation"
+    },
+    "navigation": {
+      "state": "AVOID_LEFT",
+      "safe_direction": "LEFT",
+      "reason": "LEFT_SIDE_AVAILABLE"
+    },
+    "audio": {
+      "spoken": false,
+      "text": "",
+      "priority": "LOW"
+    },
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.898,
+        "bbox": [
+          264.2,
+          150.7,
+          375.9,
+          340.0
+        ],
+        "depth_value": 2.019,
+        "depth_valid": true,
+        "approach_state": "APPROACHING",
+        "closing_speed": 0.926,
+        "ttc_seconds": 2.18,
+        "ttc_state": "VALID",
+        "ttc_valid": true,
+        "risk_score": 0.672,
+        "risk_level": "MEDIUM",
+        "risk_primary_reason": "APPROACHING_NEAR_PATH",
+        "warning_state": "CAUTION"
+      }
+    ]
+  },
+  {
+    "frame_index": 4,
+    "timestamp_sec": 0.1333,
+    "active_tracks_count": 2,
+    "latencies_ms": {
+      "detector": 11.42,
+      "tracker": 2.74,
+      "depth": 76.16,
+      "motion": 0.02,
+      "camera_motion": 6.12,
+      "ttc": 0.02,
+      "risk": 0.04,
+      "reliability": 0.05,
+      "warning": 0.04,
+      "navigation": 0.03,
+      "tts": 0.01,
+      "total_frame": 97.79
+    },
+    "camera_motion": {
+      "dx": -0.01,
+      "dy": 0.3,
+      "valid": true
+    },
+    "device": {
+      "canonical": "cuda:0",
+      "detector": "cuda:0",
+      "depth": "cuda:0",
+      "cuda_available": true,
+      "device_name": "NVIDIA GeForce RTX 4050 Laptop GPU",
+      "vram_allocated_mb": 138.25,
+      "vram_reserved_mb": 438.0
+    },
+    "system_health": "HEALTHY",
+    "global_warning": {
+      "state": "CAUTION",
+      "selected_track_id": 1,
+      "reason": "Moderate hazard under temporal observation"
+    },
+    "navigation": {
+      "state": "AVOID_LEFT",
+      "safe_direction": "LEFT",
+      "reason": "LEFT_SIDE_AVAILABLE"
+    },
+    "audio": {
+      "spoken": false,
+      "text": "",
+      "priority": "LOW"
+    },
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.893,
+        "bbox": [
+          263.2,
+          149.6,
+          376.2,
+          343.1
+        ],
+        "depth_value": 2.049,
+        "depth_valid": true,
+        "approach_state": "APPROACHING",
+        "closing_speed": 0.926,
+        "ttc_seconds": 2.21,
+        "ttc_state": "VALID",
+        "ttc_valid": true,
+        "risk_score": 0.674,
+        "risk_level": "MEDIUM",
+        "risk_primary_reason": "APPROACHING_NEAR_PATH",
+        "warning_state": "CAUTION"
+      },
+      {
+        "track_id": 4,
+        "class_name": "tie",
+        "confidence": 0.369,
+        "bbox": [
+          333.8,
+          227.1,
+          346.6,
+          259.3
+        ],
+        "depth_value": 1.867,
+        "depth_valid": true,
+        "approach_state": "UNKNOWN",
+        "closing_speed": null,
+        "ttc_seconds": null,
+        "ttc_state": "INSUFFICIENT_HISTORY",
+        "ttc_valid": false,
+        "risk_score": 0.683,
+        "risk_level": "MEDIUM",
+        "risk_primary_reason": "MODERATE_PROXIMITY",
+        "warning_state": "NO_WARNING"
+      }
+    ]
+  },
+  {
+    "frame_index": 5,
+    "timestamp_sec": 0.1667,
+    "active_tracks_count": 2,
+    "latencies_ms": {
+      "detector": 9.13,
+      "tracker": 4.68,
+      "depth": 68.14,
+      "motion": 0.02,
+      "camera_motion": 6.07,
+      "ttc": 0.02,
+      "risk": 0.04,
+      "reliability": 0.05,
+      "warning": 0.04,
+      "navigation": 0.03,
+      "tts": 0.01,
+      "total_frame": 89.38
+    },
+    "camera_motion": {
+      "dx": 0.14,
+      "dy": 0.19,
+      "valid": true
+    },
+    "device": {
+      "canonical": "cuda:0",
+      "detector": "cuda:0",
+      "depth": "cuda:0",
+      "cuda_available": true,
+      "device_name": "NVIDIA GeForce RTX 4050 Laptop GPU",
+      "vram_allocated_mb": 138.25,
+      "vram_reserved_mb": 438.0
+    },
+    "system_health": "HEALTHY",
+    "global_warning": {
+      "state": "CAUTION",
+      "selected_track_id": 1,
+      "reason": "Moderate hazard under temporal observation"
+    },
+    "navigation": {
+      "state": "AVOID_LEFT",
+      "safe_direction": "LEFT",
+      "reason": "LEFT_SIDE_AVAILABLE"
+    },
+    "audio": {
+      "spoken": false,
+      "text": "",
+      "priority": "LOW"
+    },
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.909,
+        "bbox": [
+          261.3,
+          148.1,
+          377.9,
+          346.7
+        ],
+        "depth_value": 2.132,
+        "depth_valid": true,
+        "approach_state": "APPROACHING",
+        "closing_speed": 1.446,
+        "ttc_seconds": 1.47,
+        "ttc_state": "VALID",
+        "ttc_valid": true,
+        "risk_score": 0.782,
+        "risk_level": "HIGH",
+        "risk_primary_reason": "SHORT_TTC",
+        "warning_state": "CAUTION"
+      },
+      {
+        "track_id": 4,
+        "class_name": "tie",
+        "confidence": 0.365,
+        "bbox": [
+          333.8,
+          229.5,
+          346.6,
+          260.7
+        ],
+        "depth_value": 1.972,
+        "depth_valid": true,
+        "approach_state": "UNKNOWN",
+        "closing_speed": null,
+        "ttc_seconds": null,
+        "ttc_state": "INSUFFICIENT_HISTORY",
+        "ttc_valid": false,
+        "risk_score": 0.691,
+        "risk_level": "MEDIUM",
+        "risk_primary_reason": "MODERATE_PROXIMITY",
+        "warning_state": "CAUTION"
+      }
+    ]
+  },
+  {
+    "frame_index": 6,
+    "timestamp_sec": 0.2,
+    "active_tracks_count": 2,
+    "latencies_ms": {
+      "detector": 10.06,
+      "tracker": 2.79,
+      "depth": 69.93,
+      "motion": 0.03,
+      "camera_motion": 6.39,
+      "ttc": 0.02,
+      "risk": 0.05,
+      "reliability": 0.05,
+      "warning": 0.03,
+      "navigation": 0.03,
+      "tts": 0.01,
+      "total_frame": 90.45
+    },
+    "camera_motion": {
+      "dx": -0.14,
+      "dy": 0.49,
+      "valid": true
+    },
+    "device": {
+      "canonical": "cuda:0",
+      "detector": "cuda:0",
+      "depth": "cuda:0",
+      "cuda_available": true,
+      "device_name": "NVIDIA GeForce RTX 4050 Laptop GPU",
+      "vram_allocated_mb": 138.25,
+      "vram_reserved_mb": 438.0
+    },
+    "system_health": "HEALTHY",
+    "global_warning": {
+      "state": "CAUTION",
+      "selected_track_id": 1,
+      "reason": "Moderate hazard under temporal observation"
+    },
+    "navigation": {
+      "state": "AVOID_LEFT",
+      "safe_direction": "LEFT",
+      "reason": "LEFT_SIDE_AVAILABLE"
+    },
+    "audio": {
+      "spoken": false,
+      "text": "",
+      "priority": "LOW"
+    },
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.915,
+        "bbox": [
+          260.0,
+          148.0,
+          379.6,
+          351.0
+        ],
+        "depth_value": 2.085,
+        "depth_valid": true,
+        "approach_state": "APPROACHING",
+        "closing_speed": 0.488,
+        "ttc_seconds": 4.27,
+        "ttc_state": "VALID",
+        "ttc_valid": true,
+        "risk_score": 0.752,
+        "risk_level": "HIGH",
+        "risk_primary_reason": "APPROACHING_OBJECT_IN_PATH",
+        "warning_state": "CAUTION"
+      },
+      {
+        "track_id": 4,
+        "class_name": "tie",
+        "confidence": 0.372,
+        "bbox": [
+          333.6,
+          230.7,
+          346.7,
+          262.3
+        ],
+        "depth_value": 1.936,
+        "depth_valid": true,
+        "approach_state": "RECEDING",
+        "closing_speed": -1.075,
+        "ttc_seconds": null,
+        "ttc_state": "NOT_CLOSING",
+        "ttc_valid": false,
+        "risk_score": 0.344,
+        "risk_level": "LOW",
+        "risk_primary_reason": "RECEDING_OBJECT",
+        "warning_state": "CAUTION"
+      }
+    ]
+  },
+  {
+    "frame_index": 7,
+    "timestamp_sec": 0.2333,
+    "active_tracks_count": 2,
+    "latencies_ms": {
+      "detector": 10.0,
+      "tracker": 2.61,
+      "depth": 69.9,
+      "motion": 0.03,
+      "camera_motion": 7.09,
+      "ttc": 0.02,
+      "risk": 0.04,
+      "reliability": 0.05,
+      "warning": 0.03,
+      "navigation": 0.03,
+      "tts": 29.03,
+      "total_frame": 120.08
+    },
+    "camera_motion": {
+      "dx": -0.11,
+      "dy": 0.46,
+      "valid": true
+    },
+    "device": {
+      "canonical": "cuda:0",
+      "detector": "cuda:0",
+      "depth": "cuda:0",
+      "cuda_available": true,
+      "device_name": "NVIDIA GeForce RTX 4050 Laptop GPU",
+      "vram_allocated_mb": 138.25,
+      "vram_reserved_mb": 438.0
+    },
+    "system_health": "HEALTHY",
+    "global_warning": {
+      "state": "WARNING",
+      "selected_track_id": 1,
+      "reason": "Persistent approaching obstacle in trajectory"
+    },
+    "navigation": {
+      "state": "AVOID_LEFT",
+      "safe_direction": "LEFT",
+      "reason": "LEFT_SIDE_AVAILABLE"
+    },
+    "audio": {
+      "spoken": true,
+      "text": "Person approaching ahead. Move left.",
+      "priority": "HIGH"
+    },
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.917,
+        "bbox": [
+          259.1,
+          147.1,
+          381.6,
+          354.2
+        ],
+        "depth_value": 2.086,
+        "depth_valid": true,
+        "approach_state": "APPROACHING",
+        "closing_speed": 0.343,
+        "ttc_seconds": 6.08,
+        "ttc_state": "VALID",
+        "ttc_valid": true,
+        "risk_score": 0.711,
+        "risk_level": "MEDIUM",
+        "risk_primary_reason": "APPROACHING_NEAR_PATH",
+        "warning_state": "WARNING"
+      },
+      {
+        "track_id": 4,
+        "class_name": "tie",
+        "confidence": 0.371,
+        "bbox": [
+          335.4,
+          231.7,
+          347.0,
+          263.1
+        ],
+        "depth_value": 1.925,
+        "depth_valid": true,
+        "approach_state": "RECEDING",
+        "closing_speed": -0.825,
+        "ttc_seconds": null,
+        "ttc_state": "NOT_CLOSING",
+        "ttc_valid": false,
+        "risk_score": 0.344,
+        "risk_level": "LOW",
+        "risk_primary_reason": "RECEDING_OBJECT",
+        "warning_state": "CAUTION"
+      }
+    ]
+  },
+  {
+    "frame_index": 8,
+    "timestamp_sec": 0.2667,
+    "active_tracks_count": 2,
+    "latencies_ms": {
+      "detector": 13.6,
+      "tracker": 2.95,
+      "depth": 71.14,
+      "motion": 0.02,
+      "camera_motion": 6.59,
+      "ttc": 0.02,
+      "risk": 0.04,
+      "reliability": 0.05,
+      "warning": 0.03,
+      "navigation": 0.03,
+      "tts": 0.01,
+      "total_frame": 95.6
+    },
+    "camera_motion": {
+      "dx": 0.15,
+      "dy": 0.14,
+      "valid": true
+    },
+    "device": {
+      "canonical": "cuda:0",
+      "detector": "cuda:0",
+      "depth": "cuda:0",
+      "cuda_available": true,
+      "device_name": "NVIDIA GeForce RTX 4050 Laptop GPU",
+      "vram_allocated_mb": 138.25,
+      "vram_reserved_mb": 438.0
+    },
+    "system_health": "HEALTHY",
+    "global_warning": {
+      "state": "WARNING",
+      "selected_track_id": 1,
+      "reason": "Persistent approaching obstacle in trajectory"
+    },
+    "navigation": {
+      "state": "AVOID_LEFT",
+      "safe_direction": "LEFT",
+      "reason": "LEFT_SIDE_AVAILABLE"
+    },
+    "audio": {
+      "spoken": false,
+      "text": "",
+      "priority": "HIGH"
+    },
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.92,
+        "bbox": [
+          257.1,
+          147.3,
+          382.3,
+          360.0
+        ],
+        "depth_value": 2.094,
+        "depth_valid": true,
+        "approach_state": "APPROACHING",
+        "closing_speed": 0.3,
+        "ttc_seconds": 6.98,
+        "ttc_state": "VALID",
+        "ttc_valid": true,
+        "risk_score": 0.693,
+        "risk_level": "MEDIUM",
+        "risk_primary_reason": "APPROACHING_NEAR_PATH",
+        "warning_state": "WARNING"
+      },
+      {
+        "track_id": 4,
+        "class_name": "tie",
+        "confidence": 0.343,
+        "bbox": [
+          334.4,
+          234.4,
+          345.8,
+          267.1
+        ],
+        "depth_value": 2.007,
+        "depth_valid": true,
+        "approach_state": "APPROACHING",
+        "closing_speed": 0.273,
+        "ttc_seconds": 7.36,
+        "ttc_state": "VALID",
+        "ttc_valid": true,
+        "risk_score": 0.675,
+        "risk_level": "MEDIUM",
+        "risk_primary_reason": "APPROACHING_NEAR_PATH",
+        "warning_state": "CAUTION"
+      }
+    ]
+  },
+  {
+    "frame_index": 9,
+    "timestamp_sec": 0.3,
+    "active_tracks_count": 2,
+    "latencies_ms": {
+      "detector": 9.05,
+      "tracker": 2.71,
+      "depth": 70.66,
+      "motion": 0.03,
+      "camera_motion": 6.18,
+      "ttc": 0.02,
+      "risk": 0.04,
+      "reliability": 0.05,
+      "warning": 0.03,
+      "navigation": 0.03,
+      "tts": 0.01,
+      "total_frame": 90.15
+    },
+    "camera_motion": {
+      "dx": -0.17,
+      "dy": 0.57,
+      "valid": true
+    },
+    "device": {
+      "canonical": "cuda:0",
+      "detector": "cuda:0",
+      "depth": "cuda:0",
+      "cuda_available": true,
+      "device_name": "NVIDIA GeForce RTX 4050 Laptop GPU",
+      "vram_allocated_mb": 138.25,
+      "vram_reserved_mb": 438.0
+    },
+    "system_health": "HEALTHY",
+    "global_warning": {
+      "state": "WARNING",
+      "selected_track_id": 1,
+      "reason": "Persistent approaching obstacle in trajectory"
+    },
+    "navigation": {
+      "state": "AVOID_LEFT",
+      "safe_direction": "LEFT",
+      "reason": "LEFT_SIDE_AVAILABLE"
+    },
+    "audio": {
+      "spoken": false,
+      "text": "",
+      "priority": "HIGH"
+    },
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.927,
+        "bbox": [
+          256.2,
+          147.3,
+          383.2,
+          363.8
+        ],
+        "depth_value": 2.153,
+        "depth_valid": true,
+        "approach_state": "APPROACHING",
+        "closing_speed": 0.798,
+        "ttc_seconds": 2.7,
+        "ttc_state": "VALID",
+        "ttc_valid": true,
+        "risk_score": 0.682,
+        "risk_level": "MEDIUM",
+        "risk_primary_reason": "APPROACHING_NEAR_PATH",
+        "warning_state": "WARNING"
+      },
+      {
+        "track_id": 4,
+        "class_name": "tie",
+        "confidence": 0.297,
+        "bbox": [
+          335.1,
+          235.7,
+          346.1,
+          268.4
+        ],
+        "depth_value": 2.03,
+        "depth_valid": true,
+        "approach_state": "APPROACHING",
+        "closing_speed": 0.41,
+        "ttc_seconds": 4.96,
+        "ttc_state": "VALID",
+        "ttc_valid": true,
+        "risk_score": 0.732,
+        "risk_level": "MEDIUM",
+        "risk_primary_reason": "APPROACHING_NEAR_PATH",
+        "warning_state": "CAUTION"
+      }
+    ]
+  },
+  {
+    "frame_index": 10,
+    "timestamp_sec": 0.3333,
+    "active_tracks_count": 2,
+    "latencies_ms": {
+      "detector": 11.31,
+      "tracker": 2.83,
+      "depth": 68.72,
+      "motion": 0.02,
+      "camera_motion": 6.19,
+      "ttc": 0.02,
+      "risk": 0.04,
+      "reliability": 0.05,
+      "warning": 0.03,
+      "navigation": 0.03,
+      "tts": 0.01,
+      "total_frame": 90.39
+    },
+    "camera_motion": {
+      "dx": -0.27,
+      "dy": 0.57,
+      "valid": true
+    },
+    "device": {
+      "canonical": "cuda:0",
+      "detector": "cuda:0",
+      "depth": "cuda:0",
+      "cuda_available": true,
+      "device_name": "NVIDIA GeForce RTX 4050 Laptop GPU",
+      "vram_allocated_mb": 138.25,
+      "vram_reserved_mb": 438.0
+    },
+    "system_health": "HEALTHY",
+    "global_warning": {
+      "state": "WARNING",
+      "selected_track_id": 1,
+      "reason": "Persistent approaching obstacle in trajectory"
+    },
+    "navigation": {
+      "state": "AVOID_LEFT",
+      "safe_direction": "LEFT",
+      "reason": "LEFT_SIDE_AVAILABLE"
+    },
+    "audio": {
+      "spoken": false,
+      "text": "",
+      "priority": "HIGH"
+    },
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.936,
+        "bbox": [
+          255.5,
+          145.8,
+          384.7,
+          366.7
+        ],
+        "depth_value": 2.162,
+        "depth_valid": true,
+        "approach_state": "APPROACHING",
+        "closing_speed": 0.614,
+        "ttc_seconds": 3.52,
+        "ttc_state": "VALID",
+        "ttc_valid": true,
+        "risk_score": 0.684,
+        "risk_level": "MEDIUM",
+        "risk_primary_reason": "APPROACHING_NEAR_PATH",
+        "warning_state": "WARNING"
+      },
+      {
+        "track_id": 4,
+        "class_name": "tie",
+        "confidence": 0.254,
+        "bbox": [
+          335.5,
+          235.5,
+          347.3,
+          268.6
+        ],
+        "depth_value": 1.985,
+        "depth_valid": true,
+        "approach_state": "RECEDING",
+        "closing_speed": -0.171,
+        "ttc_seconds": null,
+        "ttc_state": "NOT_CLOSING",
+        "ttc_valid": false,
+        "risk_score": 0.346,
+        "risk_level": "LOW",
+        "risk_primary_reason": "RECEDING_OBJECT",
+        "warning_state": "CAUTION"
+      }
+    ]
+  },
+  {
+    "frame_index": 11,
+    "timestamp_sec": 0.3667,
+    "active_tracks_count": 1,
+    "latencies_ms": {
+      "detector": 11.77,
+      "tracker": 2.85,
+      "depth": 68.56,
+      "motion": 0.03,
+      "camera_motion": 6.21,
+      "ttc": 0.02,
+      "risk": 0.03,
+      "reliability": 0.04,
+      "warning": 0.04,
+      "navigation": 0.02,
+      "tts": 0.01,
+      "total_frame": 90.67
+    },
+    "camera_motion": {
+      "dx": 0.3,
+      "dy": 0.01,
+      "valid": true
+    },
+    "device": {
+      "canonical": "cuda:0",
+      "detector": "cuda:0",
+      "depth": "cuda:0",
+      "cuda_available": true,
+      "device_name": "NVIDIA GeForce RTX 4050 Laptop GPU",
+      "vram_allocated_mb": 138.25,
+      "vram_reserved_mb": 438.0
+    },
+    "system_health": "HEALTHY",
+    "global_warning": {
+      "state": "WARNING",
+      "selected_track_id": 1,
+      "reason": "Persistent approaching obstacle in trajectory"
+    },
+    "navigation": {
+      "state": "AVOID_LEFT",
+      "safe_direction": "LEFT",
+      "reason": "LEFT_SIDE_AVAILABLE"
+    },
+    "audio": {
+      "spoken": false,
+      "text": "",
+      "priority": "HIGH"
+    },
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.938,
+        "bbox": [
+          253.8,
+          146.0,
+          386.4,
+          370.4
+        ],
+        "depth_value": 2.165,
+        "depth_valid": true,
+        "approach_state": "APPROACHING",
+        "closing_speed": 0.439,
+        "ttc_seconds": 4.93,
+        "ttc_state": "VALID",
+        "ttc_valid": true,
+        "risk_score": 0.745,
+        "risk_level": "MEDIUM",
+        "risk_primary_reason": "APPROACHING_NEAR_PATH",
+        "warning_state": "WARNING"
+      }
+    ]
+  },
+  {
+    "frame_index": 12,
+    "timestamp_sec": 0.4,
+    "active_tracks_count": 1,
+    "latencies_ms": {
+      "detector": 12.06,
+      "tracker": 2.67,
+      "depth": 68.54,
+      "motion": 0.03,
+      "camera_motion": 6.42,
+      "ttc": 0.02,
+      "risk": 0.03,
+      "reliability": 0.04,
+      "warning": 0.04,
+      "navigation": 0.02,
+      "tts": 0.01,
+      "total_frame": 90.94
+    },
+    "camera_motion": {
+      "dx": -0.06,
+      "dy": 0.65,
+      "valid": true
+    },
+    "device": {
+      "canonical": "cuda:0",
+      "detector": "cuda:0",
+      "depth": "cuda:0",
+      "cuda_available": true,
+      "device_name": "NVIDIA GeForce RTX 4050 Laptop GPU",
+      "vram_allocated_mb": 138.25,
+      "vram_reserved_mb": 438.0
+    },
+    "system_health": "HEALTHY",
+    "global_warning": {
+      "state": "WARNING",
+      "selected_track_id": 1,
+      "reason": "Persistent approaching obstacle in trajectory"
+    },
+    "navigation": {
+      "state": "AVOID_LEFT",
+      "safe_direction": "LEFT",
+      "reason": "LEFT_SIDE_AVAILABLE"
+    },
+    "audio": {
+      "spoken": false,
+      "text": "",
+      "priority": "HIGH"
+    },
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.926,
+        "bbox": [
+          252.3,
+          146.2,
+          386.5,
+          373.7
+        ],
+        "depth_value": 2.265,
+        "depth_valid": true,
+        "approach_state": "APPROACHING",
+        "closing_speed": 1.298,
+        "ttc_seconds": 1.75,
+        "ttc_state": "VALID",
+        "ttc_valid": true,
+        "risk_score": 0.791,
+        "risk_level": "HIGH",
+        "risk_primary_reason": "SHORT_TTC",
+        "warning_state": "WARNING"
+      }
+    ]
+  },
+  {
+    "frame_index": 13,
+    "timestamp_sec": 0.4333,
+    "active_tracks_count": 2,
+    "latencies_ms": {
+      "detector": 8.58,
+      "tracker": 2.82,
+      "depth": 67.4,
+      "motion": 0.03,
+      "camera_motion": 6.64,
+      "ttc": 0.04,
+      "risk": 0.05,
+      "reliability": 0.06,
+      "warning": 0.04,
+      "navigation": 0.03,
+      "tts": 0.01,
+      "total_frame": 86.92
+    },
+    "camera_motion": {
+      "dx": -0.44,
+      "dy": 0.81,
+      "valid": true
+    },
+    "device": {
+      "canonical": "cuda:0",
+      "detector": "cuda:0",
+      "depth": "cuda:0",
+      "cuda_available": true,
+      "device_name": "NVIDIA GeForce RTX 4050 Laptop GPU",
+      "vram_allocated_mb": 138.25,
+      "vram_reserved_mb": 438.0
+    },
+    "system_health": "HEALTHY",
+    "global_warning": {
+      "state": "WARNING",
+      "selected_track_id": 1,
+      "reason": "Persistent approaching obstacle in trajectory"
+    },
+    "navigation": {
+      "state": "AVOID_LEFT",
+      "safe_direction": "LEFT",
+      "reason": "LEFT_SIDE_AVAILABLE"
+    },
+    "audio": {
+      "spoken": false,
+      "text": "",
+      "priority": "HIGH"
+    },
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.934,
+        "bbox": [
+          251.2,
+          145.8,
+          388.5,
+          378.4
+        ],
+        "depth_value": 2.237,
+        "depth_valid": true,
+        "approach_state": "APPROACHING",
+        "closing_speed": 0.585,
+        "ttc_seconds": 3.82,
+        "ttc_state": "VALID",
+        "ttc_valid": true,
+        "risk_score": 0.689,
+        "risk_level": "MEDIUM",
+        "risk_primary_reason": "APPROACHING_NEAR_PATH",
+        "warning_state": "WARNING"
+      },
+      {
+        "track_id": 4,
+        "class_name": "tie",
+        "confidence": 0.251,
+        "bbox": [
+          336.4,
+          240.6,
+          348.4,
+          277.6
+        ],
+        "depth_value": 2.015,
+        "depth_valid": true,
+        "approach_state": "RECEDING",
+        "closing_speed": -0.446,
+        "ttc_seconds": null,
+        "ttc_state": "NOT_CLOSING",
+        "ttc_valid": false,
+        "risk_score": 0.347,
+        "risk_level": "LOW",
+        "risk_primary_reason": "RECEDING_OBJECT",
+        "warning_state": "CAUTION"
+      }
+    ]
+  },
+  {
+    "frame_index": 14,
+    "timestamp_sec": 0.4667,
+    "active_tracks_count": 2,
+    "latencies_ms": {
+      "detector": 10.97,
+      "tracker": 3.61,
+      "depth": 72.33,
+      "motion": 0.02,
+      "camera_motion": 6.47,
+      "ttc": 0.02,
+      "risk": 0.04,
+      "reliability": 0.05,
+      "warning": 0.03,
+      "navigation": 0.03,
+      "tts": 0.01,
+      "total_frame": 94.73
+    },
+    "camera_motion": {
+      "dx": -0.13,
+      "dy": 0.5,
+      "valid": true
+    },
+    "device": {
+      "canonical": "cuda:0",
+      "detector": "cuda:0",
+      "depth": "cuda:0",
+      "cuda_available": true,
+      "device_name": "NVIDIA GeForce RTX 4050 Laptop GPU",
+      "vram_allocated_mb": 138.25,
+      "vram_reserved_mb": 438.0
+    },
+    "system_health": "HEALTHY",
+    "global_warning": {
+      "state": "WARNING",
+      "selected_track_id": 1,
+      "reason": "Persistent approaching obstacle in trajectory"
+    },
+    "navigation": {
+      "state": "AVOID_LEFT",
+      "safe_direction": "LEFT",
+      "reason": "LEFT_SIDE_AVAILABLE"
+    },
+    "audio": {
+      "spoken": false,
+      "text": "",
+      "priority": "HIGH"
+    },
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.938,
+        "bbox": [
+          249.8,
+          144.4,
+          389.4,
+          381.5
+        ],
+        "depth_value": 2.274,
+        "depth_valid": true,
+        "approach_state": "APPROACHING",
+        "closing_speed": 0.759,
+        "ttc_seconds": 3.0,
+        "ttc_state": "VALID",
+        "ttc_valid": true,
+        "risk_score": 0.69,
+        "risk_level": "MEDIUM",
+        "risk_primary_reason": "APPROACHING_NEAR_PATH",
+        "warning_state": "WARNING"
+      },
+      {
+        "track_id": 4,
+        "class_name": "tie",
+        "confidence": 0.267,
+        "bbox": [
+          336.6,
+          241.0,
+          348.9,
+          278.9
+        ],
+        "depth_value": 1.983,
+        "depth_valid": true,
+        "approach_state": "RECEDING",
+        "closing_speed": -0.621,
+        "ttc_seconds": null,
+        "ttc_state": "NOT_CLOSING",
+        "ttc_valid": false,
+        "risk_score": 0.346,
+        "risk_level": "LOW",
+        "risk_primary_reason": "RECEDING_OBJECT",
+        "warning_state": "CAUTION"
+      }
+    ]
+  },
+  {
+    "frame_index": 15,
+    "timestamp_sec": 0.5,
+    "active_tracks_count": 2,
+    "latencies_ms": {
+      "detector": 18.05,
+      "tracker": 2.93,
+      "depth": 72.76,
+      "motion": 0.03,
+      "camera_motion": 6.28,
+      "ttc": 0.02,
+      "risk": 0.04,
+      "reliability": 0.05,
+      "warning": 0.03,
+      "navigation": 0.03,
+      "tts": 0.01,
+      "total_frame": 101.58
+    },
+    "camera_motion": {
+      "dx": -0.63,
+      "dy": 1.19,
+      "valid": true
+    },
+    "device": {
+      "canonical": "cuda:0",
+      "detector": "cuda:0",
+      "depth": "cuda:0",
+      "cuda_available": true,
+      "device_name": "NVIDIA GeForce RTX 4050 Laptop GPU",
+      "vram_allocated_mb": 138.25,
+      "vram_reserved_mb": 438.0
+    },
+    "system_health": "HEALTHY",
+    "global_warning": {
+      "state": "WARNING",
+      "selected_track_id": 1,
+      "reason": "Persistent approaching obstacle in trajectory"
+    },
+    "navigation": {
+      "state": "AVOID_LEFT",
+      "safe_direction": "LEFT",
+      "reason": "LEFT_SIDE_AVAILABLE"
+    },
+    "audio": {
+      "spoken": false,
+      "text": "",
+      "priority": "HIGH"
+    },
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.939,
+        "bbox": [
+          248.1,
+          143.0,
+          391.1,
+          385.6
+        ],
+        "depth_value": 2.343,
+        "depth_valid": true,
+        "approach_state": "APPROACHING",
+        "closing_speed": 1.201,
+        "ttc_seconds": 1.95,
+        "ttc_state": "VALID",
+        "ttc_valid": true,
+        "risk_score": 0.798,
+        "risk_level": "HIGH",
+        "risk_primary_reason": "SHORT_TTC",
+        "warning_state": "WARNING"
+      },
+      {
+        "track_id": 4,
+        "class_name": "tie",
+        "confidence": 0.296,
+        "bbox": [
+          336.0,
+          242.5,
+          349.2,
+          281.2
+        ],
+        "depth_value": 2.127,
+        "depth_valid": true,
+        "approach_state": "APPROACHING",
+        "closing_speed": 1.027,
+        "ttc_seconds": 2.07,
+        "ttc_state": "VALID",
+        "ttc_valid": true,
+        "risk_score": 0.677,
+        "risk_level": "MEDIUM",
+        "risk_primary_reason": "APPROACHING_NEAR_PATH",
+        "warning_state": "CAUTION"
+      }
+    ]
+  },
+  {
+    "frame_index": 16,
+    "timestamp_sec": 0.5333,
+    "active_tracks_count": 1,
+    "latencies_ms": {
+      "detector": 10.23,
+      "tracker": 2.99,
+      "depth": 70.11,
+      "motion": 0.29,
+      "camera_motion": 6.31,
+      "ttc": 0.02,
+      "risk": 0.03,
+      "reliability": 0.05,
+      "warning": 0.03,
+      "navigation": 0.02,
+      "tts": 0.02,
+      "total_frame": 91.12
+    },
+    "camera_motion": {
+      "dx": -0.19,
+      "dy": 0.55,
+      "valid": true
+    },
+    "device": {
+      "canonical": "cuda:0",
+      "detector": "cuda:0",
+      "depth": "cuda:0",
+      "cuda_available": true,
+      "device_name": "NVIDIA GeForce RTX 4050 Laptop GPU",
+      "vram_allocated_mb": 138.25,
+      "vram_reserved_mb": 438.0
+    },
+    "system_health": "HEALTHY",
+    "global_warning": {
+      "state": "WARNING",
+      "selected_track_id": 1,
+      "reason": "Persistent approaching obstacle in trajectory"
+    },
+    "navigation": {
+      "state": "AVOID_LEFT",
+      "safe_direction": "LEFT",
+      "reason": "LEFT_SIDE_AVAILABLE"
+    },
+    "audio": {
+      "spoken": false,
+      "text": "",
+      "priority": "HIGH"
+    },
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.941,
+        "bbox": [
+          247.0,
+          142.9,
+          393.1,
+          389.7
+        ],
+        "depth_value": 2.297,
+        "depth_valid": true,
+        "approach_state": "APPROACHING",
+        "closing_speed": 0.337,
+        "ttc_seconds": 6.81,
+        "ttc_state": "VALID",
+        "ttc_valid": true,
+        "risk_score": 0.711,
+        "risk_level": "MEDIUM",
+        "risk_primary_reason": "APPROACHING_NEAR_PATH",
+        "warning_state": "WARNING"
+      }
+    ]
+  },
+  {
+    "frame_index": 17,
+    "timestamp_sec": 0.5667,
+    "active_tracks_count": 1,
+    "latencies_ms": {
+      "detector": 9.25,
+      "tracker": 2.94,
+      "depth": 69.71,
+      "motion": 0.03,
+      "camera_motion": 6.76,
+      "ttc": 0.03,
+      "risk": 0.03,
+      "reliability": 0.04,
+      "warning": 0.03,
+      "navigation": 0.02,
+      "tts": 0.01,
+      "total_frame": 89.95
+    },
+    "camera_motion": {
+      "dx": 0.1,
+      "dy": 0.43,
+      "valid": true
+    },
+    "device": {
+      "canonical": "cuda:0",
+      "detector": "cuda:0",
+      "depth": "cuda:0",
+      "cuda_available": true,
+      "device_name": "NVIDIA GeForce RTX 4050 Laptop GPU",
+      "vram_allocated_mb": 138.25,
+      "vram_reserved_mb": 438.0
+    },
+    "system_health": "HEALTHY",
+    "global_warning": {
+      "state": "WARNING",
+      "selected_track_id": 1,
+      "reason": "Persistent approaching obstacle in trajectory"
+    },
+    "navigation": {
+      "state": "AVOID_LEFT",
+      "safe_direction": "LEFT",
+      "reason": "LEFT_SIDE_AVAILABLE"
+    },
+    "audio": {
+      "spoken": false,
+      "text": "",
+      "priority": "HIGH"
+    },
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.94,
+        "bbox": [
+          246.0,
+          141.8,
+          393.8,
+          392.3
+        ],
+        "depth_value": 2.306,
+        "depth_valid": true,
+        "approach_state": "APPROACHING",
+        "closing_speed": 0.31,
+        "ttc_seconds": 7.44,
+        "ttc_state": "VALID",
+        "ttc_valid": true,
+        "risk_score": 0.698,
+        "risk_level": "MEDIUM",
+        "risk_primary_reason": "APPROACHING_NEAR_PATH",
+        "warning_state": "WARNING"
+      }
+    ]
+  },
+  {
+    "frame_index": 18,
+    "timestamp_sec": 0.6,
+    "active_tracks_count": 1,
+    "latencies_ms": {
+      "detector": 9.71,
+      "tracker": 2.95,
+      "depth": 69.83,
+      "motion": 0.02,
+      "camera_motion": 5.97,
+      "ttc": 0.02,
+      "risk": 0.03,
+      "reliability": 0.04,
+      "warning": 0.03,
+      "navigation": 0.02,
+      "tts": 0.01,
+      "total_frame": 89.61
+    },
+    "camera_motion": {
+      "dx": 0.82,
+      "dy": -0.01,
+      "valid": true
+    },
+    "device": {
+      "canonical": "cuda:0",
+      "detector": "cuda:0",
+      "depth": "cuda:0",
+      "cuda_available": true,
+      "device_name": "NVIDIA GeForce RTX 4050 Laptop GPU",
+      "vram_allocated_mb": 138.25,
+      "vram_reserved_mb": 438.0
+    },
+    "system_health": "HEALTHY",
+    "global_warning": {
+      "state": "WARNING",
+      "selected_track_id": 1,
+      "reason": "Persistent approaching obstacle in trajectory"
+    },
+    "navigation": {
+      "state": "AVOID_LEFT",
+      "safe_direction": "LEFT",
+      "reason": "LEFT_SIDE_AVAILABLE"
+    },
+    "audio": {
+      "spoken": false,
+      "text": "",
+      "priority": "HIGH"
+    },
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.948,
+        "bbox": [
+          244.0,
+          141.7,
+          395.2,
+          397.5
+        ],
+        "depth_value": 2.376,
+        "depth_valid": true,
+        "approach_state": "APPROACHING",
+        "closing_speed": 0.913,
+        "ttc_seconds": 2.6,
+        "ttc_state": "VALID",
+        "ttc_valid": true,
+        "risk_score": 0.698,
+        "risk_level": "MEDIUM",
+        "risk_primary_reason": "APPROACHING_NEAR_PATH",
+        "warning_state": "WARNING"
+      }
+    ]
+  },
+  {
+    "frame_index": 19,
+    "timestamp_sec": 0.6333,
+    "active_tracks_count": 1,
+    "latencies_ms": {
+      "detector": 13.05,
+      "tracker": 3.06,
+      "depth": 69.4,
+      "motion": 0.03,
+      "camera_motion": 5.83,
+      "ttc": 0.02,
+      "risk": 0.03,
+      "reliability": 0.04,
+      "warning": 0.03,
+      "navigation": 0.02,
+      "tts": 0.01,
+      "total_frame": 92.63
+    },
+    "camera_motion": {
+      "dx": -0.21,
+      "dy": 0.47,
+      "valid": true
+    },
+    "device": {
+      "canonical": "cuda:0",
+      "detector": "cuda:0",
+      "depth": "cuda:0",
+      "cuda_available": true,
+      "device_name": "NVIDIA GeForce RTX 4050 Laptop GPU",
+      "vram_allocated_mb": 138.25,
+      "vram_reserved_mb": 438.0
+    },
+    "system_health": "HEALTHY",
+    "global_warning": {
+      "state": "WARNING",
+      "selected_track_id": 1,
+      "reason": "Persistent approaching obstacle in trajectory"
+    },
+    "navigation": {
+      "state": "AVOID_LEFT",
+      "safe_direction": "LEFT",
+      "reason": "LEFT_SIDE_AVAILABLE"
+    },
+    "audio": {
+      "spoken": false,
+      "text": "",
+      "priority": "HIGH"
+    },
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.953,
+        "bbox": [
+          243.2,
+          141.6,
+          397.8,
+          401.7
+        ],
+        "depth_value": 2.399,
+        "depth_valid": true,
+        "approach_state": "APPROACHING",
+        "closing_speed": 0.841,
+        "ttc_seconds": 2.85,
+        "ttc_state": "VALID",
+        "ttc_valid": true,
+        "risk_score": 0.7,
+        "risk_level": "MEDIUM",
+        "risk_primary_reason": "APPROACHING_NEAR_PATH",
+        "warning_state": "WARNING"
+      }
+    ]
+  },
+  {
+    "frame_index": 20,
+    "timestamp_sec": 0.6667,
+    "active_tracks_count": 1,
+    "latencies_ms": {
+      "detector": 13.74,
+      "tracker": 2.92,
+      "depth": 67.3,
+      "motion": 0.02,
+      "camera_motion": 6.15,
+      "ttc": 0.02,
+      "risk": 0.03,
+      "reliability": 0.04,
+      "warning": 0.03,
+      "navigation": 0.02,
+      "tts": 0.01,
+      "total_frame": 91.31
+    },
+    "camera_motion": {
+      "dx": 0.33,
+      "dy": 0.06,
+      "valid": true
+    },
+    "device": {
+      "canonical": "cuda:0",
+      "detector": "cuda:0",
+      "depth": "cuda:0",
+      "cuda_available": true,
+      "device_name": "NVIDIA GeForce RTX 4050 Laptop GPU",
+      "vram_allocated_mb": 138.25,
+      "vram_reserved_mb": 438.0
+    },
+    "system_health": "HEALTHY",
+    "global_warning": {
+      "state": "WARNING",
+      "selected_track_id": 1,
+      "reason": "Persistent approaching obstacle in trajectory"
+    },
+    "navigation": {
+      "state": "AVOID_LEFT",
+      "safe_direction": "LEFT",
+      "reason": "LEFT_SIDE_AVAILABLE"
+    },
+    "audio": {
+      "spoken": false,
+      "text": "",
+      "priority": "HIGH"
+    },
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.95,
+        "bbox": [
+          241.1,
+          140.1,
+          399.1,
+          404.7
+        ],
+        "depth_value": 2.355,
+        "depth_valid": true,
+        "approach_state": "APPROACHING",
+        "closing_speed": 0.119,
+        "ttc_seconds": 19.75,
+        "ttc_state": "VALID",
+        "ttc_valid": true,
+        "risk_score": 0.527,
+        "risk_level": "MEDIUM",
+        "risk_primary_reason": "APPROACHING_NEAR_PATH",
+        "warning_state": "WARNING"
+      }
+    ]
+  },
+  {
+    "frame_index": 21,
+    "timestamp_sec": 0.7,
+    "active_tracks_count": 1,
+    "latencies_ms": {
+      "detector": 9.44,
+      "tracker": 3.07,
+      "depth": 69.84,
+      "motion": 0.03,
+      "camera_motion": 6.11,
+      "ttc": 0.02,
+      "risk": 0.03,
+      "reliability": 0.04,
+      "warning": 0.04,
+      "navigation": 0.02,
+      "tts": 0.01,
+      "total_frame": 89.75
+    },
+    "camera_motion": {
+      "dx": -0.01,
+      "dy": 0.52,
+      "valid": true
+    },
+    "device": {
+      "canonical": "cuda:0",
+      "detector": "cuda:0",
+      "depth": "cuda:0",
+      "cuda_available": true,
+      "device_name": "NVIDIA GeForce RTX 4050 Laptop GPU",
+      "vram_allocated_mb": 138.25,
+      "vram_reserved_mb": 438.0
+    },
+    "system_health": "HEALTHY",
+    "global_warning": {
+      "state": "CAUTION",
+      "selected_track_id": 4,
+      "reason": "Track temporarily lost (grace 0.20s/0.5s)"
+    },
+    "navigation": {
+      "state": "AVOID_LEFT",
+      "safe_direction": "LEFT",
+      "reason": "LEFT_SIDE_AVAILABLE"
+    },
+    "audio": {
+      "spoken": false,
+      "text": "",
+      "priority": "LOW"
+    },
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.939,
+        "bbox": [
+          239.9,
+          140.3,
+          399.4,
+          408.4
+        ],
+        "depth_value": 2.302,
+        "depth_valid": true,
+        "approach_state": "RECEDING",
+        "closing_speed": -0.451,
+        "ttc_seconds": null,
+        "ttc_state": "NOT_CLOSING",
+        "ttc_valid": false,
+        "risk_score": 0.378,
+        "risk_level": "LOW",
+        "risk_primary_reason": "RECEDING_OBJECT",
+        "warning_state": "CAUTION"
+      }
+    ]
+  },
+  {
+    "frame_index": 22,
+    "timestamp_sec": 0.7333,
+    "active_tracks_count": 1,
+    "latencies_ms": {
+      "detector": 8.74,
+      "tracker": 2.96,
+      "depth": 68.82,
+      "motion": 0.03,
+      "camera_motion": 7.17,
+      "ttc": 0.02,
+      "risk": 0.03,
+      "reliability": 0.04,
+      "warning": 0.03,
+      "navigation": 0.02,
+      "tts": 0.01,
+      "total_frame": 89.01
+    },
+    "camera_motion": {
+      "dx": 0.01,
+      "dy": 0.55,
+      "valid": true
+    },
+    "device": {
+      "canonical": "cuda:0",
+      "detector": "cuda:0",
+      "depth": "cuda:0",
+      "cuda_available": true,
+      "device_name": "NVIDIA GeForce RTX 4050 Laptop GPU",
+      "vram_allocated_mb": 138.25,
+      "vram_reserved_mb": 438.0
+    },
+    "system_health": "HEALTHY",
+    "global_warning": {
+      "state": "CAUTION",
+      "selected_track_id": 4,
+      "reason": "Track temporarily lost (grace 0.23s/0.5s)"
+    },
+    "navigation": {
+      "state": "AVOID_LEFT",
+      "safe_direction": "LEFT",
+      "reason": "LEFT_SIDE_AVAILABLE"
+    },
+    "audio": {
+      "spoken": false,
+      "text": "",
+      "priority": "LOW"
+    },
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.93,
+        "bbox": [
+          239.1,
+          140.4,
+          398.0,
+          412.8
+        ],
+        "depth_value": 2.332,
+        "depth_valid": true,
+        "approach_state": "STABLE",
+        "closing_speed": -0.008,
+        "ttc_seconds": null,
+        "ttc_state": "NOT_CLOSING",
+        "ttc_valid": false,
+        "risk_score": 0.41,
+        "risk_level": "LOW",
+        "risk_primary_reason": "LOW_COLLISION_RELEVANCE",
+        "warning_state": "CAUTION"
+      }
+    ]
+  },
+  {
+    "frame_index": 23,
+    "timestamp_sec": 0.7667,
+    "active_tracks_count": 1,
+    "latencies_ms": {
+      "detector": 13.97,
+      "tracker": 3.14,
+      "depth": 69.55,
+      "motion": 0.03,
+      "camera_motion": 5.82,
+      "ttc": 0.03,
+      "risk": 0.03,
+      "reliability": 0.05,
+      "warning": 0.04,
+      "navigation": 0.02,
+      "tts": 0.01,
+      "total_frame": 93.99
+    },
+    "camera_motion": {
+      "dx": -0.45,
+      "dy": 0.71,
+      "valid": true
+    },
+    "device": {
+      "canonical": "cuda:0",
+      "detector": "cuda:0",
+      "depth": "cuda:0",
+      "cuda_available": true,
+      "device_name": "NVIDIA GeForce RTX 4050 Laptop GPU",
+      "vram_allocated_mb": 138.25,
+      "vram_reserved_mb": 438.0
+    },
+    "system_health": "HEALTHY",
+    "global_warning": {
+      "state": "CAUTION",
+      "selected_track_id": 4,
+      "reason": "Track temporarily lost (grace 0.27s/0.5s)"
+    },
+    "navigation": {
+      "state": "AVOID_LEFT",
+      "safe_direction": "LEFT",
+      "reason": "LEFT_SIDE_AVAILABLE"
+    },
+    "audio": {
+      "spoken": false,
+      "text": "",
+      "priority": "LOW"
+    },
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.929,
+        "bbox": [
+          238.5,
+          139.4,
+          400.5,
+          416.0
+        ],
+        "depth_value": 2.252,
+        "depth_valid": true,
+        "approach_state": "RECEDING",
+        "closing_speed": -0.805,
+        "ttc_seconds": null,
+        "ttc_state": "NOT_CLOSING",
+        "ttc_valid": false,
+        "risk_score": 0.382,
+        "risk_level": "LOW",
+        "risk_primary_reason": "RECEDING_OBJECT",
+        "warning_state": "CAUTION"
+      }
+    ]
+  },
+  {
+    "frame_index": 24,
+    "timestamp_sec": 0.8,
+    "active_tracks_count": 1,
+    "latencies_ms": {
+      "detector": 11.98,
+      "tracker": 2.96,
+      "depth": 69.92,
+      "motion": 0.02,
+      "camera_motion": 6.67,
+      "ttc": 0.02,
+      "risk": 0.03,
+      "reliability": 0.04,
+      "warning": 0.03,
+      "navigation": 0.02,
+      "tts": 0.01,
+      "total_frame": 92.77
+    },
+    "camera_motion": {
+      "dx": 0.53,
+      "dy": 0.23,
+      "valid": true
+    },
+    "device": {
+      "canonical": "cuda:0",
+      "detector": "cuda:0",
+      "depth": "cuda:0",
+      "cuda_available": true,
+      "device_name": "NVIDIA GeForce RTX 4050 Laptop GPU",
+      "vram_allocated_mb": 138.25,
+      "vram_reserved_mb": 438.0
+    },
+    "system_health": "HEALTHY",
+    "global_warning": {
+      "state": "CAUTION",
+      "selected_track_id": 4,
+      "reason": "Track temporarily lost (grace 0.30s/0.5s)"
+    },
+    "navigation": {
+      "state": "AVOID_LEFT",
+      "safe_direction": "LEFT",
+      "reason": "LEFT_SIDE_AVAILABLE"
+    },
+    "audio": {
+      "spoken": false,
+      "text": "",
+      "priority": "LOW"
+    },
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.932,
+        "bbox": [
+          236.2,
+          139.5,
+          402.3,
+          420.4
+        ],
+        "depth_value": 2.349,
+        "depth_valid": true,
+        "approach_state": "APPROACHING",
+        "closing_speed": 0.436,
+        "ttc_seconds": 5.39,
+        "ttc_state": "VALID",
+        "ttc_valid": true,
+        "risk_score": 0.758,
+        "risk_level": "HIGH",
+        "risk_primary_reason": "APPROACHING_OBJECT_IN_PATH",
+        "warning_state": "CAUTION"
+      }
+    ]
+  },
+  {
+    "frame_index": 25,
+    "timestamp_sec": 0.8333,
+    "active_tracks_count": 1,
+    "latencies_ms": {
+      "detector": 9.42,
+      "tracker": 3.08,
+      "depth": 69.38,
+      "motion": 0.03,
+      "camera_motion": 7.05,
+      "ttc": 0.02,
+      "risk": 0.03,
+      "reliability": 0.04,
+      "warning": 0.03,
+      "navigation": 0.02,
+      "tts": 0.01,
+      "total_frame": 90.73
+    },
+    "camera_motion": {
+      "dx": -0.4,
+      "dy": 0.57,
+      "valid": true
+    },
+    "device": {
+      "canonical": "cuda:0",
+      "detector": "cuda:0",
+      "depth": "cuda:0",
+      "cuda_available": true,
+      "device_name": "NVIDIA GeForce RTX 4050 Laptop GPU",
+      "vram_allocated_mb": 138.25,
+      "vram_reserved_mb": 438.0
+    },
+    "system_health": "HEALTHY",
+    "global_warning": {
+      "state": "WARNING",
+      "selected_track_id": 1,
+      "reason": "Persistent approaching obstacle in trajectory"
+    },
+    "navigation": {
+      "state": "AVOID_LEFT",
+      "safe_direction": "LEFT",
+      "reason": "LEFT_SIDE_AVAILABLE"
+    },
+    "audio": {
+      "spoken": false,
+      "text": "",
+      "priority": "HIGH"
+    },
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.936,
+        "bbox": [
+          235.3,
+          138.5,
+          404.0,
+          424.3
+        ],
+        "depth_value": 2.432,
+        "depth_valid": true,
+        "approach_state": "APPROACHING",
+        "closing_speed": 1.119,
+        "ttc_seconds": 2.17,
+        "ttc_state": "VALID",
+        "ttc_valid": true,
+        "risk_score": 0.711,
+        "risk_level": "MEDIUM",
+        "risk_primary_reason": "APPROACHING_NEAR_PATH",
+        "warning_state": "WARNING"
+      }
+    ]
+  },
+  {
+    "frame_index": 26,
+    "timestamp_sec": 0.8667,
+    "active_tracks_count": 1,
+    "latencies_ms": {
+      "detector": 10.24,
+      "tracker": 3.23,
+      "depth": 69.31,
+      "motion": 0.02,
+      "camera_motion": 6.26,
+      "ttc": 0.02,
+      "risk": 0.03,
+      "reliability": 0.04,
+      "warning": 0.03,
+      "navigation": 0.02,
+      "tts": 0.01,
+      "total_frame": 90.28
+    },
+    "camera_motion": {
+      "dx": -0.13,
+      "dy": 0.63,
+      "valid": true
+    },
+    "device": {
+      "canonical": "cuda:0",
+      "detector": "cuda:0",
+      "depth": "cuda:0",
+      "cuda_available": true,
+      "device_name": "NVIDIA GeForce RTX 4050 Laptop GPU",
+      "vram_allocated_mb": 138.25,
+      "vram_reserved_mb": 438.0
+    },
+    "system_health": "HEALTHY",
+    "global_warning": {
+      "state": "WARNING",
+      "selected_track_id": 1,
+      "reason": "Persistent approaching obstacle in trajectory"
+    },
+    "navigation": {
+      "state": "AVOID_LEFT",
+      "safe_direction": "LEFT",
+      "reason": "LEFT_SIDE_AVAILABLE"
+    },
+    "audio": {
+      "spoken": false,
+      "text": "",
+      "priority": "HIGH"
+    },
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.951,
+        "bbox": [
+          234.4,
+          138.6,
+          405.8,
+          428.3
+        ],
+        "depth_value": 2.378,
+        "depth_valid": true,
+        "approach_state": "APPROACHING",
+        "closing_speed": 0.209,
+        "ttc_seconds": 11.37,
+        "ttc_state": "VALID",
+        "ttc_valid": true,
+        "risk_score": 0.622,
+        "risk_level": "MEDIUM",
+        "risk_primary_reason": "APPROACHING_NEAR_PATH",
+        "warning_state": "WARNING"
+      }
+    ]
+  },
+  {
+    "frame_index": 27,
+    "timestamp_sec": 0.9,
+    "active_tracks_count": 1,
+    "latencies_ms": {
+      "detector": 9.35,
+      "tracker": 2.99,
+      "depth": 68.41,
+      "motion": 0.02,
+      "camera_motion": 6.34,
+      "ttc": 0.02,
+      "risk": 0.04,
+      "reliability": 0.04,
+      "warning": 0.03,
+      "navigation": 0.02,
+      "tts": 3.0,
+      "total_frame": 91.51
+    },
+    "camera_motion": {
+      "dx": -0.2,
+      "dy": 0.45,
+      "valid": true
+    },
+    "device": {
+      "canonical": "cuda:0",
+      "detector": "cuda:0",
+      "depth": "cuda:0",
+      "cuda_available": true,
+      "device_name": "NVIDIA GeForce RTX 4050 Laptop GPU",
+      "vram_allocated_mb": 138.25,
+      "vram_reserved_mb": 438.0
+    },
+    "system_health": "HEALTHY",
+    "global_warning": {
+      "state": "WARNING",
+      "selected_track_id": 1,
+      "reason": "Persistent elevated risk verified across observations"
+    },
+    "navigation": {
+      "state": "AVOID_LEFT",
+      "safe_direction": "LEFT",
+      "reason": "LEFT_SIDE_AVAILABLE"
+    },
+    "audio": {
+      "spoken": true,
+      "text": "Obstacle ahead. Move left.",
+      "priority": "HIGH"
+    },
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.953,
+        "bbox": [
+          233.6,
+          138.0,
+          407.2,
+          431.1
+        ],
+        "depth_value": 2.36,
+        "depth_valid": true,
+        "approach_state": "STABLE",
+        "closing_speed": -0.04,
+        "ttc_seconds": null,
+        "ttc_state": "NOT_CLOSING",
+        "ttc_valid": false,
+        "risk_score": 0.419,
+        "risk_level": "LOW",
+        "risk_primary_reason": "LOW_COLLISION_RELEVANCE",
+        "warning_state": "WARNING"
+      }
+    ]
+  },
+  {
+    "frame_index": 28,
+    "timestamp_sec": 0.9333,
+    "active_tracks_count": 1,
+    "latencies_ms": {
+      "detector": 8.87,
+      "tracker": 3.29,
+      "depth": 69.29,
+      "motion": 0.03,
+      "camera_motion": 6.56,
+      "ttc": 0.02,
+      "risk": 0.03,
+      "reliability": 0.04,
+      "warning": 0.03,
+      "navigation": 0.02,
+      "tts": 0.01,
+      "total_frame": 89.25
+    },
+    "camera_motion": {
+      "dx": 0.45,
+      "dy": 0.06,
+      "valid": true
+    },
+    "device": {
+      "canonical": "cuda:0",
+      "detector": "cuda:0",
+      "depth": "cuda:0",
+      "cuda_available": true,
+      "device_name": "NVIDIA GeForce RTX 4050 Laptop GPU",
+      "vram_allocated_mb": 138.25,
+      "vram_reserved_mb": 438.0
+    },
+    "system_health": "HEALTHY",
+    "global_warning": {
+      "state": "WARNING",
+      "selected_track_id": 1,
+      "reason": "Persistent approaching obstacle in trajectory"
+    },
+    "navigation": {
+      "state": "AVOID_LEFT",
+      "safe_direction": "LEFT",
+      "reason": "LEFT_SIDE_AVAILABLE"
+    },
+    "audio": {
+      "spoken": false,
+      "text": "",
+      "priority": "HIGH"
+    },
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.953,
+        "bbox": [
+          232.0,
+          138.1,
+          409.5,
+          436.1
+        ],
+        "depth_value": 2.476,
+        "depth_valid": true,
+        "approach_state": "APPROACHING",
+        "closing_speed": 1.137,
+        "ttc_seconds": 2.18,
+        "ttc_state": "VALID",
+        "ttc_valid": true,
+        "risk_score": 0.716,
+        "risk_level": "MEDIUM",
+        "risk_primary_reason": "APPROACHING_NEAR_PATH",
+        "warning_state": "WARNING"
+      }
+    ]
+  },
+  {
+    "frame_index": 29,
+    "timestamp_sec": 0.9667,
+    "active_tracks_count": 1,
+    "latencies_ms": {
+      "detector": 9.29,
+      "tracker": 3.28,
+      "depth": 70.01,
+      "motion": 0.03,
+      "camera_motion": 6.55,
+      "ttc": 0.03,
+      "risk": 0.03,
+      "reliability": 0.04,
+      "warning": 0.03,
+      "navigation": 0.02,
+      "tts": 0.01,
+      "total_frame": 90.77
+    },
+    "camera_motion": {
+      "dx": -0.65,
+      "dy": 0.85,
+      "valid": true
+    },
+    "device": {
+      "canonical": "cuda:0",
+      "detector": "cuda:0",
+      "depth": "cuda:0",
+      "cuda_available": true,
+      "device_name": "NVIDIA GeForce RTX 4050 Laptop GPU",
+      "vram_allocated_mb": 138.25,
+      "vram_reserved_mb": 438.0
+    },
+    "system_health": "HEALTHY",
+    "global_warning": {
+      "state": "WARNING",
+      "selected_track_id": 1,
+      "reason": "Persistent approaching obstacle in trajectory"
+    },
+    "navigation": {
+      "state": "AVOID_LEFT",
+      "safe_direction": "LEFT",
+      "reason": "LEFT_SIDE_AVAILABLE"
+    },
+    "audio": {
+      "spoken": false,
+      "text": "",
+      "priority": "HIGH"
+    },
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.952,
+        "bbox": [
+          231.0,
+          137.8,
+          411.4,
+          440.3
+        ],
+        "depth_value": 2.451,
+        "depth_valid": true,
+        "approach_state": "APPROACHING",
+        "closing_speed": 0.508,
+        "ttc_seconds": 4.82,
+        "ttc_state": "VALID",
+        "ttc_valid": true,
+        "risk_score": 0.78,
+        "risk_level": "HIGH",
+        "risk_primary_reason": "APPROACHING_OBJECT_IN_PATH",
+        "warning_state": "WARNING"
+      }
+    ]
+  },
+  {
+    "frame_index": 30,
+    "timestamp_sec": 1.0,
+    "active_tracks_count": 1,
+    "latencies_ms": {
+      "detector": 11.92,
+      "tracker": 3.48,
+      "depth": 69.75,
+      "motion": 0.03,
+      "camera_motion": 5.93,
+      "ttc": 0.02,
+      "risk": 0.03,
+      "reliability": 0.04,
+      "warning": 0.03,
+      "navigation": 0.02,
+      "tts": 0.01,
+      "total_frame": 92.36
+    },
+    "camera_motion": {
+      "dx": -0.37,
+      "dy": 0.5,
+      "valid": true
+    },
+    "device": {
+      "canonical": "cuda:0",
+      "detector": "cuda:0",
+      "depth": "cuda:0",
+      "cuda_available": true,
+      "device_name": "NVIDIA GeForce RTX 4050 Laptop GPU",
+      "vram_allocated_mb": 138.25,
+      "vram_reserved_mb": 438.0
+    },
+    "system_health": "HEALTHY",
+    "global_warning": {
+      "state": "WARNING",
+      "selected_track_id": 1,
+      "reason": "Persistent approaching obstacle in trajectory"
+    },
+    "navigation": {
+      "state": "AVOID_LEFT",
+      "safe_direction": "LEFT",
+      "reason": "LEFT_SIDE_AVAILABLE"
+    },
+    "audio": {
+      "spoken": false,
+      "text": "",
+      "priority": "HIGH"
+    },
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.948,
+        "bbox": [
+          228.2,
+          135.9,
+          412.5,
+          442.4
+        ],
+        "depth_value": 2.428,
+        "depth_valid": true,
+        "approach_state": "APPROACHING",
+        "closing_speed": 0.1,
+        "ttc_seconds": 24.28,
+        "ttc_state": "VALID",
+        "ttc_valid": true,
+        "risk_score": 0.544,
+        "risk_level": "MEDIUM",
+        "risk_primary_reason": "APPROACHING_NEAR_PATH",
+        "warning_state": "WARNING"
+      }
+    ]
+  },
+  {
+    "frame_index": 31,
+    "timestamp_sec": 1.0333,
+    "active_tracks_count": 1,
+    "latencies_ms": {
+      "detector": 10.47,
+      "tracker": 3.44,
+      "depth": 68.03,
+      "motion": 0.03,
+      "camera_motion": 6.35,
+      "ttc": 0.02,
+      "risk": 0.03,
+      "reliability": 0.04,
+      "warning": 0.03,
+      "navigation": 0.02,
+      "tts": 0.01,
+      "total_frame": 89.82
+    },
+    "camera_motion": {
+      "dx": -0.33,
+      "dy": 0.59,
+      "valid": true
+    },
+    "device": {
+      "canonical": "cuda:0",
+      "detector": "cuda:0",
+      "depth": "cuda:0",
+      "cuda_available": true,
+      "device_name": "NVIDIA GeForce RTX 4050 Laptop GPU",
+      "vram_allocated_mb": 138.25,
+      "vram_reserved_mb": 438.0
+    },
+    "system_health": "HEALTHY",
+    "global_warning": {
+      "state": "WARNING",
+      "selected_track_id": 1,
+      "reason": "Persistent approaching obstacle in trajectory"
+    },
+    "navigation": {
+      "state": "AVOID_LEFT",
+      "safe_direction": "LEFT",
+      "reason": "LEFT_SIDE_AVAILABLE"
+    },
+    "audio": {
+      "spoken": false,
+      "text": "",
+      "priority": "HIGH"
+    },
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.945,
+        "bbox": [
+          227.0,
+          135.6,
+          412.8,
+          445.9
+        ],
+        "depth_value": 2.456,
+        "depth_valid": true,
+        "approach_state": "APPROACHING",
+        "closing_speed": 0.355,
+        "ttc_seconds": 6.91,
+        "ttc_state": "VALID",
+        "ttc_valid": true,
+        "risk_score": 0.735,
+        "risk_level": "MEDIUM",
+        "risk_primary_reason": "APPROACHING_NEAR_PATH",
+        "warning_state": "WARNING"
+      }
+    ]
+  },
+  {
+    "frame_index": 32,
+    "timestamp_sec": 1.0667,
+    "active_tracks_count": 1,
+    "latencies_ms": {
+      "detector": 9.71,
+      "tracker": 3.31,
+      "depth": 69.22,
+      "motion": 0.03,
+      "camera_motion": 6.47,
+      "ttc": 0.02,
+      "risk": 0.03,
+      "reliability": 0.04,
+      "warning": 0.03,
+      "navigation": 0.02,
+      "tts": 0.01,
+      "total_frame": 89.98
+    },
+    "camera_motion": {
+      "dx": -0.64,
+      "dy": 0.9,
+      "valid": true
+    },
+    "device": {
+      "canonical": "cuda:0",
+      "detector": "cuda:0",
+      "depth": "cuda:0",
+      "cuda_available": true,
+      "device_name": "NVIDIA GeForce RTX 4050 Laptop GPU",
+      "vram_allocated_mb": 138.25,
+      "vram_reserved_mb": 438.0
+    },
+    "system_health": "HEALTHY",
+    "global_warning": {
+      "state": "WARNING",
+      "selected_track_id": 1,
+      "reason": "Persistent elevated risk verified across observations"
+    },
+    "navigation": {
+      "state": "AVOID_LEFT",
+      "safe_direction": "LEFT",
+      "reason": "LEFT_SIDE_AVAILABLE"
+    },
+    "audio": {
+      "spoken": false,
+      "text": "",
+      "priority": "HIGH"
+    },
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.946,
+        "bbox": [
+          225.7,
+          135.8,
+          415.1,
+          450.5
+        ],
+        "depth_value": 2.432,
+        "depth_valid": true,
+        "approach_state": "STABLE",
+        "closing_speed": -0.008,
+        "ttc_seconds": null,
+        "ttc_state": "NOT_CLOSING",
+        "ttc_valid": false,
+        "risk_score": 0.428,
+        "risk_level": "LOW",
+        "risk_primary_reason": "LOW_COLLISION_RELEVANCE",
+        "warning_state": "WARNING"
+      }
+    ]
+  },
+  {
+    "frame_index": 33,
+    "timestamp_sec": 1.1,
+    "active_tracks_count": 1,
+    "latencies_ms": {
+      "detector": 9.29,
+      "tracker": 3.44,
+      "depth": 68.3,
+      "motion": 0.03,
+      "camera_motion": 5.81,
+      "ttc": 0.02,
+      "risk": 0.03,
+      "reliability": 0.04,
+      "warning": 0.03,
+      "navigation": 0.02,
+      "tts": 0.01,
+      "total_frame": 88.17
+    },
+    "camera_motion": {
+      "dx": 0.05,
+      "dy": 0.42,
+      "valid": true
+    },
+    "device": {
+      "canonical": "cuda:0",
+      "detector": "cuda:0",
+      "depth": "cuda:0",
+      "cuda_available": true,
+      "device_name": "NVIDIA GeForce RTX 4050 Laptop GPU",
+      "vram_allocated_mb": 138.25,
+      "vram_reserved_mb": 438.0
+    },
+    "system_health": "HEALTHY",
+    "global_warning": {
+      "state": "CAUTION",
+      "selected_track_id": 1,
+      "reason": "Moderate hazard under temporal observation"
+    },
+    "navigation": {
+      "state": "AVOID_LEFT",
+      "safe_direction": "LEFT",
+      "reason": "LEFT_SIDE_AVAILABLE"
+    },
+    "audio": {
+      "spoken": false,
+      "text": "",
+      "priority": "LOW"
+    },
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.946,
+        "bbox": [
+          223.9,
+          134.8,
+          415.2,
+          453.6
+        ],
+        "depth_value": 2.397,
+        "depth_valid": true,
+        "approach_state": "RECEDING",
+        "closing_speed": -0.351,
+        "ttc_seconds": null,
+        "ttc_state": "NOT_CLOSING",
+        "ttc_valid": false,
+        "risk_score": 0.399,
+        "risk_level": "LOW",
+        "risk_primary_reason": "RECEDING_OBJECT",
+        "warning_state": "CAUTION"
+      }
+    ]
+  },
+  {
+    "frame_index": 34,
+    "timestamp_sec": 1.1333,
+    "active_tracks_count": 1,
+    "latencies_ms": {
+      "detector": 9.19,
+      "tracker": 3.68,
+      "depth": 69.94,
+      "motion": 0.03,
+      "camera_motion": 5.85,
+      "ttc": 0.03,
+      "risk": 0.03,
+      "reliability": 0.04,
+      "warning": 0.02,
+      "navigation": 0.02,
+      "tts": 0.01,
+      "total_frame": 89.96
+    },
+    "camera_motion": {
+      "dx": -0.1,
+      "dy": 0.44,
+      "valid": true
+    },
+    "device": {
+      "canonical": "cuda:0",
+      "detector": "cuda:0",
+      "depth": "cuda:0",
+      "cuda_available": true,
+      "device_name": "NVIDIA GeForce RTX 4050 Laptop GPU",
+      "vram_allocated_mb": 138.25,
+      "vram_reserved_mb": 438.0
+    },
+    "system_health": "HEALTHY",
+    "global_warning": {
+      "state": "CAUTION",
+      "selected_track_id": 1,
+      "reason": "Moderate hazard under temporal observation"
+    },
+    "navigation": {
+      "state": "AVOID_LEFT",
+      "safe_direction": "LEFT",
+      "reason": "LEFT_SIDE_AVAILABLE"
+    },
+    "audio": {
+      "spoken": false,
+      "text": "",
+      "priority": "LOW"
+    },
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.939,
+        "bbox": [
+          223.1,
+          134.9,
+          416.2,
+          457.8
+        ],
+        "depth_value": 2.42,
+        "depth_valid": true,
+        "approach_state": "STABLE",
+        "closing_speed": -0.004,
+        "ttc_seconds": null,
+        "ttc_state": "NOT_CLOSING",
+        "ttc_valid": false,
+        "risk_score": 0.431,
+        "risk_level": "LOW",
+        "risk_primary_reason": "LOW_COLLISION_RELEVANCE",
+        "warning_state": "CAUTION"
+      }
+    ]
+  },
+  {
+    "frame_index": 35,
+    "timestamp_sec": 1.1667,
+    "active_tracks_count": 1,
+    "latencies_ms": {
+      "detector": 9.01,
+      "tracker": 3.67,
+      "depth": 70.64,
+      "motion": 0.02,
+      "camera_motion": 6.29,
+      "ttc": 0.03,
+      "risk": 0.03,
+      "reliability": 0.04,
+      "warning": 0.03,
+      "navigation": 0.02,
+      "tts": 0.01,
+      "total_frame": 90.98
+    },
+    "camera_motion": {
+      "dx": -0.6,
+      "dy": 0.7,
+      "valid": true
+    },
+    "device": {
+      "canonical": "cuda:0",
+      "detector": "cuda:0",
+      "depth": "cuda:0",
+      "cuda_available": true,
+      "device_name": "NVIDIA GeForce RTX 4050 Laptop GPU",
+      "vram_allocated_mb": 138.25,
+      "vram_reserved_mb": 438.0
+    },
+    "system_health": "HEALTHY",
+    "global_warning": {
+      "state": "CAUTION",
+      "selected_track_id": 1,
+      "reason": "Moderate hazard under temporal observation"
+    },
+    "navigation": {
+      "state": "AVOID_LEFT",
+      "safe_direction": "LEFT",
+      "reason": "LEFT_SIDE_AVAILABLE"
+    },
+    "audio": {
+      "spoken": false,
+      "text": "",
+      "priority": "LOW"
+    },
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.948,
+        "bbox": [
+          222.6,
+          134.0,
+          418.9,
+          462.3
+        ],
+        "depth_value": 2.48,
+        "depth_valid": true,
+        "approach_state": "APPROACHING",
+        "closing_speed": 0.593,
+        "ttc_seconds": 4.18,
+        "ttc_state": "VALID",
+        "ttc_valid": true,
+        "risk_score": 0.806,
+        "risk_level": "HIGH",
+        "risk_primary_reason": "APPROACHING_OBJECT_IN_PATH",
+        "warning_state": "CAUTION"
+      }
+    ]
+  },
+  {
+    "frame_index": 36,
+    "timestamp_sec": 1.2,
+    "active_tracks_count": 1,
+    "latencies_ms": {
+      "detector": 9.05,
+      "tracker": 3.31,
+      "depth": 68.39,
+      "motion": 0.03,
+      "camera_motion": 6.38,
+      "ttc": 0.02,
+      "risk": 0.03,
+      "reliability": 0.04,
+      "warning": 0.02,
+      "navigation": 0.02,
+      "tts": 0.01,
+      "total_frame": 88.44
+    },
+    "camera_motion": {
+      "dx": -0.09,
+      "dy": 0.41,
+      "valid": true
+    },
+    "device": {
+      "canonical": "cuda:0",
+      "detector": "cuda:0",
+      "depth": "cuda:0",
+      "cuda_available": true,
+      "device_name": "NVIDIA GeForce RTX 4050 Laptop GPU",
+      "vram_allocated_mb": 138.25,
+      "vram_reserved_mb": 438.0
+    },
+    "system_health": "HEALTHY",
+    "global_warning": {
+      "state": "CAUTION",
+      "selected_track_id": 1,
+      "reason": "Moderate hazard under temporal observation"
+    },
+    "navigation": {
+      "state": "AVOID_LEFT",
+      "safe_direction": "LEFT",
+      "reason": "LEFT_SIDE_AVAILABLE"
+    },
+    "audio": {
+      "spoken": false,
+      "text": "",
+      "priority": "LOW"
+    },
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.954,
+        "bbox": [
+          221.6,
+          134.1,
+          420.6,
+          465.9
+        ],
+        "depth_value": 2.438,
+        "depth_valid": true,
+        "approach_state": "STABLE",
+        "closing_speed": -0.024,
+        "ttc_seconds": null,
+        "ttc_state": "NOT_CLOSING",
+        "ttc_valid": false,
+        "risk_score": 0.435,
+        "risk_level": "LOW",
+        "risk_primary_reason": "LOW_COLLISION_RELEVANCE",
+        "warning_state": "CAUTION"
+      }
+    ]
+  },
+  {
+    "frame_index": 37,
+    "timestamp_sec": 1.2333,
+    "active_tracks_count": 1,
+    "latencies_ms": {
+      "detector": 9.13,
+      "tracker": 3.71,
+      "depth": 69.54,
+      "motion": 0.03,
+      "camera_motion": 5.81,
+      "ttc": 0.02,
+      "risk": 0.03,
+      "reliability": 0.04,
+      "warning": 0.02,
+      "navigation": 0.02,
+      "tts": 0.01,
+      "total_frame": 89.51
+    },
+    "camera_motion": {
+      "dx": 0.06,
+      "dy": 0.38,
+      "valid": true
+    },
+    "device": {
+      "canonical": "cuda:0",
+      "detector": "cuda:0",
+      "depth": "cuda:0",
+      "cuda_available": true,
+      "device_name": "NVIDIA GeForce RTX 4050 Laptop GPU",
+      "vram_allocated_mb": 138.25,
+      "vram_reserved_mb": 438.0
+    },
+    "system_health": "HEALTHY",
+    "global_warning": {
+      "state": "CAUTION",
+      "selected_track_id": 1,
+      "reason": "Moderate hazard under temporal observation"
+    },
+    "navigation": {
+      "state": "AVOID_LEFT",
+      "safe_direction": "LEFT",
+      "reason": "LEFT_SIDE_AVAILABLE"
+    },
+    "audio": {
+      "spoken": false,
+      "text": "",
+      "priority": "LOW"
+    },
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.948,
+        "bbox": [
+          219.5,
+          132.7,
+          421.9,
+          469.4
+        ],
+        "depth_value": 2.369,
+        "depth_valid": true,
+        "approach_state": "RECEDING",
+        "closing_speed": -0.702,
+        "ttc_seconds": null,
+        "ttc_state": "NOT_CLOSING",
+        "ttc_valid": false,
+        "risk_score": 0.407,
+        "risk_level": "LOW",
+        "risk_primary_reason": "RECEDING_OBJECT",
+        "warning_state": "CAUTION"
+      }
+    ]
+  },
+  {
+    "frame_index": 38,
+    "timestamp_sec": 1.2667,
+    "active_tracks_count": 1,
+    "latencies_ms": {
+      "detector": 9.38,
+      "tracker": 3.87,
+      "depth": 68.33,
+      "motion": 0.03,
+      "camera_motion": 5.98,
+      "ttc": 0.02,
+      "risk": 0.03,
+      "reliability": 0.04,
+      "warning": 0.03,
+      "navigation": 0.02,
+      "tts": 0.01,
+      "total_frame": 88.83
+    },
+    "camera_motion": {
+      "dx": 0.74,
+      "dy": 0.26,
+      "valid": true
+    },
+    "device": {
+      "canonical": "cuda:0",
+      "detector": "cuda:0",
+      "depth": "cuda:0",
+      "cuda_available": true,
+      "device_name": "NVIDIA GeForce RTX 4050 Laptop GPU",
+      "vram_allocated_mb": 138.25,
+      "vram_reserved_mb": 438.0
+    },
+    "system_health": "HEALTHY",
+    "global_warning": {
+      "state": "CAUTION",
+      "selected_track_id": 1,
+      "reason": "Moderate hazard under temporal observation"
+    },
+    "navigation": {
+      "state": "AVOID_LEFT",
+      "safe_direction": "LEFT",
+      "reason": "LEFT_SIDE_AVAILABLE"
+    },
+    "audio": {
+      "spoken": false,
+      "text": "",
+      "priority": "LOW"
+    },
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.935,
+        "bbox": [
+          218.7,
+          132.3,
+          423.0,
+          472.9
+        ],
+        "depth_value": 2.377,
+        "depth_valid": true,
+        "approach_state": "RECEDING",
+        "closing_speed": -0.39,
+        "ttc_seconds": null,
+        "ttc_state": "NOT_CLOSING",
+        "ttc_valid": false,
+        "risk_score": 0.409,
+        "risk_level": "LOW",
+        "risk_primary_reason": "RECEDING_OBJECT",
+        "warning_state": "CAUTION"
+      }
+    ]
+  },
+  {
+    "frame_index": 39,
+    "timestamp_sec": 1.3,
+    "active_tracks_count": 1,
+    "latencies_ms": {
+      "detector": 8.88,
+      "tracker": 3.76,
+      "depth": 67.21,
+      "motion": 0.03,
+      "camera_motion": 6.54,
+      "ttc": 0.03,
+      "risk": 0.03,
+      "reliability": 0.04,
+      "warning": 0.03,
+      "navigation": 0.03,
+      "tts": 0.01,
+      "total_frame": 87.93
+    },
+    "camera_motion": {
+      "dx": 0.09,
+      "dy": 0.36,
+      "valid": true
+    },
+    "device": {
+      "canonical": "cuda:0",
+      "detector": "cuda:0",
+      "depth": "cuda:0",
+      "cuda_available": true,
+      "device_name": "NVIDIA GeForce RTX 4050 Laptop GPU",
+      "vram_allocated_mb": 138.25,
+      "vram_reserved_mb": 438.0
+    },
+    "system_health": "HEALTHY",
+    "global_warning": {
+      "state": "CAUTION",
+      "selected_track_id": 1,
+      "reason": "Moderate hazard under temporal observation"
+    },
+    "navigation": {
+      "state": "AVOID_LEFT",
+      "safe_direction": "LEFT",
+      "reason": "LEFT_SIDE_AVAILABLE"
+    },
+    "audio": {
+      "spoken": false,
+      "text": "",
+      "priority": "LOW"
+    },
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.93,
+        "bbox": [
+          217.6,
+          131.7,
+          422.1,
+          478.1
+        ],
+        "depth_value": 2.399,
+        "depth_valid": true,
+        "approach_state": "STABLE",
+        "closing_speed": -0.038,
+        "ttc_seconds": null,
+        "ttc_state": "NOT_CLOSING",
+        "ttc_valid": false,
+        "risk_score": 0.441,
+        "risk_level": "LOW",
+        "risk_primary_reason": "LOW_COLLISION_RELEVANCE",
+        "warning_state": "CAUTION"
+      }
+    ]
+  },
+  {
+    "frame_index": 40,
+    "timestamp_sec": 1.3333,
+    "active_tracks_count": 1,
+    "latencies_ms": {
+      "detector": 9.12,
+      "tracker": 3.91,
+      "depth": 68.67,
+      "motion": 0.03,
+      "camera_motion": 5.99,
+      "ttc": 0.03,
+      "risk": 0.03,
+      "reliability": 0.04,
+      "warning": 0.02,
+      "navigation": 0.02,
+      "tts": 0.01,
+      "total_frame": 89.01
+    },
+    "camera_motion": {
+      "dx": -0.52,
+      "dy": 0.96,
+      "valid": true
+    },
+    "device": {
+      "canonical": "cuda:0",
+      "detector": "cuda:0",
+      "depth": "cuda:0",
+      "cuda_available": true,
+      "device_name": "NVIDIA GeForce RTX 4050 Laptop GPU",
+      "vram_allocated_mb": 138.25,
+      "vram_reserved_mb": 438.0
+    },
+    "system_health": "HEALTHY",
+    "global_warning": {
+      "state": "CAUTION",
+      "selected_track_id": 1,
+      "reason": "Moderate hazard under temporal observation"
+    },
+    "navigation": {
+      "state": "AVOID_LEFT",
+      "safe_direction": "LEFT",
+      "reason": "LEFT_SIDE_AVAILABLE"
+    },
+    "audio": {
+      "spoken": false,
+      "text": "",
+      "priority": "LOW"
+    },
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.942,
+        "bbox": [
+          215.9,
+          129.7,
+          424.0,
+          479.6
+        ],
+        "depth_value": 2.406,
+        "depth_valid": true,
+        "approach_state": "STABLE",
+        "closing_speed": 0.041,
+        "ttc_seconds": null,
+        "ttc_state": "NOT_CLOSING",
+        "ttc_valid": false,
+        "risk_score": 0.442,
+        "risk_level": "LOW",
+        "risk_primary_reason": "LOW_COLLISION_RELEVANCE",
+        "warning_state": "CAUTION"
+      }
+    ]
+  },
+  {
+    "frame_index": 41,
+    "timestamp_sec": 1.3667,
+    "active_tracks_count": 1,
+    "latencies_ms": {
+      "detector": 11.11,
+      "tracker": 4.02,
+      "depth": 68.73,
+      "motion": 0.03,
+      "camera_motion": 5.88,
+      "ttc": 0.02,
+      "risk": 0.03,
+      "reliability": 0.04,
+      "warning": 0.02,
+      "navigation": 0.02,
+      "tts": 0.01,
+      "total_frame": 91.26
+    },
+    "camera_motion": {
+      "dx": -0.24,
+      "dy": 0.62,
+      "valid": true
+    },
+    "device": {
+      "canonical": "cuda:0",
+      "detector": "cuda:0",
+      "depth": "cuda:0",
+      "cuda_available": true,
+      "device_name": "NVIDIA GeForce RTX 4050 Laptop GPU",
+      "vram_allocated_mb": 138.25,
+      "vram_reserved_mb": 438.0
+    },
+    "system_health": "HEALTHY",
+    "global_warning": {
+      "state": "CAUTION",
+      "selected_track_id": 1,
+      "reason": "Moderate hazard under temporal observation"
+    },
+    "navigation": {
+      "state": "AVOID_LEFT",
+      "safe_direction": "LEFT",
+      "reason": "LEFT_SIDE_AVAILABLE"
+    },
+    "audio": {
+      "spoken": false,
+      "text": "",
+      "priority": "LOW"
+    },
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.943,
+        "bbox": [
+          214.9,
+          129.8,
+          425.4,
+          480.0
+        ],
+        "depth_value": 2.401,
+        "depth_valid": true,
+        "approach_state": "STABLE",
+        "closing_speed": -0.025,
+        "ttc_seconds": null,
+        "ttc_state": "NOT_CLOSING",
+        "ttc_valid": false,
+        "risk_score": 0.443,
+        "risk_level": "LOW",
+        "risk_primary_reason": "LOW_COLLISION_RELEVANCE",
+        "warning_state": "CAUTION"
+      }
+    ]
+  },
+  {
+    "frame_index": 42,
+    "timestamp_sec": 1.4,
+    "active_tracks_count": 1,
+    "latencies_ms": {
+      "detector": 8.97,
+      "tracker": 3.86,
+      "depth": 68.46,
+      "motion": 0.03,
+      "camera_motion": 9.29,
+      "ttc": 0.02,
+      "risk": 0.03,
+      "reliability": 0.05,
+      "warning": 0.03,
+      "navigation": 0.02,
+      "tts": 0.01,
+      "total_frame": 91.92
+    },
+    "camera_motion": {
+      "dx": -0.66,
+      "dy": 0.8,
+      "valid": true
+    },
+    "device": {
+      "canonical": "cuda:0",
+      "detector": "cuda:0",
+      "depth": "cuda:0",
+      "cuda_available": true,
+      "device_name": "NVIDIA GeForce RTX 4050 Laptop GPU",
+      "vram_allocated_mb": 138.25,
+      "vram_reserved_mb": 438.0
+    },
+    "system_health": "HEALTHY",
+    "global_warning": {
+      "state": "CAUTION",
+      "selected_track_id": 1,
+      "reason": "Moderate hazard under temporal observation"
+    },
+    "navigation": {
+      "state": "AVOID_LEFT",
+      "safe_direction": "LEFT",
+      "reason": "LEFT_SIDE_AVAILABLE"
+    },
+    "audio": {
+      "spoken": false,
+      "text": "",
+      "priority": "LOW"
+    },
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.944,
+        "bbox": [
+          213.9,
+          129.8,
+          427.2,
+          480.0
+        ],
+        "depth_value": 2.366,
+        "depth_valid": true,
+        "approach_state": "RECEDING",
+        "closing_speed": -0.369,
+        "ttc_seconds": null,
+        "ttc_state": "NOT_CLOSING",
+        "ttc_valid": false,
+        "risk_score": 0.413,
+        "risk_level": "LOW",
+        "risk_primary_reason": "RECEDING_OBJECT",
+        "warning_state": "CAUTION"
+      }
+    ]
+  },
+  {
+    "frame_index": 43,
+    "timestamp_sec": 1.4333,
+    "active_tracks_count": 1,
+    "latencies_ms": {
+      "detector": 9.14,
+      "tracker": 3.67,
+      "depth": 69.31,
+      "motion": 0.03,
+      "camera_motion": 6.39,
+      "ttc": 0.02,
+      "risk": 0.03,
+      "reliability": 0.04,
+      "warning": 0.03,
+      "navigation": 0.02,
+      "tts": 0.01,
+      "total_frame": 89.94
+    },
+    "camera_motion": {
+      "dx": 0.1,
+      "dy": 0.28,
+      "valid": true
+    },
+    "device": {
+      "canonical": "cuda:0",
+      "detector": "cuda:0",
+      "depth": "cuda:0",
+      "cuda_available": true,
+      "device_name": "NVIDIA GeForce RTX 4050 Laptop GPU",
+      "vram_allocated_mb": 138.25,
+      "vram_reserved_mb": 438.0
+    },
+    "system_health": "HEALTHY",
+    "global_warning": {
+      "state": "CAUTION",
+      "selected_track_id": 1,
+      "reason": "Moderate hazard under temporal observation"
+    },
+    "navigation": {
+      "state": "AVOID_LEFT",
+      "safe_direction": "LEFT",
+      "reason": "LEFT_SIDE_AVAILABLE"
+    },
+    "audio": {
+      "spoken": false,
+      "text": "",
+      "priority": "LOW"
+    },
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.941,
+        "bbox": [
+          211.7,
+          128.9,
+          427.7,
+          480.0
+        ],
+        "depth_value": 2.436,
+        "depth_valid": true,
+        "approach_state": "APPROACHING",
+        "closing_speed": 0.455,
+        "ttc_seconds": 5.35,
+        "ttc_state": "VALID",
+        "ttc_valid": true,
+        "risk_score": 0.788,
+        "risk_level": "HIGH",
+        "risk_primary_reason": "APPROACHING_OBJECT_IN_PATH",
+        "warning_state": "CAUTION"
+      }
+    ]
+  },
+  {
+    "frame_index": 44,
+    "timestamp_sec": 1.4667,
+    "active_tracks_count": 1,
+    "latencies_ms": {
+      "detector": 9.26,
+      "tracker": 3.48,
+      "depth": 68.84,
+      "motion": 0.03,
+      "camera_motion": 6.3,
+      "ttc": 0.02,
+      "risk": 0.03,
+      "reliability": 0.04,
+      "warning": 0.03,
+      "navigation": 0.02,
+      "tts": 0.01,
+      "total_frame": 89.25
+    },
+    "camera_motion": {
+      "dx": -0.07,
+      "dy": 0.42,
+      "valid": true
+    },
+    "device": {
+      "canonical": "cuda:0",
+      "detector": "cuda:0",
+      "depth": "cuda:0",
+      "cuda_available": true,
+      "device_name": "NVIDIA GeForce RTX 4050 Laptop GPU",
+      "vram_allocated_mb": 138.25,
+      "vram_reserved_mb": 438.0
+    },
+    "system_health": "HEALTHY",
+    "global_warning": {
+      "state": "CAUTION",
+      "selected_track_id": 1,
+      "reason": "Moderate hazard under temporal observation"
+    },
+    "navigation": {
+      "state": "AVOID_LEFT",
+      "safe_direction": "LEFT",
+      "reason": "LEFT_SIDE_AVAILABLE"
+    },
+    "audio": {
+      "spoken": false,
+      "text": "",
+      "priority": "LOW"
+    },
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.951,
+        "bbox": [
+          210.4,
+          128.9,
+          429.3,
+          479.6
+        ],
+        "depth_value": 2.365,
+        "depth_valid": true,
+        "approach_state": "RECEDING",
+        "closing_speed": -0.405,
+        "ttc_seconds": null,
+        "ttc_state": "NOT_CLOSING",
+        "ttc_valid": false,
+        "risk_score": 0.413,
+        "risk_level": "LOW",
+        "risk_primary_reason": "RECEDING_OBJECT",
+        "warning_state": "CAUTION"
+      }
+    ]
+  },
+  {
+    "frame_index": 45,
+    "timestamp_sec": 1.5,
+    "active_tracks_count": 1,
+    "latencies_ms": {
+      "detector": 9.22,
+      "tracker": 3.62,
+      "depth": 68.83,
+      "motion": 0.03,
+      "camera_motion": 5.85,
+      "ttc": 0.02,
+      "risk": 0.03,
+      "reliability": 0.04,
+      "warning": 0.02,
+      "navigation": 0.02,
+      "tts": 0.01,
+      "total_frame": 88.93
+    },
+    "camera_motion": {
+      "dx": -0.48,
+      "dy": 0.59,
+      "valid": true
+    },
+    "device": {
+      "canonical": "cuda:0",
+      "detector": "cuda:0",
+      "depth": "cuda:0",
+      "cuda_available": true,
+      "device_name": "NVIDIA GeForce RTX 4050 Laptop GPU",
+      "vram_allocated_mb": 138.25,
+      "vram_reserved_mb": 438.0
+    },
+    "system_health": "HEALTHY",
+    "global_warning": {
+      "state": "CAUTION",
+      "selected_track_id": 1,
+      "reason": "Moderate hazard under temporal observation"
+    },
+    "navigation": {
+      "state": "AVOID_LEFT",
+      "safe_direction": "LEFT",
+      "reason": "LEFT_SIDE_AVAILABLE"
+    },
+    "audio": {
+      "spoken": false,
+      "text": "",
+      "priority": "LOW"
+    },
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.937,
+        "bbox": [
+          209.6,
+          128.0,
+          429.3,
+          480.0
+        ],
+        "depth_value": 2.283,
+        "depth_valid": true,
+        "approach_state": "RECEDING",
+        "closing_speed": -1.083,
+        "ttc_seconds": null,
+        "ttc_state": "NOT_CLOSING",
+        "ttc_valid": false,
+        "risk_score": 0.413,
+        "risk_level": "LOW",
+        "risk_primary_reason": "RECEDING_OBJECT",
+        "warning_state": "CAUTION"
+      }
+    ]
+  },
+  {
+    "frame_index": 46,
+    "timestamp_sec": 1.5333,
+    "active_tracks_count": 1,
+    "latencies_ms": {
+      "detector": 11.33,
+      "tracker": 4.05,
+      "depth": 67.82,
+      "motion": 0.03,
+      "camera_motion": 6.03,
+      "ttc": 0.02,
+      "risk": 0.03,
+      "reliability": 0.04,
+      "warning": 0.02,
+      "navigation": 0.02,
+      "tts": 0.01,
+      "total_frame": 90.67
+    },
+    "camera_motion": {
+      "dx": 0.41,
+      "dy": -0.15,
+      "valid": true
+    },
+    "device": {
+      "canonical": "cuda:0",
+      "detector": "cuda:0",
+      "depth": "cuda:0",
+      "cuda_available": true,
+      "device_name": "NVIDIA GeForce RTX 4050 Laptop GPU",
+      "vram_allocated_mb": 138.25,
+      "vram_reserved_mb": 438.0
+    },
+    "system_health": "HEALTHY",
+    "global_warning": {
+      "state": "CAUTION",
+      "selected_track_id": 1,
+      "reason": "Moderate hazard under temporal observation"
+    },
+    "navigation": {
+      "state": "AVOID_LEFT",
+      "safe_direction": "LEFT",
+      "reason": "LEFT_SIDE_AVAILABLE"
+    },
+    "audio": {
+      "spoken": false,
+      "text": "",
+      "priority": "LOW"
+    },
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.924,
+        "bbox": [
+          207.8,
+          127.3,
+          426.4,
+          479.4
+        ],
+        "depth_value": 2.356,
+        "depth_valid": true,
+        "approach_state": "STABLE",
+        "closing_speed": -0.001,
+        "ttc_seconds": null,
+        "ttc_state": "NOT_CLOSING",
+        "ttc_valid": false,
+        "risk_score": 0.443,
+        "risk_level": "LOW",
+        "risk_primary_reason": "LOW_COLLISION_RELEVANCE",
+        "warning_state": "CAUTION"
+      }
+    ]
+  },
+  {
+    "frame_index": 47,
+    "timestamp_sec": 1.5667,
+    "active_tracks_count": 1,
+    "latencies_ms": {
+      "detector": 9.2,
+      "tracker": 3.8,
+      "depth": 70.35,
+      "motion": 0.03,
+      "camera_motion": 5.9,
+      "ttc": 0.02,
+      "risk": 0.03,
+      "reliability": 0.04,
+      "warning": 0.02,
+      "navigation": 0.02,
+      "tts": 0.01,
+      "total_frame": 90.67
+    },
+    "camera_motion": {
+      "dx": -0.44,
+      "dy": 0.47,
+      "valid": true
+    },
+    "device": {
+      "canonical": "cuda:0",
+      "detector": "cuda:0",
+      "depth": "cuda:0",
+      "cuda_available": true,
+      "device_name": "NVIDIA GeForce RTX 4050 Laptop GPU",
+      "vram_allocated_mb": 138.25,
+      "vram_reserved_mb": 438.0
+    },
+    "system_health": "HEALTHY",
+    "global_warning": {
+      "state": "CAUTION",
+      "selected_track_id": 1,
+      "reason": "Moderate hazard under temporal observation"
+    },
+    "navigation": {
+      "state": "AVOID_LEFT",
+      "safe_direction": "LEFT",
+      "reason": "LEFT_SIDE_AVAILABLE"
+    },
+    "audio": {
+      "spoken": false,
+      "text": "",
+      "priority": "LOW"
+    },
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.923,
+        "bbox": [
+          206.9,
+          127.5,
+          424.6,
+          479.6
+        ],
+        "depth_value": 2.4,
+        "depth_valid": true,
+        "approach_state": "APPROACHING",
+        "closing_speed": 0.447,
+        "ttc_seconds": 5.37,
+        "ttc_state": "VALID",
+        "ttc_valid": true,
+        "risk_score": 0.788,
+        "risk_level": "HIGH",
+        "risk_primary_reason": "APPROACHING_OBJECT_IN_PATH",
+        "warning_state": "CAUTION"
+      }
+    ]
+  },
+  {
+    "frame_index": 48,
+    "timestamp_sec": 1.6,
+    "active_tracks_count": 1,
+    "latencies_ms": {
+      "detector": 9.47,
+      "tracker": 3.63,
+      "depth": 69.11,
+      "motion": 0.02,
+      "camera_motion": 5.95,
+      "ttc": 0.02,
+      "risk": 0.03,
+      "reliability": 0.04,
+      "warning": 0.02,
+      "navigation": 0.03,
+      "tts": 0.01,
+      "total_frame": 89.45
+    },
+    "camera_motion": {
+      "dx": -0.04,
+      "dy": 0.3,
+      "valid": true
+    },
+    "device": {
+      "canonical": "cuda:0",
+      "detector": "cuda:0",
+      "depth": "cuda:0",
+      "cuda_available": true,
+      "device_name": "NVIDIA GeForce RTX 4050 Laptop GPU",
+      "vram_allocated_mb": 138.25,
+      "vram_reserved_mb": 438.0
+    },
+    "system_health": "HEALTHY",
+    "global_warning": {
+      "state": "CAUTION",
+      "selected_track_id": 1,
+      "reason": "Moderate hazard under temporal observation"
+    },
+    "navigation": {
+      "state": "AVOID_LEFT",
+      "safe_direction": "LEFT",
+      "reason": "LEFT_SIDE_AVAILABLE"
+    },
+    "audio": {
+      "spoken": false,
+      "text": "",
+      "priority": "LOW"
+    },
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.933,
+        "bbox": [
+          206.1,
+          127.3,
+          431.3,
+          480.0
+        ],
+        "depth_value": 2.421,
+        "depth_valid": true,
+        "approach_state": "APPROACHING",
+        "closing_speed": 0.502,
+        "ttc_seconds": 4.83,
+        "ttc_state": "VALID",
+        "ttc_valid": true,
+        "risk_score": 0.801,
+        "risk_level": "HIGH",
+        "risk_primary_reason": "APPROACHING_OBJECT_IN_PATH",
+        "warning_state": "CAUTION"
+      }
+    ]
+  },
+  {
+    "frame_index": 49,
+    "timestamp_sec": 1.6333,
+    "active_tracks_count": 1,
+    "latencies_ms": {
+      "detector": 9.02,
+      "tracker": 3.56,
+      "depth": 68.83,
+      "motion": 0.03,
+      "camera_motion": 6.25,
+      "ttc": 0.02,
+      "risk": 0.03,
+      "reliability": 0.04,
+      "warning": 0.03,
+      "navigation": 0.02,
+      "tts": 0.01,
+      "total_frame": 89.22
+    },
+    "camera_motion": {
+      "dx": -0.2,
+      "dy": 0.22,
+      "valid": true
+    },
+    "device": {
+      "canonical": "cuda:0",
+      "detector": "cuda:0",
+      "depth": "cuda:0",
+      "cuda_available": true,
+      "device_name": "NVIDIA GeForce RTX 4050 Laptop GPU",
+      "vram_allocated_mb": 138.25,
+      "vram_reserved_mb": 438.0
+    },
+    "system_health": "HEALTHY",
+    "global_warning": {
+      "state": "CAUTION",
+      "selected_track_id": 1,
+      "reason": "Moderate hazard under temporal observation"
+    },
+    "navigation": {
+      "state": "AVOID_LEFT",
+      "safe_direction": "LEFT",
+      "reason": "LEFT_SIDE_AVAILABLE"
+    },
+    "audio": {
+      "spoken": false,
+      "text": "",
+      "priority": "LOW"
+    },
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.94,
+        "bbox": [
+          204.4,
+          127.5,
+          434.5,
+          479.2
+        ],
+        "depth_value": 2.383,
+        "depth_valid": true,
+        "approach_state": "STABLE",
+        "closing_speed": -0.042,
+        "ttc_seconds": null,
+        "ttc_state": "NOT_CLOSING",
+        "ttc_valid": false,
+        "risk_score": 0.443,
+        "risk_level": "LOW",
+        "risk_primary_reason": "LOW_COLLISION_RELEVANCE",
+        "warning_state": "CAUTION"
+      }
+    ]
+  },
+  {
+    "frame_index": 50,
+    "timestamp_sec": 1.6667,
+    "active_tracks_count": 1,
+    "latencies_ms": {
+      "detector": 8.8,
+      "tracker": 3.55,
+      "depth": 70.86,
+      "motion": 0.03,
+      "camera_motion": 6.0,
+      "ttc": 0.02,
+      "risk": 0.03,
+      "reliability": 0.04,
+      "warning": 0.02,
+      "navigation": 0.02,
+      "tts": 0.01,
+      "total_frame": 90.67
+    },
+    "camera_motion": {
+      "dx": 0.4,
+      "dy": -0.09,
+      "valid": true
+    },
+    "device": {
+      "canonical": "cuda:0",
+      "detector": "cuda:0",
+      "depth": "cuda:0",
+      "cuda_available": true,
+      "device_name": "NVIDIA GeForce RTX 4050 Laptop GPU",
+      "vram_allocated_mb": 138.25,
+      "vram_reserved_mb": 438.0
+    },
+    "system_health": "HEALTHY",
+    "global_warning": {
+      "state": "CAUTION",
+      "selected_track_id": 1,
+      "reason": "Moderate hazard under temporal observation"
+    },
+    "navigation": {
+      "state": "AVOID_LEFT",
+      "safe_direction": "LEFT",
+      "reason": "LEFT_SIDE_AVAILABLE"
+    },
+    "audio": {
+      "spoken": false,
+      "text": "",
+      "priority": "LOW"
+    },
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.944,
+        "bbox": [
+          202.5,
+          125.9,
+          434.9,
+          478.4
+        ],
+        "depth_value": 2.347,
+        "depth_valid": true,
+        "approach_state": "RECEDING",
+        "closing_speed": -0.386,
+        "ttc_seconds": null,
+        "ttc_state": "NOT_CLOSING",
+        "ttc_valid": false,
+        "risk_score": 0.414,
+        "risk_level": "LOW",
+        "risk_primary_reason": "RECEDING_OBJECT",
+        "warning_state": "CAUTION"
+      }
+    ]
+  },
+  {
+    "frame_index": 51,
+    "timestamp_sec": 1.7,
+    "active_tracks_count": 1,
+    "latencies_ms": {
+      "detector": 10.01,
+      "tracker": 3.62,
+      "depth": 69.54,
+      "motion": 0.03,
+      "camera_motion": 5.86,
+      "ttc": 0.03,
+      "risk": 0.03,
+      "reliability": 0.04,
+      "warning": 0.03,
+      "navigation": 0.02,
+      "tts": 0.01,
+      "total_frame": 90.47
+    },
+    "camera_motion": {
+      "dx": -0.24,
+      "dy": 0.19,
+      "valid": true
+    },
+    "device": {
+      "canonical": "cuda:0",
+      "detector": "cuda:0",
+      "depth": "cuda:0",
+      "cuda_available": true,
+      "device_name": "NVIDIA GeForce RTX 4050 Laptop GPU",
+      "vram_allocated_mb": 138.25,
+      "vram_reserved_mb": 438.0
+    },
+    "system_health": "HEALTHY",
+    "global_warning": {
+      "state": "CAUTION",
+      "selected_track_id": 1,
+      "reason": "Moderate hazard under temporal observation"
+    },
+    "navigation": {
+      "state": "AVOID_LEFT",
+      "safe_direction": "LEFT",
+      "reason": "LEFT_SIDE_AVAILABLE"
+    },
+    "audio": {
+      "spoken": false,
+      "text": "",
+      "priority": "LOW"
+    },
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.943,
+        "bbox": [
+          201.5,
+          125.9,
+          436.3,
+          478.7
+        ],
+        "depth_value": 2.348,
+        "depth_valid": true,
+        "approach_state": "RECEDING",
+        "closing_speed": -0.251,
+        "ttc_seconds": null,
+        "ttc_state": "NOT_CLOSING",
+        "ttc_valid": false,
+        "risk_score": 0.414,
+        "risk_level": "LOW",
+        "risk_primary_reason": "RECEDING_OBJECT",
+        "warning_state": "CAUTION"
+      }
+    ]
+  },
+  {
+    "frame_index": 52,
+    "timestamp_sec": 1.7333,
+    "active_tracks_count": 1,
+    "latencies_ms": {
+      "detector": 9.71,
+      "tracker": 3.98,
+      "depth": 68.75,
+      "motion": 0.03,
+      "camera_motion": 5.92,
+      "ttc": 0.03,
+      "risk": 0.03,
+      "reliability": 0.05,
+      "warning": 0.03,
+      "navigation": 0.02,
+      "tts": 0.01,
+      "total_frame": 89.78
+    },
+    "camera_motion": {
+      "dx": 0.34,
+      "dy": -0.08,
+      "valid": true
+    },
+    "device": {
+      "canonical": "cuda:0",
+      "detector": "cuda:0",
+      "depth": "cuda:0",
+      "cuda_available": true,
+      "device_name": "NVIDIA GeForce RTX 4050 Laptop GPU",
+      "vram_allocated_mb": 138.25,
+      "vram_reserved_mb": 438.0
+    },
+    "system_health": "HEALTHY",
+    "global_warning": {
+      "state": "CAUTION",
+      "selected_track_id": 1,
+      "reason": "Moderate hazard under temporal observation"
+    },
+    "navigation": {
+      "state": "AVOID_LEFT",
+      "safe_direction": "LEFT",
+      "reason": "LEFT_SIDE_AVAILABLE"
+    },
+    "audio": {
+      "spoken": false,
+      "text": "",
+      "priority": "LOW"
+    },
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.952,
+        "bbox": [
+          199.9,
+          125.8,
+          438.9,
+          478.9
+        ],
+        "depth_value": 2.364,
+        "depth_valid": true,
+        "approach_state": "STABLE",
+        "closing_speed": -0.002,
+        "ttc_seconds": null,
+        "ttc_state": "NOT_CLOSING",
+        "ttc_valid": false,
+        "risk_score": 0.444,
+        "risk_level": "LOW",
+        "risk_primary_reason": "LOW_COLLISION_RELEVANCE",
+        "warning_state": "CAUTION"
+      }
+    ]
+  },
+  {
+    "frame_index": 53,
+    "timestamp_sec": 1.7667,
+    "active_tracks_count": 1,
+    "latencies_ms": {
+      "detector": 9.25,
+      "tracker": 3.54,
+      "depth": 68.47,
+      "motion": 0.03,
+      "camera_motion": 5.97,
+      "ttc": 0.02,
+      "risk": 0.03,
+      "reliability": 0.04,
+      "warning": 0.03,
+      "navigation": 0.02,
+      "tts": 0.01,
+      "total_frame": 88.77
+    },
+    "camera_motion": {
+      "dx": -0.43,
+      "dy": 0.21,
+      "valid": true
+    },
+    "device": {
+      "canonical": "cuda:0",
+      "detector": "cuda:0",
+      "depth": "cuda:0",
+      "cuda_available": true,
+      "device_name": "NVIDIA GeForce RTX 4050 Laptop GPU",
+      "vram_allocated_mb": 138.25,
+      "vram_reserved_mb": 438.0
+    },
+    "system_health": "HEALTHY",
+    "global_warning": {
+      "state": "CAUTION",
+      "selected_track_id": 1,
+      "reason": "Moderate hazard under temporal observation"
+    },
+    "navigation": {
+      "state": "AVOID_LEFT",
+      "safe_direction": "LEFT",
+      "reason": "LEFT_SIDE_AVAILABLE"
+    },
+    "audio": {
+      "spoken": false,
+      "text": "",
+      "priority": "LOW"
+    },
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.952,
+        "bbox": [
+          199.2,
+          124.5,
+          440.4,
+          478.2
+        ],
+        "depth_value": 2.299,
+        "depth_valid": true,
+        "approach_state": "RECEDING",
+        "closing_speed": -0.661,
+        "ttc_seconds": null,
+        "ttc_state": "NOT_CLOSING",
+        "ttc_valid": false,
+        "risk_score": 0.414,
+        "risk_level": "LOW",
+        "risk_primary_reason": "RECEDING_OBJECT",
+        "warning_state": "CAUTION"
+      }
+    ]
+  },
+  {
+    "frame_index": 54,
+    "timestamp_sec": 1.8,
+    "active_tracks_count": 1,
+    "latencies_ms": {
+      "detector": 9.36,
+      "tracker": 3.35,
+      "depth": 68.08,
+      "motion": 0.03,
+      "camera_motion": 5.84,
+      "ttc": 0.02,
+      "risk": 0.03,
+      "reliability": 0.04,
+      "warning": 0.02,
+      "navigation": 0.02,
+      "tts": 0.01,
+      "total_frame": 87.96
+    },
+    "camera_motion": {
+      "dx": -0.45,
+      "dy": 0.36,
+      "valid": true
+    },
+    "device": {
+      "canonical": "cuda:0",
+      "detector": "cuda:0",
+      "depth": "cuda:0",
+      "cuda_available": true,
+      "device_name": "NVIDIA GeForce RTX 4050 Laptop GPU",
+      "vram_allocated_mb": 138.25,
+      "vram_reserved_mb": 438.0
+    },
+    "system_health": "HEALTHY",
+    "global_warning": {
+      "state": "CAUTION",
+      "selected_track_id": 1,
+      "reason": "Moderate hazard under temporal observation"
+    },
+    "navigation": {
+      "state": "AVOID_LEFT",
+      "safe_direction": "LEFT",
+      "reason": "LEFT_SIDE_AVAILABLE"
+    },
+    "audio": {
+      "spoken": false,
+      "text": "",
+      "priority": "LOW"
+    },
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.951,
+        "bbox": [
+          198.4,
+          124.5,
+          441.7,
+          478.5
+        ],
+        "depth_value": 2.39,
+        "depth_valid": true,
+        "approach_state": "APPROACHING",
+        "closing_speed": 0.47,
+        "ttc_seconds": 5.08,
+        "ttc_state": "VALID",
+        "ttc_valid": true,
+        "risk_score": 0.796,
+        "risk_level": "HIGH",
+        "risk_primary_reason": "APPROACHING_OBJECT_IN_PATH",
+        "warning_state": "CAUTION"
+      }
+    ]
+  },
+  {
+    "frame_index": 55,
+    "timestamp_sec": 1.8333,
+    "active_tracks_count": 1,
+    "latencies_ms": {
+      "detector": 13.08,
+      "tracker": 3.64,
+      "depth": 68.17,
+      "motion": 0.03,
+      "camera_motion": 6.11,
+      "ttc": 0.02,
+      "risk": 0.03,
+      "reliability": 0.04,
+      "warning": 0.02,
+      "navigation": 0.02,
+      "tts": 0.01,
+      "total_frame": 92.71
+    },
+    "camera_motion": {
+      "dx": -0.43,
+      "dy": 0.02,
+      "valid": true
+    },
+    "device": {
+      "canonical": "cuda:0",
+      "detector": "cuda:0",
+      "depth": "cuda:0",
+      "cuda_available": true,
+      "device_name": "NVIDIA GeForce RTX 4050 Laptop GPU",
+      "vram_allocated_mb": 138.25,
+      "vram_reserved_mb": 438.0
+    },
+    "system_health": "HEALTHY",
+    "global_warning": {
+      "state": "CAUTION",
+      "selected_track_id": 1,
+      "reason": "Moderate hazard under temporal observation"
+    },
+    "navigation": {
+      "state": "AVOID_LEFT",
+      "safe_direction": "LEFT",
+      "reason": "LEFT_SIDE_AVAILABLE"
+    },
+    "audio": {
+      "spoken": false,
+      "text": "",
+      "priority": "LOW"
+    },
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.948,
+        "bbox": [
+          197.1,
+          123.4,
+          441.1,
+          478.6
+        ],
+        "depth_value": 2.294,
+        "depth_valid": true,
+        "approach_state": "RECEDING",
+        "closing_speed": -0.638,
+        "ttc_seconds": null,
+        "ttc_state": "NOT_CLOSING",
+        "ttc_valid": false,
+        "risk_score": 0.415,
+        "risk_level": "LOW",
+        "risk_primary_reason": "RECEDING_OBJECT",
+        "warning_state": "CAUTION"
+      }
+    ]
+  },
+  {
+    "frame_index": 56,
+    "timestamp_sec": 1.8667,
+    "active_tracks_count": 1,
+    "latencies_ms": {
+      "detector": 10.68,
+      "tracker": 3.57,
+      "depth": 68.73,
+      "motion": 0.03,
+      "camera_motion": 5.5,
+      "ttc": 0.02,
+      "risk": 0.03,
+      "reliability": 0.05,
+      "warning": 0.03,
+      "navigation": 0.02,
+      "tts": 0.01,
+      "total_frame": 89.96
+    },
+    "camera_motion": {
+      "dx": -0.15,
+      "dy": -0.17,
+      "valid": true
+    },
+    "device": {
+      "canonical": "cuda:0",
+      "detector": "cuda:0",
+      "depth": "cuda:0",
+      "cuda_available": true,
+      "device_name": "NVIDIA GeForce RTX 4050 Laptop GPU",
+      "vram_allocated_mb": 138.25,
+      "vram_reserved_mb": 438.0
+    },
+    "system_health": "HEALTHY",
+    "global_warning": {
+      "state": "CAUTION",
+      "selected_track_id": 1,
+      "reason": "Moderate hazard under temporal observation"
+    },
+    "navigation": {
+      "state": "AVOID_LEFT",
+      "safe_direction": "LEFT",
+      "reason": "LEFT_SIDE_AVAILABLE"
+    },
+    "audio": {
+      "spoken": false,
+      "text": "",
+      "priority": "LOW"
+    },
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.948,
+        "bbox": [
+          195.1,
+          122.6,
+          443.2,
+          478.4
+        ],
+        "depth_value": 2.32,
+        "depth_valid": true,
+        "approach_state": "RECEDING",
+        "closing_speed": -0.174,
+        "ttc_seconds": null,
+        "ttc_state": "NOT_CLOSING",
+        "ttc_valid": false,
+        "risk_score": 0.415,
+        "risk_level": "LOW",
+        "risk_primary_reason": "RECEDING_OBJECT",
+        "warning_state": "CAUTION"
+      }
+    ]
+  },
+  {
+    "frame_index": 57,
+    "timestamp_sec": 1.9,
+    "active_tracks_count": 1,
+    "latencies_ms": {
+      "detector": 13.48,
+      "tracker": 3.67,
+      "depth": 65.76,
+      "motion": 0.03,
+      "camera_motion": 5.48,
+      "ttc": 0.02,
+      "risk": 0.03,
+      "reliability": 0.04,
+      "warning": 0.03,
+      "navigation": 0.02,
+      "tts": 0.01,
+      "total_frame": 89.75
+    },
+    "camera_motion": {
+      "dx": -0.34,
+      "dy": 0.17,
+      "valid": true
+    },
+    "device": {
+      "canonical": "cuda:0",
+      "detector": "cuda:0",
+      "depth": "cuda:0",
+      "cuda_available": true,
+      "device_name": "NVIDIA GeForce RTX 4050 Laptop GPU",
+      "vram_allocated_mb": 138.25,
+      "vram_reserved_mb": 438.0
+    },
+    "system_health": "HEALTHY",
+    "global_warning": {
+      "state": "CAUTION",
+      "selected_track_id": 1,
+      "reason": "Moderate hazard under temporal observation"
+    },
+    "navigation": {
+      "state": "AVOID_LEFT",
+      "safe_direction": "LEFT",
+      "reason": "LEFT_SIDE_AVAILABLE"
+    },
+    "audio": {
+      "spoken": false,
+      "text": "",
+      "priority": "LOW"
+    },
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.952,
+        "bbox": [
+          193.9,
+          122.7,
+          446.5,
+          479.0
+        ],
+        "depth_value": 2.358,
+        "depth_valid": true,
+        "approach_state": "APPROACHING",
+        "closing_speed": 0.265,
+        "ttc_seconds": 8.9,
+        "ttc_state": "VALID",
+        "ttc_valid": true,
+        "risk_score": 0.707,
+        "risk_level": "MEDIUM",
+        "risk_primary_reason": "APPROACHING_NEAR_PATH",
+        "warning_state": "CAUTION"
+      }
+    ]
+  },
+  {
+    "frame_index": 58,
+    "timestamp_sec": 1.9333,
+    "active_tracks_count": 1,
+    "latencies_ms": {
+      "detector": 9.25,
+      "tracker": 3.78,
+      "depth": 64.78,
+      "motion": 0.02,
+      "camera_motion": 5.32,
+      "ttc": 0.02,
+      "risk": 0.03,
+      "reliability": 0.04,
+      "warning": 0.03,
+      "navigation": 0.02,
+      "tts": 0.01,
+      "total_frame": 84.43
+    },
+    "camera_motion": {
+      "dx": -0.02,
+      "dy": 0.18,
+      "valid": true
+    },
+    "device": {
+      "canonical": "cuda:0",
+      "detector": "cuda:0",
+      "depth": "cuda:0",
+      "cuda_available": true,
+      "device_name": "NVIDIA GeForce RTX 4050 Laptop GPU",
+      "vram_allocated_mb": 138.25,
+      "vram_reserved_mb": 438.0
+    },
+    "system_health": "HEALTHY",
+    "global_warning": {
+      "state": "CAUTION",
+      "selected_track_id": 1,
+      "reason": "Moderate hazard under temporal observation"
+    },
+    "navigation": {
+      "state": "AVOID_LEFT",
+      "safe_direction": "LEFT",
+      "reason": "LEFT_SIDE_AVAILABLE"
+    },
+    "audio": {
+      "spoken": false,
+      "text": "",
+      "priority": "LOW"
+    },
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.953,
+        "bbox": [
+          192.8,
+          122.8,
+          448.1,
+          478.9
+        ],
+        "depth_value": 2.382,
+        "depth_valid": true,
+        "approach_state": "APPROACHING",
+        "closing_speed": 0.417,
+        "ttc_seconds": 5.71,
+        "ttc_state": "VALID",
+        "ttc_valid": true,
+        "risk_score": 0.782,
+        "risk_level": "HIGH",
+        "risk_primary_reason": "APPROACHING_OBJECT_IN_PATH",
+        "warning_state": "CAUTION"
+      }
+    ]
+  },
+  {
+    "frame_index": 59,
+    "timestamp_sec": 1.9667,
+    "active_tracks_count": 1,
+    "latencies_ms": {
+      "detector": 8.95,
+      "tracker": 3.67,
+      "depth": 65.78,
+      "motion": 0.03,
+      "camera_motion": 5.26,
+      "ttc": 0.02,
+      "risk": 0.03,
+      "reliability": 0.04,
+      "warning": 0.03,
+      "navigation": 0.02,
+      "tts": 0.01,
+      "total_frame": 85.16
+    },
+    "camera_motion": {
+      "dx": 0.47,
+      "dy": -0.24,
+      "valid": true
+    },
+    "device": {
+      "canonical": "cuda:0",
+      "detector": "cuda:0",
+      "depth": "cuda:0",
+      "cuda_available": true,
+      "device_name": "NVIDIA GeForce RTX 4050 Laptop GPU",
+      "vram_allocated_mb": 138.25,
+      "vram_reserved_mb": 438.0
+    },
+    "system_health": "HEALTHY",
+    "global_warning": {
+      "state": "CAUTION",
+      "selected_track_id": 1,
+      "reason": "Moderate hazard under temporal observation"
+    },
+    "navigation": {
+      "state": "AVOID_LEFT",
+      "safe_direction": "LEFT",
+      "reason": "LEFT_SIDE_AVAILABLE"
+    },
+    "audio": {
+      "spoken": false,
+      "text": "",
+      "priority": "LOW"
+    },
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.952,
+        "bbox": [
+          190.8,
+          121.8,
+          449.8,
+          478.7
+        ],
+        "depth_value": 2.369,
+        "depth_valid": true,
+        "approach_state": "APPROACHING",
+        "closing_speed": 0.147,
+        "ttc_seconds": 16.06,
+        "ttc_state": "VALID",
+        "ttc_valid": true,
+        "risk_score": 0.565,
+        "risk_level": "MEDIUM",
+        "risk_primary_reason": "APPROACHING_NEAR_PATH",
+        "warning_state": "CAUTION"
+      }
+    ]
+  }
+]

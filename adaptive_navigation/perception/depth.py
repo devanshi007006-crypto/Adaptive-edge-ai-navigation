@@ -101,10 +101,12 @@ class DepthAnythingV2Estimator(DepthEstimatorInterface):
         # Resolve relative checkpoint path if necessary
         p = Path(self.checkpoint_path)
         if not p.is_absolute() and not p.exists():
-            base_dir = Path(__file__).resolve().parent.parent
-            candidate = base_dir / self.checkpoint_path
-            if candidate.exists():
-                p = candidate
+            pkg_dir = Path(__file__).resolve().parent.parent
+            repo_root = pkg_dir.parent
+            if (repo_root / self.checkpoint_path).exists():
+                p = repo_root / self.checkpoint_path
+            elif (pkg_dir / self.checkpoint_path).exists():
+                p = pkg_dir / self.checkpoint_path
 
         if not p.exists():
             raise FileNotFoundError(

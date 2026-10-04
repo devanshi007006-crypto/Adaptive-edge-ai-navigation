@@ -66,6 +66,7 @@ class MotionEstimate:
     motion_valid: bool                  # True if image motion was successfully estimated
     motion_reliability: str             # 'HIGH', 'MEDIUM', 'LOW', 'UNKNOWN'
     depth_convention: str = "higher_is_closer"
+    latest_depth_value: Optional[float] = None
 
 
 class MotionEstimator:
@@ -84,6 +85,7 @@ class MotionEstimator:
         stable_threshold: float = 0.05,
         minimum_depth_reliability: str = "MEDIUM",
         depth_convention: str = "higher_is_closer",
+        temporal_stabilization_config: Optional[dict] = None,
     ) -> None:
         """
         Initialize the MotionEstimator.
@@ -97,6 +99,7 @@ class MotionEstimator:
             stable_threshold: Magnitude threshold for depth_rate below which object is STABLE.
             minimum_depth_reliability: Minimum depth reliability for approach classification.
             depth_convention: 'higher_is_closer' for Depth Anything V2.
+            temporal_stabilization_config: Configuration dict for temporal hysteresis & multi-frame stabilization.
         """
         self.minimum_dt_seconds = float(minimum_dt_seconds)
         self.max_valid_time_gap_seconds = float(max_valid_time_gap_seconds)
@@ -106,6 +109,15 @@ class MotionEstimator:
         self.stable_threshold = float(stable_threshold)
         self.minimum_depth_reliability = str(minimum_depth_reliability).upper()
         self.depth_convention = str(depth_convention)
+
+        # Temporal stabilization parameters (Phase 2B)
+        self.temporal_stabilization_config = temporal_stabilization_config or {}
+        self.stabilization_enabled = bool(self.temporal_stabilization_config.get("enabled", True))
+        self.min_consecutive_approaching = int(self.temporal_stabilization_config.get("min_consecutive_approaching", 5))
+        self.min_consecutive_receding = int(self.temporal_stabilization_config.get("min_consecutive_receding", 5))
+        self.window_observations = max(3, int(self.temporal_stabilization_config.get("window_observations", 8)))
+        self.optical_crossval_enabled = bool(self.temporal_stabilization_config.get("optical_crossval_enabled", True))
+        self.area_shrink_threshold = float(self.temporal_stabilization_config.get("area_shrink_threshold", -0.15))
 
         # Exponential smoothing factor alpha
         self.ema_alpha = 2.0 / (self.smoothing_window + 1.0)
@@ -191,7 +203,7 @@ class MotionEstimator:
         area_prev = prev.width * prev.height
         raw_area_rate = (area_curr - area_prev) / dt
 
-        # 5. Calculate raw depth rate if depth is valid in both frames
+        # 5. Calculate raw and multi-frame regression depth rate
         raw_depth_rate: Optional[float] = None
         if (
             curr.depth_valid
@@ -202,6 +214,22 @@ class MotionEstimator:
             delta_d = curr.depth_value - prev.depth_value
             raw_depth_rate = delta_d / dt
 
+        # Multi-frame windowed regression depth rate (Phase 2B stabilization)
+        effective_depth_rate = raw_depth_rate
+        if self.stabilization_enabled:
+            valid_depth_obs = [obs for obs in observations if obs.depth_valid and obs.depth_value is not None]
+            if len(valid_depth_obs) >= 3:
+                recent_obs = valid_depth_obs[-self.window_observations:]
+                ts = [obs.timestamp for obs in recent_obs]
+                ds = [obs.depth_value for obs in recent_obs]
+                dt_span = ts[-1] - ts[0]
+                if dt_span > 0.01:
+                    t_mean = sum(ts) / len(ts)
+                    d_mean = sum(ds) / len(ds)
+                    denom = sum((t - t_mean) ** 2 for t in ts)
+                    if denom > 1e-9:
+                        effective_depth_rate = sum((t - t_mean) * (d - d_mean) for t, d in zip(ts, ds)) / denom
+
         # 6. Apply temporal smoothing (EMA or SMA) respecting track identity
         smoothed_vx, smoothed_vy, smoothed_speed, smoothed_area_rate, smoothed_depth_rate = (
             self._smooth_track_motion(
@@ -210,15 +238,18 @@ class MotionEstimator:
                 raw_vy=raw_vy,
                 raw_speed=raw_speed,
                 raw_area_rate=raw_area_rate,
-                raw_depth_rate=raw_depth_rate,
+                raw_depth_rate=effective_depth_rate if effective_depth_rate is not None else raw_depth_rate,
             )
         )
 
-        # 7. Classify approach state
+        # 7. Classify approach state with hysteresis & optical cross-validation
         approach_state = self._classify_approach_state(
-            depth_rate=smoothed_depth_rate if smoothed_depth_rate is not None else raw_depth_rate,
+            track_id=track_id,
+            depth_rate=smoothed_depth_rate if smoothed_depth_rate is not None else effective_depth_rate,
             curr_depth_valid=curr.depth_valid,
             curr_depth_reliability=curr.depth_reliability,
+            smoothed_area_rate=smoothed_area_rate,
+            area_curr=area_curr,
         )
 
         # 8. Determine motion reliability
@@ -251,6 +282,7 @@ class MotionEstimator:
             motion_valid=True,
             motion_reliability=motion_reliability,
             depth_convention=self.depth_convention,
+            latest_depth_value=float(curr.depth_value) if (curr.depth_valid and curr.depth_value is not None) else None,
         )
 
     def _smooth_track_motion(
@@ -271,6 +303,10 @@ class MotionEstimator:
                 "area_rate": raw_area_rate,
                 "depth_rate": raw_depth_rate,
                 "history": deque(maxlen=self.smoothing_window),
+                "approach_state": "UNKNOWN",
+                "consecutive_pos": 0,
+                "consecutive_neg": 0,
+                "consecutive_neutral": 0,
             }
             return raw_vx, raw_vy, raw_speed, raw_area_rate, raw_depth_rate
 
@@ -304,17 +340,16 @@ class MotionEstimator:
 
     def _classify_approach_state(
         self,
+        track_id: int,
         depth_rate: Optional[float],
         curr_depth_valid: bool,
         curr_depth_reliability: str,
+        smoothed_area_rate: Optional[float] = None,
+        area_curr: Optional[float] = None,
     ) -> str:
         """
-        Classifies whether an obstacle is APPROACHING, RECEDING, STABLE, or UNKNOWN.
-        
-        Depth Anything V2 relative depth convention:
-        - HIGHER values = CLOSER.
-        - Therefore depth_rate > +stable_threshold means distance is decreasing (APPROACHING).
-        - depth_rate < -stable_threshold means distance is increasing (RECEDING).
+        Classifies whether an obstacle is APPROACHING, RECEDING, STABLE, or UNKNOWN
+        with temporal stabilization, hysteresis, and optical cross-validation.
         """
         if not curr_depth_valid or depth_rate is None:
             return "UNKNOWN"
@@ -326,12 +361,86 @@ class MotionEstimator:
         elif self.minimum_depth_reliability == "MEDIUM" and rel not in ("HIGH", "MEDIUM"):
             return "UNKNOWN"
 
-        if depth_rate > self.stable_threshold:
-            return "APPROACHING"
-        elif depth_rate < -self.stable_threshold:
-            return "RECEDING"
+        if not self.stabilization_enabled:
+            # Baseline instantaneous classification without hysteresis
+            if self.depth_convention == "lower_is_closer":
+                if depth_rate < -self.stable_threshold:
+                    return "APPROACHING"
+                elif depth_rate > self.stable_threshold:
+                    return "RECEDING"
+                else:
+                    return "STABLE"
+            else:
+                if depth_rate > self.stable_threshold:
+                    return "APPROACHING"
+                elif depth_rate < -self.stable_threshold:
+                    return "RECEDING"
+                else:
+                    return "STABLE"
+
+        state = self._track_states.setdefault(track_id, {
+            "approach_state": "UNKNOWN",
+            "consecutive_pos": 0,
+            "consecutive_neg": 0,
+            "consecutive_neutral": 0,
+        })
+
+        # Evaluate directional evidence based on depth convention
+        if self.depth_convention == "lower_is_closer":
+            pos_evidence = depth_rate < -self.stable_threshold  # smaller depth means closer
+            neg_evidence = depth_rate > self.stable_threshold   # larger depth means farther
         else:
-            return "STABLE"
+            pos_evidence = depth_rate > self.stable_threshold   # larger disparity means closer
+            neg_evidence = depth_rate < -self.stable_threshold  # smaller disparity means farther
+
+        # Optical area cross-validation:
+        # Under perspective projection, an approaching obstacle cannot have a strongly shrinking apparent area.
+        # If normalized area rate is strongly negative, reject as positive closing evidence.
+        if pos_evidence and self.optical_crossval_enabled:
+            if smoothed_area_rate is not None and area_curr is not None and area_curr > 0:
+                rel_area_rate = smoothed_area_rate / area_curr
+                if rel_area_rate < self.area_shrink_threshold:
+                    pos_evidence = False
+
+        if pos_evidence:
+            state["consecutive_pos"] = state.get("consecutive_pos", 0) + 1
+            state["consecutive_neg"] = 0
+            state["consecutive_neutral"] = 0
+        elif neg_evidence:
+            state["consecutive_neg"] = state.get("consecutive_neg", 0) + 1
+            state["consecutive_pos"] = 0
+            state["consecutive_neutral"] = 0
+        else:
+            state["consecutive_pos"] = 0
+            state["consecutive_neg"] = 0
+            state["consecutive_neutral"] = state.get("consecutive_neutral", 0) + 1
+
+        prev_state = state.get("approach_state", "UNKNOWN")
+
+        if prev_state == "APPROACHING":
+            if state["consecutive_neg"] >= self.min_consecutive_receding:
+                new_state = "RECEDING"
+            elif state["consecutive_neutral"] >= 3:
+                new_state = "STABLE"
+            else:
+                new_state = "APPROACHING"
+        elif prev_state == "RECEDING":
+            if state["consecutive_pos"] >= self.min_consecutive_approaching:
+                new_state = "APPROACHING"
+            elif state["consecutive_neutral"] >= 3:
+                new_state = "STABLE"
+            else:
+                new_state = "RECEDING"
+        else:  # UNKNOWN or STABLE
+            if state["consecutive_pos"] >= self.min_consecutive_approaching:
+                new_state = "APPROACHING"
+            elif state["consecutive_neg"] >= self.min_consecutive_receding:
+                new_state = "RECEDING"
+            else:
+                new_state = "STABLE"
+
+        state["approach_state"] = new_state
+        return new_state
 
     def _assess_motion_reliability(
         self,

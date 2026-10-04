@@ -3,9 +3,12 @@ import argparse
 import time
 import sys
 import os
+import json
+import csv
 import yaml
 import cv2
 import numpy as np
+import torch
 
 # Ensure project root is in sys.path
 sys.path.insert(0, os.path.abspath(os.path.dirname(__file__)))
@@ -55,8 +58,12 @@ def run_perception_pipeline(
     config: dict,
     source_override=None,
     model_override=None,
+    device_override=None,
     max_frames: int = None,
     headless: bool = False,
+    telemetry_dir: str = None,
+    telemetry_prefix: str = "real_telemetry",
+    depth_cadence_override: int = None,
 ) -> None:
     """Executes Step 13: Camera -> Frame Validation -> YOLO Detection -> BoT-SORT Tracking -> Depth Anything V2 -> Object-Level Depth -> Temporal History -> Motion Estimation -> Camera Motion Compensation -> TTC Estimation -> Multi-Factor Risk Assessment -> Uncertainty & Reliability -> Warning Decision State Machine -> User-Facing Audio/TTS Layer."""
     cam_cfg = config.get("camera", {})
@@ -65,12 +72,17 @@ def run_perception_pipeline(
     height = cam_cfg.get("height", 480)
     fps = cam_cfg.get("fps", 30)
 
+    # Resolve Canonical Execution Device: CUDA default if available with CPU fallback
+    canonical_device = device_override if device_override is not None else config.get("system", {}).get("device", "cuda:0" if torch.cuda.is_available() else "cpu")
+    if canonical_device == "auto":
+        canonical_device = "cuda:0" if torch.cuda.is_available() else "cpu"
+
     det_cfg = config.get("detector", {})
     model_name = model_override if model_override is not None else det_cfg.get("model", "models/detector/yolo11n.pt")
     conf_thresh = det_cfg.get("confidence_threshold", 0.25)
     iou_thresh = det_cfg.get("iou_threshold", 0.45)
     img_size = det_cfg.get("image_size", 640)
-    det_device = det_cfg.get("device", "auto")
+    det_device = device_override if device_override is not None else det_cfg.get("device", canonical_device)
 
     track_cfg = config.get("tracker", {})
     tracker_config = track_cfg.get("tracker_config", "botsort.yaml")
@@ -83,10 +95,12 @@ def run_perception_pipeline(
     depth_cfg = config.get("depth", {})
     depth_checkpoint = depth_cfg.get("checkpoint", "models/depth/depth_anything_v2_vits.pth")
     depth_type = depth_cfg.get("model_type", "vits")
-    depth_device = depth_cfg.get("device", "auto")
+    depth_device = device_override if device_override is not None else depth_cfg.get("device", canonical_device)
     depth_input_size = depth_cfg.get("input_size", 518)
     is_metric = depth_cfg.get("is_metric", False)
     obj_stat = depth_cfg.get("object_statistic", "median")
+    depth_cadence = depth_cadence_override if depth_cadence_override is not None else int(depth_cfg.get("cadence", 1))
+    depth_cadence = max(1, depth_cadence)
 
     temporal_cfg = config.get("temporal", {})
     history_length = temporal_cfg.get("history_length", 30)
@@ -144,7 +158,7 @@ def run_perception_pipeline(
     print(f"Camera Source:   {source} ({width}x{height} @ {fps} FPS)")
     print(f"YOLO Detector:   {model_name} | Conf: {conf_thresh} | Device: {det_device}")
     print(f"Tracker:         BoT-SORT (buffer={track_buffer}, match={match_thresh})")
-    print(f"Depth Model:     Depth Anything V2 ({depth_type}) | Metric: {is_metric} | Stat: {obj_stat}")
+    print(f"Depth Model:     Depth Anything V2 ({depth_type}) | Metric: {is_metric} | Stat: {obj_stat} | Cadence: {depth_cadence}:1")
     print(f"Temporal Buffer: MaxLen: {history_length} | MaxAge: {max_history_age}s | Cleanup: {cleanup_after}s | MinObs: {min_obs}")
     print(f"Motion Estimator: Method: {smoothing_method} (win={smoothing_window}) | StableThresh: {stable_thresh} | Convention: {depth_convention}")
     print(f"Camera Motion:    Enabled: {cam_motion_enabled} | Method: {cam_method} | MaxFeat: {cam_max_feat} | RANSAC: {cam_ransac}")
@@ -171,6 +185,7 @@ def run_perception_pipeline(
             iou_threshold=iou_thresh,
             image_size=img_size,
             device=det_device,
+            class_filter_config=det_cfg.get("class_filter"),
         )
     except Exception as e:
         camera.release()
@@ -225,6 +240,7 @@ def run_perception_pipeline(
         stable_threshold=stable_thresh,
         minimum_depth_reliability=min_depth_rel,
         depth_convention=depth_convention,
+        temporal_stabilization_config=motion_cfg.get("temporal_stabilization"),
     )
 
     # 7. Initialize Camera Motion Estimator (Step 8)
@@ -238,6 +254,7 @@ def run_perception_pipeline(
         minimum_features=cam_min_feat,
         inlier_threshold=cam_inlier_th,
         max_dt_seconds=cam_max_dt,
+        forward_compensation_config=cam_motion_cfg.get("forward_compensation"),
     )
 
     # 8. Initialize TTC Estimator (Step 9)
@@ -247,6 +264,7 @@ def run_perception_pipeline(
         minimum_closing_speed=ttc_min_close_spd,
         maximum_time_gap_seconds=ttc_max_gap,
         max_ttc_seconds=ttc_max_sec,
+        depth_convention=depth_convention,
     )
 
     # 10. Initialize Uncertainty & Reliability Estimator (Step 11)
@@ -297,11 +315,14 @@ def run_perception_pipeline(
     frames_processed = 0
     loop_times = []
     last_loop_time = time.perf_counter()
+    telemetry_records = []
+    cached_depth_result: Optional[DepthResult] = None
 
     def get_color_for_id(track_id: int) -> tuple:
-        np.random.seed(track_id * 17)
-        c = np.random.randint(50, 255, size=3).tolist()
-        return (int(c[0]), int(c[1]), int(c[2]))
+        b = (track_id * 67 + 50) % 205 + 50
+        g = (track_id * 131 + 80) % 205 + 50
+        r = (track_id * 193 + 110) % 205 + 50
+        return (int(b), int(g), int(r))
 
     try:
         while True:
@@ -319,17 +340,35 @@ def run_perception_pipeline(
                 print(f"Warning: Dropped invalid frame at index {packet.frame_index}")
                 continue
 
-            # Stage 1: Run YOLO Object Detection
+            t_frame_start = time.perf_counter()
+
+            # Stage 1: Run YOLO Object Detection (raw detections preserved)
             detections: list[Detection] = detector.detect(packet.frame, packet.timestamp)
             det_latency_ms = detector.last_inference_latency_ms
 
-            # Stage 2: Run BoT-SORT Tracking
-            tracked_objects: list[TrackedObject] = tracker.update(detections, packet.frame, packet.timestamp)
+            # Stage 2: Separate active navigation hazards from policy-filtered detections
+            active_detections = [d for d in detections if d.policy_accepted]
+            filtered_detections = [d for d in detections if not d.policy_accepted]
+
+            # Run BoT-SORT Tracking on active hazard detections
+            tracked_objects: list[TrackedObject] = tracker.update(active_detections, packet.frame, packet.timestamp)
             track_latency_ms = tracker.last_tracker_latency_ms
 
-            # Stage 3: Run Depth Anything V2
-            depth_result: DepthResult = depth_estimator.estimate_depth(packet.frame, packet.timestamp)
-            depth_latency_ms = depth_estimator.last_inference_latency_ms
+            # Stage 3: Run Depth Anything V2 (Step 6 / Adaptive Depth Cadence)
+            is_depth_frame = (frames_processed % depth_cadence == 0) or (cached_depth_result is None)
+            if is_depth_frame:
+                depth_result: DepthResult = depth_estimator.estimate_depth(packet.frame, packet.timestamp)
+                depth_latency_ms = depth_estimator.last_inference_latency_ms
+                cached_depth_result = depth_result
+            else:
+                depth_latency_ms = 0.0
+                depth_result = DepthResult(
+                    depth_map=cached_depth_result.depth_map,
+                    is_metric=cached_depth_result.is_metric,
+                    min_depth=cached_depth_result.min_depth,
+                    max_depth=cached_depth_result.max_depth,
+                    timestamp=packet.timestamp,
+                )
 
             # Stage 4: Extract Object-Level Depth for each tracked obstacle
             object_depths: list[TrackedObjectDepth] = depth_estimator.extract_all_object_depths(depth_result, tracked_objects)
@@ -471,6 +510,102 @@ def run_perception_pipeline(
             if warning_message.should_speak and tts_engine.is_available():
                 tts_engine.speak(warning_message.text, priority=warning_message.priority)
             tts_latency_ms = (time.perf_counter() - t_tts_start) * 1000.0
+
+            t_frame_end = time.perf_counter()
+            total_frame_latency_ms = (t_frame_end - t_frame_start) * 1000.0
+
+            if telemetry_dir is not None:
+                telemetry_records.append({
+                    "frame_index": int(packet.frame_index),
+                    "timestamp_sec": round(float(packet.timestamp), 4),
+                    "raw_detections_count": len(detections),
+                    "active_detections_count": len(active_detections),
+                    "filtered_detections_count": len(filtered_detections),
+                    "active_tracks_count": len(object_depths),
+                    "raw_detections": [
+                        {
+                            "class_name": d.class_name,
+                            "confidence": round(float(d.confidence), 3),
+                            "bbox": [round(float(v), 1) for v in d.bbox],
+                            "policy_accepted": bool(d.policy_accepted),
+                            "filter_reason": d.filter_reason,
+                        }
+                        for d in detections
+                    ],
+                    "latencies_ms": {
+                        "detector": round(float(det_latency_ms), 2),
+                        "tracker": round(float(track_latency_ms), 2),
+                        "depth": round(float(depth_latency_ms), 2),
+                        "motion": round(float(motion_latency_ms), 2),
+                        "camera_motion": round(float(cam_latency_ms), 2),
+                        "ttc": round(float(ttc_latency_ms), 2),
+                        "risk": round(float(risk_latency_ms), 2),
+                        "reliability": round(float(rel_latency_ms), 2),
+                        "warning": round(float(warn_latency_ms), 2),
+                        "navigation": round(float(nav_latency_ms), 2),
+                        "tts": round(float(tts_latency_ms), 2),
+                        "total_frame": round(float(total_frame_latency_ms), 2),
+                    },
+                    "camera_motion": {
+                        "dx": round(float(camera_motion.dx), 2),
+                        "dy": round(float(camera_motion.dy), 2),
+                        "valid": bool(camera_motion.valid),
+                    },
+                    "device": {
+                        "canonical": canonical_device,
+                        "detector": detector.resolved_device,
+                        "depth": depth_estimator.resolved_device,
+                        "cuda_available": torch.cuda.is_available(),
+                        "device_name": torch.cuda.get_device_name(0) if torch.cuda.is_available() else "CPU",
+                        "vram_allocated_mb": round(torch.cuda.memory_allocated(0) / (1024**2), 2) if torch.cuda.is_available() else 0.0,
+                        "vram_reserved_mb": round(torch.cuda.memory_reserved(0) / (1024**2), 2) if torch.cuda.is_available() else 0.0,
+                    },
+                    "system_health": system_reliability.system_status if hasattr(system_reliability, 'system_status') else "UNKNOWN",
+                    "global_warning": {
+                        "state": global_warning.state,
+                        "selected_track_id": global_warning.selected_track_id,
+                        "reason": global_warning.reason,
+                    },
+                    "navigation": {
+                        "state": scene_nav.navigation_state,
+                        "safe_direction": scene_nav.safe_direction,
+                        "reason": scene_nav.reason,
+                    },
+                    "audio": {
+                        "spoken": bool(warning_message.should_speak),
+                        "text": str(warning_message.text) if warning_message.should_speak else "",
+                        "priority": str(warning_message.priority),
+                    },
+                    "objects": [
+                        {
+                            "track_id": int(o.track_id),
+                            "class_name": str(o.class_name),
+                            "confidence": round(float(o.confidence), 3),
+                            "bbox": [round(float(v), 1) for v in o.bbox],
+                            "depth_value": round(float(o.depth_value), 3) if o.depth_value is not None else None,
+                            "depth_valid": bool(o.depth_valid),
+                            "approach_state": str(comp_m.approach_state) if comp_m else "UNKNOWN",
+                            "closing_speed": round(float(ttc_r.closing_speed), 3) if (ttc_r and ttc_r.closing_speed is not None) else None,
+                            "ttc_seconds": round(float(ttc_r.ttc_seconds), 2) if (ttc_r and ttc_r.ttc_seconds is not None) else None,
+                            "ttc_state": str(ttc_r.ttc_state) if ttc_r else "UNKNOWN",
+                            "ttc_valid": bool(ttc_r.ttc_valid) if ttc_r else False,
+                            "risk_score": round(float(risk_ass.risk_score), 3) if risk_ass else 0.0,
+                            "risk_level": str(risk_ass.risk_level) if risk_ass else "UNKNOWN",
+                            "risk_primary_reason": str(risk_ass.primary_reason) if risk_ass else "",
+                            "warning_state": str(warn_dec.state) if warn_dec else "NO_WARNING",
+                        }
+                        for o, comp_m, ttc_r, risk_ass, warn_dec in [
+                            (
+                                item,
+                                compensated_estimates.get(item.track_id),
+                                ttc_results.get(item.track_id),
+                                risk_assessments.get(item.track_id),
+                                warning_decisions.get(item.track_id),
+                            )
+                            for item in object_depths
+                        ]
+                    ],
+                })
 
             frames_processed += 1
 
@@ -656,16 +791,92 @@ def run_perception_pipeline(
             cv2.destroyAllWindows()
         print("-" * 75)
         print(f"Camera released. Total frames processed: {frames_processed}")
+
+        if telemetry_dir is not None and telemetry_records:
+            os.makedirs(telemetry_dir, exist_ok=True)
+            # 1. Save hierarchical JSON
+            json_path = os.path.join(telemetry_dir, f"{telemetry_prefix}.json")
+            with open(json_path, "w", encoding="utf-8") as f:
+                json.dump(telemetry_records, f, indent=2)
+
+            # 2. Save per-frame summary CSV
+            frame_csv_path = os.path.join(telemetry_dir, f"{telemetry_prefix}_frames.csv")
+            with open(frame_csv_path, "w", newline="", encoding="utf-8") as f:
+                writer = csv.writer(f)
+                writer.writerow([
+                    "frame_index", "timestamp_sec",
+                    "raw_detections", "active_detections", "filtered_detections",
+                    "active_tracks",
+                    "det_latency_ms", "track_latency_ms", "depth_latency_ms",
+                    "motion_latency_ms", "cam_latency_ms", "ttc_latency_ms",
+                    "risk_latency_ms", "rel_latency_ms", "warn_latency_ms",
+                    "nav_latency_ms", "tts_latency_ms", "total_frame_ms",
+                    "cam_dx", "cam_dy", "cam_valid", "system_health",
+                    "global_warning_state", "global_warning_track_id", "global_warning_reason",
+                    "nav_state", "safe_direction", "nav_reason",
+                    "tts_spoken", "tts_text",
+                    "device_name", "vram_allocated_mb", "vram_reserved_mb"
+                ])
+                for r in telemetry_records:
+                    lats = r["latencies_ms"]
+                    cam = r["camera_motion"]
+                    gw = r["global_warning"]
+                    nav = r["navigation"]
+                    aud = r["audio"]
+                    dev = r.get("device", {})
+                    writer.writerow([
+                        r["frame_index"], r["timestamp_sec"],
+                        r.get("raw_detections_count", 0), r.get("active_detections_count", 0), r.get("filtered_detections_count", 0),
+                        r["active_tracks_count"],
+                        lats["detector"], lats["tracker"], lats["depth"],
+                        lats["motion"], lats["camera_motion"], lats["ttc"],
+                        lats["risk"], lats["reliability"], lats["warning"],
+                        lats["navigation"], lats["tts"], lats["total_frame"],
+                        cam["dx"], cam["dy"], cam["valid"], r["system_health"],
+                        gw["state"], gw["selected_track_id"], gw["reason"],
+                        nav["state"], nav["safe_direction"], nav["reason"],
+                        aud["spoken"], aud["text"],
+                        dev.get("device_name", "N/A"), dev.get("vram_allocated_mb", 0.0), dev.get("vram_reserved_mb", 0.0)
+                    ])
+
+            # 3. Save object-level CSV
+            obj_csv_path = os.path.join(telemetry_dir, f"{telemetry_prefix}_objects.csv")
+            with open(obj_csv_path, "w", newline="", encoding="utf-8") as f:
+                writer = csv.writer(f)
+                writer.writerow([
+                    "frame_index", "timestamp_sec", "track_id", "class_name", "confidence",
+                    "bbox_x1", "bbox_y1", "bbox_x2", "bbox_y2",
+                    "depth_value", "depth_valid", "approach_state", "closing_speed",
+                    "ttc_seconds", "ttc_state", "ttc_valid",
+                    "risk_score", "risk_level", "risk_primary_reason", "warning_state"
+                ])
+                for r in telemetry_records:
+                    f_idx = r["frame_index"]
+                    t_sec = r["timestamp_sec"]
+                    for obj in r["objects"]:
+                        bbox = obj["bbox"]
+                        writer.writerow([
+                            f_idx, t_sec, obj["track_id"], obj["class_name"], obj["confidence"],
+                            bbox[0], bbox[1], bbox[2], bbox[3],
+                            obj["depth_value"], obj["depth_valid"], obj["approach_state"], obj["closing_speed"],
+                            obj["ttc_seconds"], obj["ttc_state"], obj["ttc_valid"],
+                            obj["risk_score"], obj["risk_level"], obj["risk_primary_reason"], obj["warning_state"]
+                        ])
+            print(f"[Telemetry] Saved real per-frame telemetry to {telemetry_dir} (prefix='{telemetry_prefix}', frames={len(telemetry_records)})")
         print("=" * 75)
 
 def main():
-    parser = argparse.ArgumentParser(description="Adaptive Edge-AI Navigation - Step 5: Depth Anything V2")
+    parser = argparse.ArgumentParser(description="Adaptive Edge-AI Navigation - Complete Real Perception & Risk Pipeline")
     parser.add_argument("--config", type=str, default="config.yaml", help="Path to config file")
     parser.add_argument("--video", type=str, default=None, help="Path to test video file")
     parser.add_argument("--cam", type=int, default=None, help="Camera index")
     parser.add_argument("--model", type=str, default=None, help="Override YOLO model checkpoint")
+    parser.add_argument("--device", type=str, default=None, help="Inference device: 'cuda', 'cuda:0', 'cpu', or 'auto'")
     parser.add_argument("--max-frames", type=int, default=None, help="Limit frames processed (for testing)")
     parser.add_argument("--headless", action="store_true", help="Run without GUI preview window")
+    parser.add_argument("--telemetry-dir", type=str, default=None, help="Directory to save per-frame telemetry logs")
+    parser.add_argument("--telemetry-prefix", type=str, default="real_telemetry", help="Prefix for telemetry files (e.g. gpu_telemetry)")
+    parser.add_argument("--depth-cadence", type=int, default=None, help="Depth inference cadence: 1 = every frame, 2 = every 2nd frame (2:1 cadence)")
     args = parser.parse_args()
 
     config = load_config(args.config)
@@ -675,8 +886,12 @@ def main():
         config=config,
         source_override=source,
         model_override=args.model,
+        device_override=args.device,
         max_frames=args.max_frames,
         headless=args.headless,
+        telemetry_dir=args.telemetry_dir,
+        telemetry_prefix=args.telemetry_prefix,
+        depth_cadence_override=args.depth_cadence,
     )
 
 if __name__ == "__main__":

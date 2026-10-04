@@ -41,6 +41,8 @@ class CameraMotionEstimate:
     confidence: str                      # 'HIGH', 'MEDIUM', 'LOW', 'INVALID'
     valid: bool                          # True if camera motion was successfully estimated
     dt: float                            # Frame time interval (seconds)
+    forward_divergence: float = 0.0      # Radial optical flow expansion rate (1/second)
+    is_forward_ego: bool = False         # True if forward camera translation is detected
     feature_points_prev: Optional[np.ndarray] = None
     feature_points_curr: Optional[np.ndarray] = None
     inliers_mask: Optional[np.ndarray] = None
@@ -73,15 +75,19 @@ class CompensatedMotionEstimate:
     camera_vx: float
     camera_vy: float
     camera_motion_valid: bool
+    forward_divergence: float = 0.0
 
     # Preserved relative depth & approach state from Step 7
-    depth_value: Optional[float]
-    depth_rate: Optional[float]
-    approach_state: str
+    depth_value: Optional[float] = None
+    depth_rate: Optional[float] = None
+    ego_depth_rate: float = 0.0
+    compensated_depth_rate: Optional[float] = None
+    approach_state: str = "UNKNOWN"
+    world_motion_state: str = "UNKNOWN"  # 'DYNAMIC_APPROACHING', 'RECEDING', 'STATIONARY', 'UNKNOWN'
 
     # Reliability flags
-    motion_valid: bool
-    reliability: str                     # 'HIGH', 'MEDIUM', 'LOW', 'FALLBACK', 'INVALID'
+    motion_valid: bool = False
+    reliability: str = "INVALID"         # 'HIGH', 'MEDIUM', 'LOW', 'FALLBACK', 'INVALID'
 
 
 class CameraMotionEstimator:
@@ -101,6 +107,7 @@ class CameraMotionEstimator:
         minimum_features: int = 20,
         inlier_threshold: float = 3.0,
         max_dt_seconds: float = 0.5,
+        forward_compensation_config: Optional[dict] = None,
     ) -> None:
         """
         Initialize the CameraMotionEstimator.
@@ -115,6 +122,7 @@ class CameraMotionEstimator:
             minimum_features: Minimum inliers required for valid camera motion.
             inlier_threshold: Maximum reprojection error in pixels for RANSAC inliers.
             max_dt_seconds: Maximum acceptable dt between consecutive frames.
+            forward_compensation_config: Optional dict controlling forward background divergence compensation.
         """
         self.enabled = bool(enabled)
         self.method = str(method)
@@ -125,6 +133,12 @@ class CameraMotionEstimator:
         self.minimum_features = max(4, int(minimum_features))
         self.inlier_threshold = float(inlier_threshold)
         self.max_dt_seconds = float(max_dt_seconds)
+
+        # Forward ego-motion background divergence compensation
+        fwd_cfg = forward_compensation_config or {}
+        self.forward_comp_enabled = bool(fwd_cfg.get("enabled", True))
+        self.divergence_threshold = float(fwd_cfg.get("divergence_threshold", 0.015))
+        self.divergence_weight = float(fwd_cfg.get("divergence_weight", 1.0))
 
         # Lucas-Kanade optical flow parameters
         self.lk_params = dict(
@@ -295,6 +309,24 @@ class CameraMotionEstimator:
         else:
             confidence = "LOW"
 
+        # Step 3: Compute radial divergence of background features (forward ego-motion expansion)
+        forward_divergence = 0.0
+        is_forward_ego = False
+        if total_tracked >= self.minimum_features:
+            p0_v = good_prev.reshape(-1, 2)
+            p1_v = good_curr.reshape(-1, 2)
+            cx = w / 2.0
+            cy = h / 2.0
+            rx = p0_v[:, 0] - cx
+            ry = p0_v[:, 1] - cy
+            r = np.sqrt(rx * rx + ry * ry) + 1e-5
+            disp = p1_v - p0_v
+            rad_disp = (disp[:, 0] * rx + disp[:, 1] * ry) / r
+            divs = (rad_disp / r) / dt
+            forward_divergence = float(np.median(divs))
+            if forward_divergence > self.divergence_threshold:
+                is_forward_ego = True
+
         return CameraMotionEstimate(
             dx=dx,
             dy=dy,
@@ -308,6 +340,8 @@ class CameraMotionEstimator:
             confidence=confidence,
             valid=True,
             dt=dt,
+            forward_divergence=forward_divergence,
+            is_forward_ego=is_forward_ego,
             feature_points_prev=good_prev,
             feature_points_curr=good_curr,
             inliers_mask=inliers_mask,
@@ -345,9 +379,13 @@ class CameraMotionEstimator:
                 camera_vx=camera_motion.camera_vx,
                 camera_vy=camera_motion.camera_vy,
                 camera_motion_valid=camera_motion.valid,
+                forward_divergence=camera_motion.forward_divergence,
                 depth_value=None,
                 depth_rate=None,
+                ego_depth_rate=0.0,
+                compensated_depth_rate=None,
                 approach_state="UNKNOWN",
+                world_motion_state="UNKNOWN",
                 motion_valid=False,
                 reliability="INVALID",
             )
@@ -372,6 +410,37 @@ class CameraMotionEstimator:
             comp_speed = raw_motion.smoothed_speed
             rel = "FALLBACK"
 
+        # Forward camera ego-motion depth compensation
+        raw_depth_rate = raw_motion.smoothed_depth_rate
+        raw_app_state = raw_motion.approach_state
+        ego_depth_rate = 0.0
+        comp_depth_rate = raw_depth_rate
+        comp_app_state = raw_app_state
+        world_motion_state = raw_app_state
+
+        if self.forward_comp_enabled and camera_motion.valid and camera_motion.is_forward_ego:
+            d_val = float(raw_motion.latest_depth_value) if (hasattr(raw_motion, "latest_depth_value") and raw_motion.latest_depth_value is not None) else 2.5
+            ego_depth_rate = max(0.0, camera_motion.forward_divergence) * d_val * self.divergence_weight
+            if raw_depth_rate is not None:
+                comp_depth_rate = raw_depth_rate - ego_depth_rate
+
+            # If object was raw APPROACHING, test if forward camera motion accounts for the approach:
+            if raw_app_state == "APPROACHING":
+                # If compensated world relative velocity is negative or within stable zone:
+                if comp_depth_rate is not None and comp_depth_rate < self.divergence_threshold * 2.0:
+                    # If bounding box area is also not expanding rapidly (area rate <= 0.05),
+                    # then the apparent approach was an artifact of camera translation
+                    area_rate = raw_motion.smoothed_area_rate if raw_motion.smoothed_area_rate is not None else 0.0
+                    if area_rate <= 0.05:
+                        comp_app_state = "STABLE"
+                        world_motion_state = "STATIONARY"
+                else:
+                    world_motion_state = "DYNAMIC_APPROACHING"
+            elif raw_app_state == "RECEDING":
+                world_motion_state = "RECEDING"
+            else:
+                world_motion_state = "STATIONARY"
+
         return CompensatedMotionEstimate(
             track_id=track_id,
             timestamp=timestamp,
@@ -388,9 +457,13 @@ class CameraMotionEstimator:
             camera_vx=camera_motion.camera_vx,
             camera_vy=camera_motion.camera_vy,
             camera_motion_valid=camera_motion.valid,
-            depth_value=raw_motion.raw_depth_rate,
+            forward_divergence=camera_motion.forward_divergence,
+            depth_value=raw_motion.latest_depth_value if hasattr(raw_motion, "latest_depth_value") and raw_motion.latest_depth_value is not None else raw_motion.raw_depth_rate,
             depth_rate=raw_motion.smoothed_depth_rate,
-            approach_state=raw_motion.approach_state,
+            ego_depth_rate=ego_depth_rate,
+            compensated_depth_rate=comp_depth_rate,
+            approach_state=comp_app_state,
+            world_motion_state=world_motion_state,
             motion_valid=True,
             reliability=rel,
         )
@@ -423,6 +496,8 @@ class CameraMotionEstimator:
             confidence="INVALID",
             valid=False,
             dt=dt,
+            forward_divergence=0.0,
+            is_forward_ego=False,
         )
 
 

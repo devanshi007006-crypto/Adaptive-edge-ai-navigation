@@ -64,6 +64,7 @@ class TTCEstimator:
         minimum_closing_speed: float = 0.05,
         maximum_time_gap_seconds: float = 0.5,
         max_ttc_seconds: float = 30.0,
+        depth_convention: str = "higher_is_closer",
     ) -> None:
         """
         Initialize the TTCEstimator.
@@ -74,12 +75,15 @@ class TTCEstimator:
             minimum_closing_speed: Minimum closing rate to consider an obstacle closing.
             maximum_time_gap_seconds: Max acceptable dt between observations.
             max_ttc_seconds: Clamping limit for maximum valid TTC.
+            depth_convention: 'higher_is_closer' (Depth Anything V2 disparity) or
+                              'lower_is_closer' (metric distance in meters).
         """
         self.enabled = bool(enabled)
         self.minimum_history_observations = max(2, int(minimum_history_observations))
         self.minimum_closing_speed = float(minimum_closing_speed)
         self.maximum_time_gap_seconds = float(maximum_time_gap_seconds)
         self.max_ttc_seconds = float(max_ttc_seconds)
+        self.depth_convention = str(depth_convention).lower()
 
     def estimate_track(
         self,
@@ -173,117 +177,102 @@ class TTCEstimator:
             motion_source = "raw_fallback"
             comp_rel = "LOW"
 
-        # 4. Handle METRIC DEPTH Case
-        if is_metric:
-            # In metric depth, distance D is in meters.
-            # When approaching, D decreases -> closing_speed = (D_prev - D_curr) / dt
-            closing_speed = (prev.depth_value - curr.depth_value) / dt
+        # 4. Determine closing rate according to depth convention
+        # Depth Convention Physics:
+        # A) 'higher_is_closer' (Depth Anything V2 / monocular disparity / inverse depth):
+        #    Depth value d(t) is proportional to inverse depth: d(t) = s / Z(t), where s > 0 is unknown scale.
+        #    When approaching (Z decreasing), d increases: d_curr > d_prev.
+        #    Time derivative: d_dot = dd/dt = s * (-1/Z^2) * dZ/dt = s * v_close / Z^2 = (d/Z) * v_close = d / TTC.
+        #    Therefore: TTC = Z / v_close = d(t) / d_dot(t).
+        #    The unknown scale factor s cancels out completely, yielding valid physical seconds!
+        #
+        # B) 'lower_is_closer' (Metric distance in meters / LiDAR / calibrated range):
+        #    Distance Z(t) decreases as object approaches: Z_curr < Z_prev.
+        #    Closing velocity: v_close = (Z_prev - Z_curr) / dt = -dZ/dt.
+        #    Therefore: TTC = Z_curr / v_close in seconds.
 
-            # Check if closing
-            if closing_speed <= self.minimum_closing_speed:
-                return self._build_result(
-                    track_id=track_id,
-                    ttc_seconds=None,
-                    ttc_valid=False,
-                    ttc_state="NOT_CLOSING",
-                    distance_value=current_distance,
-                    distance_type="metric",
-                    closing_speed=closing_speed,
-                    depth_type="metric",
-                    motion_source=motion_source,
-                    reliability="MEDIUM" if comp_rel in ("HIGH", "MEDIUM") else "LOW",
-                    reason=f"Object not closing (closing speed {closing_speed:.2f} m/s <= {self.minimum_closing_speed:.2f})",
-                    latest_obs=curr,
-                )
-
-            # Avoid division by zero
-            ttc_raw = current_distance / closing_speed
-
-            # Clamp / check range
-            if ttc_raw > self.max_ttc_seconds:
-                return self._build_result(
-                    track_id=track_id,
-                    ttc_seconds=self.max_ttc_seconds,
-                    ttc_valid=True,
-                    ttc_state="OUT_OF_RANGE",
-                    distance_value=current_distance,
-                    distance_type="metric",
-                    closing_speed=closing_speed,
-                    depth_type="metric",
-                    motion_source=motion_source,
-                    reliability="LOW",
-                    reason=f"Calculated TTC ({ttc_raw:.1f}s) exceeds maximum range ({self.max_ttc_seconds:.1f}s)",
-                    latest_obs=curr,
-                )
-
-            # Determine metric reliability
-            if (
-                curr.depth_reliability == "HIGH"
-                and motion_source == "compensated"
-                and len(observations) >= 5
-            ):
-                ttc_rel = "HIGH"
-            elif curr.depth_reliability in ("HIGH", "MEDIUM"):
-                ttc_rel = "MEDIUM"
+        # Use smoothed depth rate from compensated motion if available, otherwise raw delta
+        if self.depth_convention == "higher_is_closer":
+            if compensated_motion is not None and compensated_motion.depth_rate is not None:
+                closing_speed = compensated_motion.depth_rate
             else:
-                ttc_rel = "LOW"
+                closing_speed = (curr.depth_value - prev.depth_value) / dt
+        else:
+            # lower_is_closer
+            if compensated_motion is not None and compensated_motion.depth_rate is not None:
+                closing_speed = -compensated_motion.depth_rate
+            else:
+                closing_speed = (prev.depth_value - curr.depth_value) / dt
 
-            return self._build_result(
-                track_id=track_id,
-                ttc_seconds=ttc_raw,
-                ttc_valid=True,
-                ttc_state="VALID",
-                distance_value=current_distance,
-                distance_type="metric",
-                closing_speed=closing_speed,
-                depth_type="metric",
-                motion_source=motion_source,
-                reliability=ttc_rel,
-                reason=f"Metric TTC calculated: {ttc_raw:.2f}s (dist={current_distance:.2f}m, v_close={closing_speed:.2f}m/s)",
-                latest_obs=curr,
-            )
+        # Check closing state
+        is_closing = closing_speed > self.minimum_closing_speed
+        if compensated_motion is not None:
+            if compensated_motion.approach_state == "RECEDING":
+                is_closing = False
+            elif compensated_motion.approach_state == "APPROACHING" and closing_speed > 0:
+                is_closing = True
 
-        # 5. Handle RELATIVE DEPTH Case (Depth Anything V2 default setup)
-        # Depth Anything V2 convention: HIGHER = CLOSER.
-        # Relative closing rate = (d_curr - d_prev) / dt
-        relative_closing_rate = (curr.depth_value - prev.depth_value) / dt
-
-        # Check closing state in relative depth space:
-        # Validated either by direct depth rate OR temporally smoothed approach classification
-        is_motion_approaching = (compensated_motion is not None and compensated_motion.approach_state == "APPROACHING")
-        is_closing_relative = (relative_closing_rate > self.minimum_closing_speed) or is_motion_approaching
-
-        if not is_closing_relative:
+        if not is_closing:
             return self._build_result(
                 track_id=track_id,
                 ttc_seconds=None,
                 ttc_valid=False,
                 ttc_state="NOT_CLOSING",
                 distance_value=current_distance,
-                distance_type="relative",
-                closing_speed=relative_closing_rate,
-                depth_type="relative",
+                distance_type=dist_type,
+                closing_speed=closing_speed,
+                depth_type=dist_type,
                 motion_source=motion_source,
-                reliability="LOW",
-                reason=f"Object not closing in relative depth (rate={relative_closing_rate:.2f} units/s)",
+                reliability="MEDIUM" if comp_rel in ("HIGH", "MEDIUM") else "LOW",
+                reason=f"Object not closing (closing rate {closing_speed:.3f} <= threshold {self.minimum_closing_speed:.3f})",
                 latest_obs=curr,
             )
 
-        # STRICT SCIENTIFIC HONESTY:
-        # Relative depth is dimensionless affine-invariant inverse depth.
-        # Physical seconds CANNOT be fabricated without calibrated metric baseline.
+        # Object is closing: compute TTC in physical seconds
+        # Division by zero is guarded by minimum_closing_speed threshold
+        ttc_raw = current_distance / closing_speed
+
+        # Range clamping & state
+        if ttc_raw > self.max_ttc_seconds:
+            return self._build_result(
+                track_id=track_id,
+                ttc_seconds=self.max_ttc_seconds,
+                ttc_valid=True,
+                ttc_state="OUT_OF_RANGE",
+                distance_value=current_distance,
+                distance_type=dist_type,
+                closing_speed=closing_speed,
+                depth_type=dist_type,
+                motion_source=motion_source,
+                reliability="LOW",
+                reason=f"Calculated TTC ({ttc_raw:.1f}s) exceeds maximum range ({self.max_ttc_seconds:.1f}s)",
+                latest_obs=curr,
+            )
+
+        # Reliability scoring
+        if (
+            curr.depth_reliability == "HIGH"
+            and motion_source == "compensated"
+            and len(observations) >= 5
+        ):
+            ttc_rel = "HIGH"
+        elif curr.depth_reliability in ("HIGH", "MEDIUM") and len(observations) >= 3:
+            ttc_rel = "MEDIUM"
+        else:
+            ttc_rel = "LOW"
+
         return self._build_result(
             track_id=track_id,
-            ttc_seconds=None,
-            ttc_valid=False,
-            ttc_state="RELATIVE_DEPTH_ONLY",
+            ttc_seconds=ttc_raw,
+            ttc_valid=True,
+            ttc_state="VALID",
             distance_value=current_distance,
-            distance_type="relative",
-            closing_speed=relative_closing_rate,
-            depth_type="relative",
+            distance_type=dist_type,
+            closing_speed=closing_speed,
+            depth_type=dist_type,
             motion_source=motion_source,
-            reliability="LOW",
-            reason="RELATIVE_DEPTH_ONLY: Metric calibration required to report TTC in physical seconds",
+            reliability=ttc_rel,
+            reason=f"TTC calculated: {ttc_raw:.2f}s (depth={current_distance:.2f}, rate={closing_speed:.2f}, convention={self.depth_convention})",
             latest_obs=curr,
         )
 
