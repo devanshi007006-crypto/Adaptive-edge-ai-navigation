@@ -1,17 +1,15 @@
 """
-User-Facing Warning Message Generator.
+User-Facing Warning Message Generator (Step 13 & Step 14 Navigation).
 
-Converts internal GlobalWarningDecision into natural, concise, and explainable
-speech messages with temporal deduplication and priority gating.
+Transforms stabilized GlobalWarningDecision, individual track decisions,
+and Step 14 SceneNavigationState into concise, directional, natural language alert messages.
 
-CRITICAL RULES:
-- Never say "left" or "right" unless a validated navigation direction module exists.
-  Use "ahead", "nearby", or "approaching".
-- Never convert relative depth into meters.
-- Never speak uncalibrated TTC seconds unless is_metric is explicitly True.
-- Suppress repetitive identical warnings using configurable repeat_interval_seconds.
-- Immediately speak when state escalates (e.g. CAUTION -> WARNING -> CRITICAL).
-- Do not speak repetitive de-escalation chatter.
+Features:
+- Never fabricates absolute metrics in relative depth mode.
+- Synchronizes physical audio repetition with real-world wall-clock pacing.
+- Supports continuous guidance so active threats receive continuous audible assistance.
+- Integrates Step 14 lateral avoidance guidance ("Move left", "Move right", "Stop").
+- Immediately announces state escalations and direction shifts.
 """
 
 from dataclasses import dataclass
@@ -35,8 +33,8 @@ class WarningMessage:
 
 class WarningMessageGenerator:
     """
-    Transforms stabilized GlobalWarningDecision and individual track decisions
-    into prioritized, deduplicated natural language alert messages.
+    Transforms stabilized GlobalWarningDecision, individual track decisions,
+    and SceneNavigationState into prioritized, continuous natural language alerts.
     """
 
     STATE_PRIORITY_MAP = {
@@ -63,13 +61,15 @@ class WarningMessageGenerator:
         templates_cfg = self.config.get("warning_messages", {})
 
         self.repeat_interval = float(audio_cfg.get("repeat_interval_seconds", 2.0))
+        self.continuous_guidance = bool(audio_cfg.get("continuous_guidance", True))
         self.caution_template = templates_cfg.get("caution", "Please be cautious.")
         self.warning_template = templates_cfg.get("warning", "Obstacle ahead.")
         self.critical_template = templates_cfg.get("critical", "Immediate obstacle ahead.")
 
-        # Deduplication state
+        # Deduplication and pacing state
         self.last_spoken_text: str = ""
-        self.last_spoken_time: float = 0.0
+        self.last_spoken_time: Optional[float] = None
+        self.last_spoken_wall_time: Optional[float] = None
         self.last_spoken_state: str = "NO_WARNING"
         self.last_spoken_track_id: Optional[int] = None
         self.last_spoken_priority: str = "NONE"
@@ -82,10 +82,11 @@ class WarningMessageGenerator:
         scene_nav=None,
     ) -> WarningMessage:
         """
-        Generate a concise, explainable warning message based on global decision.
+        Generate a concise, explainable warning message based on global decision and scene navigation.
         """
+        current_wall_time = time.time()
         if current_time is None:
-            current_time = time.time()
+            current_time = current_wall_time
 
         track_decisions = track_decisions or {}
         state = global_warning.state
@@ -106,21 +107,23 @@ class WarningMessageGenerator:
                 timestamp=current_time,
             )
 
-        # 2. Formulate natural wording based on obstacle context
+        # 2. Formulate natural wording based on obstacle context & navigation guidance
         raw_text = self._build_natural_text(state, target_dec, scene_nav=scene_nav)
 
-        # 3. Deduplication & Escalation Check
+        # 3. Deduplication & Escalation Check (wall-clock aware for physical audio output)
         should_speak = self._evaluate_should_speak(
             text=raw_text,
             state=state,
             priority=priority,
             track_id=tid,
             current_time=current_time,
+            current_wall_time=current_wall_time,
         )
 
         if should_speak:
             self.last_spoken_text = raw_text
             self.last_spoken_time = current_time
+            self.last_spoken_wall_time = current_wall_time
             self.last_spoken_state = state
             self.last_spoken_track_id = tid
             self.last_spoken_priority = priority
@@ -141,23 +144,42 @@ class WarningMessageGenerator:
         target: Optional[WarningDecision],
         scene_nav=None,
     ) -> str:
-        # Check for validated navigation commands from Step 14
-        nav_state = scene_nav.navigation_state if scene_nav else "UNKNOWN"
+        """
+        Builds concise natural language warning text incorporating directional navigation.
+        """
+        nav_state = getattr(scene_nav, "navigation_state", "UNKNOWN") if scene_nav else "UNKNOWN"
 
+        # Emergency STOP takes top precedence
         if nav_state == "STOP":
             if state == "CRITICAL":
                 return "Immediate obstacle ahead. Stop."
             return "Stop."
 
+        # Identify target obstacle label
+        if target is not None:
+            cls_name = target.class_name.lower().strip()
+            if cls_name in self.VEHICLE_CLASSES:
+                obj_label = "vehicle"
+            elif cls_name in ("person", "bicycle"):
+                obj_label = cls_name
+            else:
+                obj_label = "obstacle"
+            is_approaching = (target.approach_state == "APPROACHING")
+        else:
+            obj_label = "obstacle"
+            is_approaching = False
+
+        # Step 14 Lateral Avoidance Guidance
         if nav_state == "AVOID_LEFT":
-            return "Move left."
+            if is_approaching:
+                return f"{obj_label.capitalize()} approaching ahead. Move left."
+            return f"Obstacle ahead. Move left."
 
         if nav_state == "AVOID_RIGHT":
-            return "Move right."
+            if is_approaching:
+                return f"{obj_label.capitalize()} approaching ahead. Move right."
+            return f"Obstacle ahead. Move right."
 
-        """
-        Builds concise natural language warning text without fabricating directions or metrics.
-        """
         if target is None:
             if state == "CRITICAL":
                 return self.critical_template
@@ -167,25 +189,14 @@ class WarningMessageGenerator:
                 return self.caution_template
             return ""
 
-        cls_name = target.class_name.lower().strip()
-        if cls_name in self.VEHICLE_CLASSES:
-            obj_label = "vehicle"
-        elif cls_name in ("person", "bicycle"):
-            obj_label = cls_name
-        else:
-            obj_label = "obstacle"
-
-        is_approaching = (target.approach_state == "APPROACHING")
-
         # TTC phrase (ONLY if metric, valid, and reliable)
         ttc_phrase = ""
-        # Check if ttc is metric and valid (never use relative depth for seconds)
         if target.ttc_state == "VALID" and target.ttc_seconds is not None:
             rounded_sec = max(1, int(round(target.ttc_seconds)))
             sec_word = "one second" if rounded_sec == 1 else f"{rounded_sec} seconds"
             ttc_phrase = f", about {sec_word}"
 
-        # Construct concise phrasing
+        # Standard Obstacle Alert Phrasing
         if state == "CRITICAL":
             if is_approaching:
                 return f"Immediate {obj_label} approaching{ttc_phrase}."
@@ -210,9 +221,12 @@ class WarningMessageGenerator:
         priority: str,
         track_id: Optional[int],
         current_time: float,
+        current_wall_time: float,
     ) -> bool:
         """
         Determines whether speech output should be dispatched.
+        Synchronizes with physical audio hardware using wall-clock time
+        so users receive continuous, properly paced audible guidance.
         """
         if not text:
             return False
@@ -236,8 +250,21 @@ class WarningMessageGenerator:
         if track_id is not None and self.last_spoken_track_id != track_id and curr_p_order >= 3:
             return True
 
-        # If identical text or same state: apply repeat interval timer
-        elapsed = current_time - self.last_spoken_time
+        # Timing elapsed:
+        # In real-world operation, speech delivery is experienced by the user in wall-clock time.
+        # Check both wall-clock elapsed and stream elapsed to support slow inference (CPU 0.2 FPS)
+        # as well as fast real-time playback.
+        wall_elapsed = (current_wall_time - self.last_spoken_wall_time) if (self.last_spoken_wall_time is not None) else 999.0
+        stream_elapsed = (current_time - self.last_spoken_time) if (self.last_spoken_time is not None) else 999.0
+        elapsed = max(wall_elapsed, stream_elapsed)
+
+        # If guidance instruction changed (e.g., from "Move left" to "Stop"):
+        # Allow immediate update after a short conversational pause (1.0s)
+        if text != self.last_spoken_text and elapsed >= 1.0:
+            return True
+
+        # Continuous Guidance: if the threat persists (WARNING, CRITICAL, or persistent CAUTION),
+        # provide continuous periodic voice guidance once repeat_interval has elapsed.
         if elapsed >= self.repeat_interval:
             return True
 

@@ -15,6 +15,9 @@ from uncertainty.reliability import ReliabilityEstimator, ReliabilityAssessment,
 from warning.state_machine import WarningStateMachine, WarningDecision, GlobalWarningDecision
 from warning.message_generator import WarningMessageGenerator, WarningMessage
 from audio.tts import TTSEngine
+from navigation.spatial import SpatialAnalyzer
+from navigation.path_geometry import PathGeometryAnalyzer
+from navigation.navigation_decision import NavigationEngine
 from temporal import (
     TemporalHistory,
     ObjectObservation,
@@ -267,10 +270,17 @@ def run_perception_pipeline(
     warning_state_machine = WarningStateMachine(warning_cfg)
     print(f"Warning Machine:  Enabled: {warning_enabled} | HistLen: {warning_cfg.get('history_length', 10)} | Grace: {warning_cfg.get('lost_track_grace_seconds', 0.5)}s")
 
-    # 12. Initialize Warning Message Generator & Audio/TTS Engine (Step 13)
+    # 12. Initialize Spatial Navigation & Path Engine (Step 14)
+    nav_cfg = config.get("navigation", {})
+    spatial_analyzer = SpatialAnalyzer(nav_cfg)
+    path_analyzer = PathGeometryAnalyzer(nav_cfg)
+    nav_engine = NavigationEngine(nav_cfg)
+    print(f"Navigation:       Enabled: True | DirHysteresis: {nav_cfg.get('direction_change_frames', 3)}")
+
+    # 13. Initialize Warning Message Generator & Audio/TTS Engine (Step 13)
     message_generator = WarningMessageGenerator(config)
     tts_engine = TTSEngine(config)
-    print(f"Message Gen:      RepeatInterval: {config.get('audio', {}).get('repeat_interval_seconds', 2.0)}s")
+    print(f"Message Gen:      RepeatInterval: {config.get('audio', {}).get('repeat_interval_seconds', 2.0)}s | ContinuousGuidance: True")
     print(f"TTS Engine:       Backend: {tts_engine.active_backend} | Available: {tts_engine.is_available()}")
 
     # 9. Initialize Multi-Factor Risk Assessment Engine (Step 10)
@@ -427,12 +437,36 @@ def run_perception_pipeline(
             )
             warn_latency_ms = (time.perf_counter() - t_warn_start) * 1000.0
 
-            # Stage 12: User-Facing Warning Message Generation & Audio/TTS (Step 13)
+            # Stage 12: Spatial Navigation & Path Analysis (Step 14)
+            t_nav_start = time.perf_counter()
+            spatial_reprs = {
+                obj.track_id: spatial_analyzer.analyze_object(
+                    track_id=obj.track_id,
+                    bbox=obj.bbox,
+                    frame_width=packet.frame.shape[1],
+                    frame_height=packet.frame.shape[0],
+                    horizontal_motion=compensated_estimates.get(obj.track_id).compensated_vx if obj.track_id in compensated_estimates else None,
+                    vertical_motion=compensated_estimates.get(obj.track_id).compensated_vy if obj.track_id in compensated_estimates else None,
+                )
+                for obj in tracked_objects
+            }
+            path_overlaps = path_analyzer.assess_all(spatial_reprs)
+            nav_decisions, scene_nav = nav_engine.evaluate(
+                spatial_objects=spatial_reprs,
+                path_assessments=path_overlaps,
+                warning_decisions=warning_decisions,
+                global_warning=global_warning,
+                system_reliability_score=system_reliability.system_score if hasattr(system_reliability, 'system_score') else 1.0,
+            )
+            nav_latency_ms = (time.perf_counter() - t_nav_start) * 1000.0
+
+            # Stage 13: Continuous User-Facing Warning Message Generation & Audio/TTS (Step 13 & 14)
             t_tts_start = time.perf_counter()
             warning_message: WarningMessage = message_generator.generate(
                 global_warning=global_warning,
                 track_decisions=warning_decisions,
                 current_time=packet.timestamp,
+                scene_nav=scene_nav,
             )
             if warning_message.should_speak and tts_engine.is_available():
                 tts_engine.speak(warning_message.text, priority=warning_message.priority)
@@ -474,6 +508,7 @@ def run_perception_pipeline(
                     f"Warn: {warn_latency_ms:3.1f}ms | "
                     f"TTS: {tts_latency_ms:3.1f}ms | "
                     f"Alert: [{global_warning.state}] | {speech_info} | "
+                    f"Nav: [{scene_nav.navigation_state} | SafeDir:{scene_nav.safe_direction}] | "
                     f"Objects ({len(object_depths)}): [{depth_info}]"
                 )
 
@@ -575,13 +610,15 @@ def run_perception_pipeline(
                 }
                 a_color = alert_color_map.get(global_warning.state, (255, 255, 255))
                 overlay_alert = f"GLOBAL ALERT: [{global_warning.state}] (TID:{global_warning.selected_track_id}) - {global_warning.reason}"
+                overlay_nav = f"NAV GUIDANCE: [{scene_nav.navigation_state}] SafeDir: [{scene_nav.safe_direction}] - {scene_nav.reason}"
                 speech_text = warning_message.text if warning_message.text else "(Silent)"
                 overlay_speech = f"TTS: \"{speech_text}\" [{warning_message.priority}] (Spoke: {warning_message.should_speak})"
                 cv2.putText(display_frame, overlay_top, (10, 25), cv2.FONT_HERSHEY_SIMPLEX, 0.65, (255, 255, 0), 2)
                 cv2.putText(display_frame, overlay_sub, (10, 52), cv2.FONT_HERSHEY_SIMPLEX, 0.56, (255, 255, 0), 2)
                 cv2.putText(display_frame, overlay_cam, (10, 76), cv2.FONT_HERSHEY_SIMPLEX, 0.52, (0, 255, 255), 2)
                 cv2.putText(display_frame, overlay_alert, (10, 100), cv2.FONT_HERSHEY_SIMPLEX, 0.52, a_color, 2)
-                cv2.putText(display_frame, overlay_speech, (10, 124), cv2.FONT_HERSHEY_SIMPLEX, 0.50, (255, 255, 255), 1)
+                cv2.putText(display_frame, overlay_nav, (10, 124), cv2.FONT_HERSHEY_SIMPLEX, 0.50, (0, 255, 128), 1)
+                cv2.putText(display_frame, overlay_speech, (10, 146), cv2.FONT_HERSHEY_SIMPLEX, 0.50, (255, 255, 255), 1)
 
                                 # Show optical flow inliers if requested
                 if show_flow and camera_motion.feature_points_curr is not None:

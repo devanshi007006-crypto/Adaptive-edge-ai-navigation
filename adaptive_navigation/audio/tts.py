@@ -167,11 +167,21 @@ class TTSEngine:
             except queue.Empty:
                 pass
 
+        # Prevent duplicate identical utterances from queueing up
+        with self._speech_queue.mutex:
+            for item in self._speech_queue.queue:
+                if len(item) > 2 and item[2] == text:
+                    return False
+
         try:
             self._speech_queue.put_nowait((-prio_val, time.time(), text, priority))
             return True
         except queue.Full:
             return False
+
+    def is_speaking(self) -> bool:
+        """Returns True if an utterance is actively being spoken or queued."""
+        return self._is_speaking or not self._speech_queue.empty()
 
     def stop(self) -> None:
         """Stops current speech and clears pending queue."""
