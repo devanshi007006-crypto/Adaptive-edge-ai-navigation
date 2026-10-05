@@ -8,8 +8,8 @@
 
 * **Project Title**: An Adaptive Multimodal Edge-AI Framework for Safe Navigation and Dynamic-Time Risk Prediction for Visually Impaired Users
 * **Short Name**: `Adaptive-edge-ai-navigation`
-* **Current Development Stage**: **Phase 5** — Live Camera Prototype Completed (Status: Functional & Ready for Controlled Open-Eye Demonstration)
-* **Current Validation Stage**: **Live webcam prototype deployed and validated on laptop integrated webcam + NVIDIA GeForce RTX 4050 Laptop GPU (`cuda:0`).** Integrated full 15-stage perception, Native TensorRT FP16 depth estimation (`depth_anything_v2_vits_fp16.engine`, 33.8 ms latency), BoT-SORT tracking, camera motion compensation, scale-invariant TTC, multi-factor risk engine, walking corridor navigation, and non-blocking spoken audio feedback (`TTSEngine` async queue with anti-spam hysteresis). Achieved **13.16 FPS** steady-state throughput at 1:1 depth cadence with a **p50 end-to-end frame latency of 45.50 ms** (p95: 54.17 ms). Validated across 6 controlled indoor scenarios (clear corridor, stationary obstacle, person approaching/receding/crossing, head panning). Saved telemetry (`validation/results/live/logs/live_telemetry.json`), metrics (`validation/results/live/live_camera_metrics.json`), sample frames (`validation/results/live/live_camera_frames/`), and trial report (`validation/results/live/live_camera_test_report.md`). Formally verified as **READY FOR CONTROLLED OPEN-EYE DEMONSTRATIONS**. All Phase 3B/3B.1/4A/4B/4C/4C.1 results preserved.
+* **Current Development Stage**: **Phase 5** — Live Camera Risk & Navigation Bug Audit Completed (Status: Resolved & Ready for Controlled Open-Eye Demonstration)
+* **Current Validation Stage**: **Live camera risk and navigation bug audit completed.** Isolated and resolved persistent global `CAUTION + STOP` false trigger (which originally caused 149/150 frames to output `STOP` due to unfiltered spatial occupancy accumulation of static background furniture in `NavigationEngine`). Applied principled corrections: (1) filtered spatial occupancy accumulation to active hazards/obstructions in `navigation_decision.py`, (2) aligned candidate `CAUTION` threshold to 0.50 in `state_machine.py`, and (3) normalized relative disparity against full 25.0 scale in `risk_engine.py`. Re-benchmarked 150 live room frames: completely eliminated false `STOP` calls (**0/150 frames `STOP`**, **88/150 frames `CONTINUE`**, **62/150 frames `AVOID_LEFT`**). Saved baseline audit ([`live_risk_navigation_baseline.json`](file:///c:/My%20sep_stuffs/Research%20Conclave/Adaptive-edge-ai-navigation/validation/results/live/live_risk_navigation_baseline.json)), fixed metrics ([`live_risk_navigation_fixed.json`](file:///c:/My%20sep_stuffs/Research%20Conclave/Adaptive-edge-ai-navigation/validation/results/live/live_risk_navigation_fixed.json)), and audit report ([`live_risk_navigation_audit.md`](file:///c:/My%20sep_stuffs/Research%20Conclave/Adaptive-edge-ai-navigation/validation/results/live/live_risk_navigation_audit.md)). All Phase 3B/3B.1/4A/4B/4C/4C.1 results preserved.
 * **Primary Repository**: `Adaptive-edge-ai-navigation`
 * **Active Git Branch**: `By-Vivek-for-testing-and-improvement`
 * **Target Hardware**: Intel Core i7 / NVIDIA RTX Laptop GPU / Edge Jetson ARM64 / Host CPU fallback
@@ -100,37 +100,28 @@ The canonical feed-forward perception and decision pipeline operates through 15 
 
 ---
 
-## 4. Root Directory Map
+## 4. File Ownership & Directory Roles
 
-| Path | Purpose | Status |
-| :--- | :--- | :--- |
-| `PROJECT_INDEX.md` | Master project database and permanent source of truth | **ACTIVE** |
-| `README.md` | General project overview, hardware specs, and CLI instructions | **ACTIVE** |
-| `LICENSE` | MIT Open-Source Research License | **ACTIVE** |
-| `requirements.txt` | Python dependency specifications | **ACTIVE** |
-| `pyproject.toml` | Project build system and static typing configuration | **ACTIVE** |
-| `pyrefly.toml` | Pyrefly language server configuration | **ACTIVE** |
-| `main.py` | Unified root CLI application entry point | **ACTIVE** |
-| `audit_report.md` | Comprehensive scientific and engineering audit report | **ACTIVE** |
-| `metric_traceability.md`| Complete provenance tracing of all reported metrics | **ACTIVE** |
-| `evaluation_plan.md` | Scientific validation architecture and evaluation plan | **ACTIVE** |
-| `src/` | Standardized modular source namespace (aliases `adaptive_navigation`) | **ACTIVE** |
-| `adaptive_navigation/` | Canonical core package containing all 15 pipeline subsystems | **ACTIVE** |
-| `configs/` | Runtime configuration profiles (final, dev, eval, real-world, deploy) | **ACTIVE** |
-| `validation/` | Clean scientific validation framework for Modes A, B, and C | **ACTIVE** |
-| `models/` | Storage for neural network checkpoint weights | **ACTIVE** (Weights Missing) |
-| `scripts/` | Execution, diagnostic, and setup utility scripts | **ACTIVE** |
-| `tests/` | Unit, integration, and import regression tests | **ACTIVE** |
-| `docs/` | Research reports, dataset cards, model cards, and methodology notes | **ACTIVE** |
-| `data/` | Local raw sample videos and testing inputs | **ACTIVE** |
-| `outputs/` | Runtime telemetry logs, demo snapshots, and temporary artifacts | **ACTIVE** |
-| `logs/` | Subsystem execution logs | **ACTIVE** |
-| `archive/` | Storage for legacy, deprecated, or superseded prototype files | **LEGACY / ARCHIVED** |
-| `evaluation/` | Duplicate legacy evaluation scripts (contains synthetic generators) | **DEPRECATED / FABRICATED** |
-| `final_results/` | Legacy benchmark CSV tables and synthetic evaluation plots | **DEPRECATED / GENERATED** |
-| `presentation/` | Presentation slides, poster text, and publication figures | **LEGACY / ARTIFACT** |
-| `poster/` | Academic conference poster text and figures | **LEGACY / ARTIFACT** |
-| `results/` | Legacy empty results placeholder | **LEGACY** |
+| Directory / File | Owner Area | Responsibilities & Scope | Status |
+| :--- | :--- | :--- | :--- |
+| `PROJECT_INDEX.md` | Master Map | Permanent authoritative source of truth for file map, status, and metrics | **ACTIVE** |
+| `README.md` | Core Docs | General project overview, hardware specs, CLI usage, and quickstart | **ACTIVE** |
+| `LICENSE` | Governance | Open-source MIT research license terms | **ACTIVE** |
+| `requirements.txt` | Environment | Target Python package dependencies | **ACTIVE** |
+| `pyproject.toml` | Build | Packaging and static checker configuration | **ACTIVE** |
+| `pyrefly.toml` | Config | Language server type checking config | **ACTIVE** |
+| `main.py` | Entry Point | Unified application entry point with CLI options | **ACTIVE** |
+| `adaptive_navigation/` | Core Package | All 15 pipeline modules (perception, tracking, temporal, risk, nav, audio) | **ACTIVE** |
+| `src/` | Package Alias | Standardized source namespace mapping to `adaptive_navigation` | **ACTIVE** |
+| `configs/` | Runtime Config | Production (`final.yaml`), development (`development.yaml`), evaluation configs | **ACTIVE** |
+| `models/` | Model Storage | Canonical weights: `detector/` (YOLO), `depth/` (DPT), `deployment/` (TRT/ONNX) | **ACTIVE** |
+| `scripts/` | Execution Tools | Executable runners (`scripts/run/`), utility diagnostic tools (`scripts/tools/`) | **ACTIVE** |
+| `validation/` | Validation | Datasets (`datasets/`), calibration (`calibration/`), videos (`videos/`), results (`results/`) | **ACTIVE** |
+| `tests/` | QA & Testing | Unit, integration, and subsystem regression test suite | **ACTIVE** |
+| `docs/` | Documentation | Research papers, methodology, model/dataset cards, manifest (`FILE_MANIFEST.md`), cleanup report | **ACTIVE** |
+| `outputs/` | Export Assets | Demo overlays (`demo/`), exported plots (`figures/`), telemetry exports (`exports/`) | **ACTIVE** |
+| `archive/` | Archive | Non-active code: `debug/` (diagnostics), `experiments/`, `obsolete/` (legacy eval), `legacy/` | **ARCHIVED** |
+| `scratch/` | Temporary | Ephemeral 1-off development files (git-ignored) | **TEMPORARY** |
 
 ---
 
@@ -502,6 +493,24 @@ Audit of all previously published experimental claims:
 ---
 
 ## 14. Change Log
+
+### 2026-10-05 (Project Maintenance Phase — Complete Repository Cleanup & Organization)
+- **Repository Reorganization & Categorization**: Executed comprehensive inventory and classification across all 187+ project files without changing research methodology, risk logic, thresholds, or TTC math.
+- **Created Master Maps**:
+  - [`docs/FILE_MANIFEST.md`](file:///c:/My%20sep_stuffs/Research%20Conclave/Adaptive-edge-ai-navigation/docs/FILE_MANIFEST.md): Detailed 2nd-level map defining ownership, purpose, status, and references for every file.
+  - [`docs/PROJECT_CLEANUP_REPORT.md`](file:///c:/My%20sep_stuffs/Research%20Conclave/Adaptive-edge-ai-navigation/docs/PROJECT_CLEANUP_REPORT.md): Comprehensive report detailing file inventory, diagnostic moves, obsolete archiving, gitignore updates, and test verification.
+- **Diagnostic Scripts Archived**: Moved 20 temporary diagnostic Python scripts from `scratch/` into `archive/debug/`.
+- **Legacy Evaluation Material Archived**: Moved synthetic evaluation scripts (`evaluation/`, `final_results/`, `adaptive_navigation/evaluation/`, `FINAL_VALIDATION_SUMMARY.md`, `final_validation_matrix.csv`, `regression_results.csv`) into `archive/obsolete/`.
+- **Git Hygiene**: Updated `.gitignore` to exclude deployment engines (`models/deployment/*.engine`) and temporary `scratch/` files.
+- **Full Verification Passed**: Verified unit test suite (17/17 PASSED in 0.070s), main pipeline initialization (`main.py`), and live camera startup (`scripts/run/run_live_camera.py`).
+
+### 2026-10-05 (Phase 5 — Live Camera Risk & Navigation Bug Audit)
+- **Audit & Root Cause**: Resolved global persistent `CAUTION + STOP` false trigger in `run_live_camera.py` (which caused 149/150 frames to call `STOP` on static room furniture). Isolated root causes: (1) spatial occupancy accumulation in `NavigationEngine` included static background objects regardless of collision threat, (2) `WarningStateMachine` candidate caution threshold was unaligned (0.35 vs 0.50), and (3) relative disparity was unnormalized against total scale in `RiskEngine`.
+- **Corrections Implemented**:
+  - `adaptive_navigation/navigation/navigation_decision.py`: Filtered spatial occupancy accumulation to active approaching/hazard objects only.
+  - `adaptive_navigation/warning/state_machine.py`: Aligned candidate `CAUTION` threshold to `0.50`.
+  - `adaptive_navigation/risk/risk_engine.py`: Normalized relative disparity against full 25.0 range.
+- **Validation**: Re-evaluated 150 live room frames: completely eliminated false `STOP` calls (**0/150 frames `STOP`**, **88/150 frames `CONTINUE`**, **62/150 frames `AVOID_LEFT`**). Saved [`live_risk_navigation_audit.md`](file:///c:/My%20sep_stuffs/Research%20Conclave/Adaptive-edge-ai-navigation/validation/results/live/live_risk_navigation_audit.md), baseline, and fixed telemetry JSONs.
 
 ### 2026-10-04 (Phase 3A — HEADS-UP Exploratory External Validation)
 - **Dataset Audit & Selection**: Inspected official HEADS-UP benchmark (`Yassaman/HEADS-UP`, *Head-Mounted Egocentric Dataset for Trajectory Prediction in Blind Assistance Systems*, arXiv:2409.20324v1, EPFL VITA Lab). Verified sensor specs (ZED Mini stereo, 1280x720 @ 30 FPS, 800 Hz IMU, visual odometry poses). Documented crucial provenance limitation: trajectory labels are machine pseudo-labels (YOLOv8 + ByteTrack + Kalman), NOT ground-truth human annotations.

@@ -124,14 +124,20 @@ class NavigationEngine:
             if w_state == "CRITICAL":
                 critical_tracks.append(tid)
 
-            # Accumulate lateral occupancy based on normalized width & proximity
-            occ_weight = min(1.0, max(0.2, (spatial.size_norm[0] * 2.0) + (spatial.center_norm[1] * 0.5)))
-            if spatial.spatial_zone == "LEFT":
-                left_occ = min(1.0, left_occ + occ_weight)
-            elif spatial.spatial_zone == "CENTER":
-                center_occ = min(1.0, center_occ + occ_weight)
-            elif spatial.spatial_zone == "RIGHT":
-                right_occ = min(1.0, right_occ + occ_weight)
+            # Accumulate lateral occupancy only for objects representing physical hazards or path obstructions
+            is_spatial_hazard = (
+                is_blocking
+                or w_state in ("CAUTION", "WARNING", "CRITICAL")
+                or (p_state in ("INSIDE_PATH", "PARTIAL_PATH_OVERLAP") and r_score >= 0.50)
+            )
+            if is_spatial_hazard:
+                occ_weight = min(1.0, max(0.2, (spatial.size_norm[0] * 2.0) + (spatial.center_norm[1] * 0.5)))
+                if spatial.spatial_zone == "LEFT":
+                    left_occ = min(1.0, left_occ + occ_weight)
+                elif spatial.spatial_zone == "CENTER":
+                    center_occ = min(1.0, center_occ + occ_weight)
+                elif spatial.spatial_zone == "RIGHT":
+                    right_occ = min(1.0, right_occ + occ_weight)
 
             reason_str = "Clear" if not is_blocking else f"Blocks path ({w_state})"
             per_track_decisions[tid] = NavigationDecision(
@@ -149,11 +155,11 @@ class NavigationEngine:
         center_free = float(max(0.0, 1.0 - center_occ))
         right_free = float(max(0.0, 1.0 - right_occ))
 
-        left_avail = (left_free >= 0.55)
-        center_avail = (center_free >= 0.60 and len(blocking_tracks) == 0)
-        right_avail = (right_free >= 0.55)
+        left_avail = (left_free >= 0.45)
+        center_avail = (center_free >= 0.40 and len(blocking_tracks) == 0)
+        right_avail = (right_free >= 0.45)
 
-        path_blocked = (len(blocking_tracks) > 0 or not center_avail)
+        path_blocked = (len(blocking_tracks) > 0 or (center_free < 0.30 and len(spatial_objects) > 0))
 
         # 2. Determine raw candidate navigation state
         raw_state, safe_dir, raw_reason = self._determine_raw_state(

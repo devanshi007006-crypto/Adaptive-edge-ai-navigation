@@ -14,15 +14,18 @@ env/
 *.swp
 *.swo
 
-# Large model weights (track via download instructions, not direct repo commit)
+# Large model weights & deployment engines (track via download instructions/scripts)
 models/detector/*.pt
 models/detector/*.pth
 models/detector/*.onnx
 models/depth/*.pth
 models/depth/*.pt
 models/depth/*.onnx
+models/deployment/*.engine
 *.pth
 *.pt
+*.engine
+scratch/
 
 # Evaluation logs and temp results
 adaptive_navigation/data/results/*.csv

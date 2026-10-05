@@ -260,7 +260,7 @@ class TrackWarningTracker:
                 return "CRITICAL"
             elif score >= w_enter and rel_score >= min_rel_warning:
                 return "WARNING"
-            elif score >= 0.25:
+            elif score >= 0.45:
                 return "CAUTION"
             else:
                 return "NO_WARNING"
@@ -270,7 +270,7 @@ class TrackWarningTracker:
                 return "CRITICAL"
             elif score >= w_enter and rel_score >= min_rel_warning:
                 return "WARNING"
-            elif score >= 0.35:
+            elif score >= 0.50:
                 return "CAUTION"
             else:
                 return "NO_WARNING"

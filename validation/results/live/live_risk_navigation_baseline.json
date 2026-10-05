@@ -1,0 +1,1407 @@
+{
+  "total_frames": 150,
+  "warning_state_counts": {
+    "NO_WARNING": 1,
+    "CAUTION": 149
+  },
+  "navigation_state_counts": {
+    "CONTINUE": 1,
+    "STOP": 149
+  },
+  "object_counts": {
+    "bed": 310,
+    "chair": 296,
+    "person": 12
+  },
+  "caution_stop_frames_count": 149,
+  "sample_caution_stop_frames": [
+    {
+      "frame_index": 1,
+      "timestamp_sec": 432856.6696,
+      "active_tracks_count": 3,
+      "objects": [
+        {
+          "track_id": 1,
+          "class_name": "bed",
+          "confidence": 0.39,
+          "bbox": [
+            36.7,
+            305.7,
+            422.4,
+            479.3
+          ],
+          "depth_value": 2.216,
+          "approach_state": "UNKNOWN",
+          "ttc_seconds": null,
+          "risk_level": "MEDIUM",
+          "warning_state": "CAUTION"
+        },
+        {
+          "track_id": 2,
+          "class_name": "chair",
+          "confidence": 0.33,
+          "bbox": [
+            0.5,
+            390.6,
+            171.8,
+            479.6
+          ],
+          "depth_value": 4.174,
+          "approach_state": "UNKNOWN",
+          "ttc_seconds": null,
+          "risk_level": "MEDIUM",
+          "warning_state": "CAUTION"
+        },
+        {
+          "track_id": 3,
+          "class_name": "bed",
+          "confidence": 0.392,
+          "bbox": [
+            516.5,
+            316.1,
+            639.9,
+            479.2
+          ],
+          "depth_value": 2.479,
+          "approach_state": "UNKNOWN",
+          "ttc_seconds": null,
+          "risk_level": "LOW",
+          "warning_state": "CAUTION"
+        }
+      ]
+    },
+    {
+      "frame_index": 2,
+      "timestamp_sec": 432856.7365,
+      "active_tracks_count": 4,
+      "objects": [
+        {
+          "track_id": 1,
+          "class_name": "bed",
+          "confidence": 0.476,
+          "bbox": [
+            40.0,
+            305.9,
+            422.0,
+            479.3
+          ],
+          "depth_value": 2.217,
+          "approach_state": "STABLE",
+          "ttc_seconds": null,
+          "risk_level": "LOW",
+          "warning_state": "CAUTION"
+        },
+        {
+          "track_id": 2,
+          "class_name": "chair",
+          "confidence": 0.394,
+          "bbox": [
+            0.5,
+            390.5,
+            171.7,
+            479.7
+          ],
+          "depth_value": 4.14,
+          "approach_state": "STABLE",
+          "ttc_seconds": 30.0,
+          "risk_level": "LOW",
+          "warning_state": "CAUTION"
+        },
+        {
+          "track_id": 3,
+          "class_name": "bed",
+          "confidence": 0.458,
+          "bbox": [
+            516.9,
+            318.4,
+            639.9,
+            479.3
+          ],
+          "depth_value": 2.473,
+          "approach_state": "STABLE",
+          "ttc_seconds": 13.0,
+          "risk_level": "LOW",
+          "warning_state": "CAUTION"
+        },
+        {
+          "track_id": 4,
+          "class_name": "chair",
+          "confidence": 0.411,
+          "bbox": [
+            273.7,
+            403.7,
+            556.9,
+            479.7
+          ],
+          "depth_value": 9.914,
+          "approach_state": "UNKNOWN",
+          "ttc_seconds": null,
+          "risk_level": "HIGH",
+          "warning_state": "NO_WARNING"
+        }
+      ]
+    },
+    {
+      "frame_index": 3,
+      "timestamp_sec": 432856.823,
+      "active_tracks_count": 4,
+      "objects": [
+        {
+          "track_id": 1,
+          "class_name": "bed",
+          "confidence": 0.47,
+          "bbox": [
+            42.1,
+            306.2,
+            421.7,
+            479.4
+          ],
+          "depth_value": 2.189,
+          "approach_state": "STABLE",
+          "ttc_seconds": null,
+          "risk_level": "LOW",
+          "warning_state": "CAUTION"
+        },
+        {
+          "track_id": 2,
+          "class_name": "chair",
+          "confidence": 0.464,
+          "bbox": [
+            0.5,
+            390.2,
+            171.6,
+            479.7
+          ],
+          "depth_value": 4.058,
+          "approach_state": "STABLE",
+          "ttc_seconds": null,
+          "risk_level": "LOW",
+          "warning_state": "CAUTION"
+        },
+        {
+          "track_id": 3,
+          "class_name": "bed",
+          "confidence": 0.552,
+          "bbox": [
+            515.9,
+            316.2,
+            639.9,
+            479.4
+          ],
+          "depth_value": 2.3,
+          "approach_state": "STABLE",
+          "ttc_seconds": 15.49,
+          "risk_level": "LOW",
+          "warning_state": "CAUTION"
+        },
+        {
+          "track_id": 4,
+          "class_name": "chair",
+          "confidence": 0.418,
+          "bbox": [
+            273.4,
+            403.9,
+            557.0,
+            479.7
+          ],
+          "depth_value": 9.981,
+          "approach_state": "UNKNOWN",
+          "ttc_seconds": null,
+          "risk_level": "HIGH",
+          "warning_state": "NO_WARNING"
+        }
+      ]
+    },
+    {
+      "frame_index": 4,
+      "timestamp_sec": 432856.9219,
+      "active_tracks_count": 4,
+      "objects": [
+        {
+          "track_id": 1,
+          "class_name": "bed",
+          "confidence": 0.387,
+          "bbox": [
+            41.1,
+            306.0,
+            421.8,
+            479.3
+          ],
+          "depth_value": 2.217,
+          "approach_state": "STABLE",
+          "ttc_seconds": null,
+          "risk_level": "LOW",
+          "warning_state": "CAUTION"
+        },
+        {
+          "track_id": 2,
+          "class_name": "chair",
+          "confidence": 0.422,
+          "bbox": [
+            0.5,
+            390.4,
+            172.4,
+            479.7
+          ],
+          "depth_value": 4.06,
+          "approach_state": "STABLE",
+          "ttc_seconds": null,
+          "risk_level": "LOW",
+          "warning_state": "CAUTION"
+        },
+        {
+          "track_id": 3,
+          "class_name": "bed",
+          "confidence": 0.541,
+          "bbox": [
+            516.0,
+            315.0,
+            639.8,
+            479.4
+          ],
+          "depth_value": 2.243,
+          "approach_state": "STABLE",
+          "ttc_seconds": 25.65,
+          "risk_level": "LOW",
+          "warning_state": "CAUTION"
+        },
+        {
+          "track_id": 4,
+          "class_name": "chair",
+          "confidence": 0.466,
+          "bbox": [
+            273.3,
+            404.0,
+            557.0,
+            479.7
+          ],
+          "depth_value": 10.113,
+          "approach_state": "STABLE",
+          "ttc_seconds": 9.39,
+          "risk_level": "MEDIUM",
+          "warning_state": "NO_WARNING"
+        }
+      ]
+    },
+    {
+      "frame_index": 5,
+      "timestamp_sec": 432856.9929,
+      "active_tracks_count": 4,
+      "objects": [
+        {
+          "track_id": 1,
+          "class_name": "bed",
+          "confidence": 0.421,
+          "bbox": [
+            41.5,
+            305.9,
+            422.2,
+            479.3
+          ],
+          "depth_value": 2.257,
+          "approach_state": "STABLE",
+          "ttc_seconds": null,
+          "risk_level": "LOW",
+          "warning_state": "CAUTION"
+        },
+        {
+          "track_id": 2,
+          "class_name": "chair",
+          "confidence": 0.392,
+          "bbox": [
+            0.5,
+            390.3,
+            171.8,
+            479.7
+          ],
+          "depth_value": 4.085,
+          "approach_state": "STABLE",
+          "ttc_seconds": null,
+          "risk_level": "LOW",
+          "warning_state": "CAUTION"
+        },
+        {
+          "track_id": 3,
+          "class_name": "bed",
+          "confidence": 0.552,
+          "bbox": [
+            516.3,
+            315.4,
+            639.8,
+            479.4
+          ],
+          "depth_value": 2.294,
+          "approach_state": "STABLE",
+          "ttc_seconds": null,
+          "risk_level": "LOW",
+          "warning_state": "NO_WARNING"
+        },
+        {
+          "track_id": 4,
+          "class_name": "chair",
+          "confidence": 0.427,
+          "bbox": [
+            273.2,
+            404.2,
+            557.1,
+            479.7
+          ],
+          "depth_value": 10.026,
+          "approach_state": "STABLE",
+          "ttc_seconds": 11.06,
+          "risk_level": "MEDIUM",
+          "warning_state": "CAUTION"
+        }
+      ]
+    },
+    {
+      "frame_index": 6,
+      "timestamp_sec": 432857.0623,
+      "active_tracks_count": 4,
+      "objects": [
+        {
+          "track_id": 1,
+          "class_name": "bed",
+          "confidence": 0.463,
+          "bbox": [
+            39.3,
+            305.9,
+            422.4,
+            479.3
+          ],
+          "depth_value": 2.232,
+          "approach_state": "STABLE",
+          "ttc_seconds": null,
+          "risk_level": "LOW",
+          "warning_state": "CAUTION"
+        },
+        {
+          "track_id": 2,
+          "class_name": "chair",
+          "confidence": 0.446,
+          "bbox": [
+            0.5,
+            390.5,
+            171.2,
+            479.7
+          ],
+          "depth_value": 4.106,
+          "approach_state": "STABLE",
+          "ttc_seconds": null,
+          "risk_level": "LOW",
+          "warning_state": "CAUTION"
+        },
+        {
+          "track_id": 3,
+          "class_name": "bed",
+          "confidence": 0.578,
+          "bbox": [
+            516.1,
+            315.4,
+            639.9,
+            479.4
+          ],
+          "depth_value": 2.293,
+          "approach_state": "STABLE",
+          "ttc_seconds": null,
+          "risk_level": "LOW",
+          "warning_state": "NO_WARNING"
+        },
+        {
+          "track_id": 4,
+          "class_name": "chair",
+          "confidence": 0.419,
+          "bbox": [
+            273.4,
+            404.3,
+            557.1,
+            479.7
+          ],
+          "depth_value": 9.886,
+          "approach_state": "STABLE",
+          "ttc_seconds": 16.04,
+          "risk_level": "LOW",
+          "warning_state": "CAUTION"
+        }
+      ]
+    },
+    {
+      "frame_index": 7,
+      "timestamp_sec": 432857.1299,
+      "active_tracks_count": 4,
+      "objects": [
+        {
+          "track_id": 1,
+          "class_name": "bed",
+          "confidence": 0.441,
+          "bbox": [
+            35.7,
+            306.0,
+            422.4,
+            479.3
+          ],
+          "depth_value": 2.277,
+          "approach_state": "STABLE",
+          "ttc_seconds": null,
+          "risk_level": "LOW",
+          "warning_state": "CAUTION"
+        },
+        {
+          "track_id": 2,
+          "class_name": "chair",
+          "confidence": 0.366,
+          "bbox": [
+            0.5,
+            390.6,
+            171.4,
+            479.7
+          ],
+          "depth_value": 4.189,
+          "approach_state": "STABLE",
+          "ttc_seconds": null,
+          "risk_level": "LOW",
+          "warning_state": "CAUTION"
+        },
+        {
+          "track_id": 3,
+          "class_name": "bed",
+          "confidence": 0.576,
+          "bbox": [
+            515.8,
+            315.5,
+            639.8,
+            479.4
+          ],
+          "depth_value": 2.299,
+          "approach_state": "STABLE",
+          "ttc_seconds": null,
+          "risk_level": "LOW",
+          "warning_state": "NO_WARNING"
+        },
+        {
+          "track_id": 4,
+          "class_name": "chair",
+          "confidence": 0.46,
+          "bbox": [
+            273.8,
+            404.3,
+            557.3,
+            479.7
+          ],
+          "depth_value": 9.831,
+          "approach_state": "STABLE",
+          "ttc_seconds": 29.66,
+          "risk_level": "LOW",
+          "warning_state": "CAUTION"
+        }
+      ]
+    },
+    {
+      "frame_index": 8,
+      "timestamp_sec": 432857.2002,
+      "active_tracks_count": 4,
+      "objects": [
+        {
+          "track_id": 1,
+          "class_name": "bed",
+          "confidence": 0.463,
+          "bbox": [
+            40.9,
+            306.0,
+            421.4,
+            479.4
+          ],
+          "depth_value": 2.287,
+          "approach_state": "STABLE",
+          "ttc_seconds": 30.0,
+          "risk_level": "LOW",
+          "warning_state": "CAUTION"
+        },
+        {
+          "track_id": 2,
+          "class_name": "chair",
+          "confidence": 0.435,
+          "bbox": [
+            0.5,
+            390.6,
+            171.8,
+            479.7
+          ],
+          "depth_value": 4.238,
+          "approach_state": "STABLE",
+          "ttc_seconds": null,
+          "risk_level": "LOW",
+          "warning_state": "CAUTION"
+        },
+        {
+          "track_id": 3,
+          "class_name": "bed",
+          "confidence": 0.599,
+          "bbox": [
+            515.6,
+            315.4,
+            639.9,
+            479.4
+          ],
+          "depth_value": 2.296,
+          "approach_state": "STABLE",
+          "ttc_seconds": null,
+          "risk_level": "LOW",
+          "warning_state": "NO_WARNING"
+        },
+        {
+          "track_id": 4,
+          "class_name": "chair",
+          "confidence": 0.43,
+          "bbox": [
+            273.7,
+            404.3,
+            557.2,
+            479.7
+          ],
+          "depth_value": 9.73,
+          "approach_state": "APPROACHING",
+          "ttc_seconds": 30.0,
+          "risk_level": "MEDIUM",
+          "warning_state": "CAUTION"
+        }
+      ]
+    },
+    {
+      "frame_index": 9,
+      "timestamp_sec": 432857.2689,
+      "active_tracks_count": 4,
+      "objects": [
+        {
+          "track_id": 1,
+          "class_name": "bed",
+          "confidence": 0.44,
+          "bbox": [
+            41.0,
+            306.1,
+            421.6,
+            479.4
+          ],
+          "depth_value": 2.274,
+          "approach_state": "STABLE",
+          "ttc_seconds": 22.55,
+          "risk_level": "LOW",
+          "warning_state": "CAUTION"
+        },
+        {
+          "track_id": 2,
+          "class_name": "chair",
+          "confidence": 0.33,
+          "bbox": [
+            0.5,
+            390.7,
+            171.4,
+            479.7
+          ],
+          "depth_value": 4.177,
+          "approach_state": "STABLE",
+          "ttc_seconds": 30.0,
+          "risk_level": "LOW",
+          "warning_state": "CAUTION"
+        },
+        {
+          "track_id": 3,
+          "class_name": "bed",
+          "confidence": 0.577,
+          "bbox": [
+            515.7,
+            315.1,
+            639.9,
+            479.5
+          ],
+          "depth_value": 2.304,
+          "approach_state": "STABLE",
+          "ttc_seconds": null,
+          "risk_level": "LOW",
+          "warning_state": "NO_WARNING"
+        },
+        {
+          "track_id": 4,
+          "class_name": "chair",
+          "confidence": 0.369,
+          "bbox": [
+            273.4,
+            404.4,
+            557.2,
+            479.7
+          ],
+          "depth_value": 10.007,
+          "approach_state": "APPROACHING",
+          "ttc_seconds": null,
+          "risk_level": "MEDIUM",
+          "warning_state": "CAUTION"
+        }
+      ]
+    },
+    {
+      "frame_index": 10,
+      "timestamp_sec": 432857.3458,
+      "active_tracks_count": 4,
+      "objects": [
+        {
+          "track_id": 1,
+          "class_name": "bed",
+          "confidence": 0.415,
+          "bbox": [
+            40.3,
+            306.2,
+            421.6,
+            479.5
+          ],
+          "depth_value": 2.273,
+          "approach_state": "STABLE",
+          "ttc_seconds": 18.45,
+          "risk_level": "LOW",
+          "warning_state": "CAUTION"
+        },
+        {
+          "track_id": 2,
+          "class_name": "chair",
+          "confidence": 0.288,
+          "bbox": [
+            0.4,
+            390.8,
+            171.5,
+            479.7
+          ],
+          "depth_value": 4.11,
+          "approach_state": "STABLE",
+          "ttc_seconds": 27.28,
+          "risk_level": "LOW",
+          "warning_state": "CAUTION"
+        },
+        {
+          "track_id": 3,
+          "class_name": "bed",
+          "confidence": 0.587,
+          "bbox": [
+            515.7,
+            315.5,
+            639.9,
+            479.6
+          ],
+          "depth_value": 2.339,
+          "approach_state": "STABLE",
+          "ttc_seconds": null,
+          "risk_level": "LOW",
+          "warning_state": "NO_WARNING"
+        },
+        {
+          "track_id": 4,
+          "class_name": "chair",
+          "confidence": 0.378,
+          "bbox": [
+            273.7,
+            404.4,
+            557.2,
+            479.8
+          ],
+          "depth_value": 9.911,
+          "approach_state": "APPROACHING",
+          "ttc_seconds": null,
+          "risk_level": "MEDIUM",
+          "warning_state": "CAUTION"
+        }
+      ]
+    },
+    {
+      "frame_index": 11,
+      "timestamp_sec": 432857.4318,
+      "active_tracks_count": 4,
+      "objects": [
+        {
+          "track_id": 1,
+          "class_name": "bed",
+          "confidence": 0.458,
+          "bbox": [
+            37.2,
+            306.2,
+            422.2,
+            479.4
+          ],
+          "depth_value": 2.288,
+          "approach_state": "STABLE",
+          "ttc_seconds": 18.9,
+          "risk_level": "LOW",
+          "warning_state": "CAUTION"
+        },
+        {
+          "track_id": 2,
+          "class_name": "chair",
+          "confidence": 0.331,
+          "bbox": [
+            0.5,
+            390.9,
+            171.9,
+            479.7
+          ],
+          "depth_value": 4.151,
+          "approach_state": "STABLE",
+          "ttc_seconds": 26.74,
+          "risk_level": "LOW",
+          "warning_state": "CAUTION"
+        },
+        {
+          "track_id": 3,
+          "class_name": "bed",
+          "confidence": 0.592,
+          "bbox": [
+            515.5,
+            316.1,
+            639.9,
+            479.5
+          ],
+          "depth_value": 2.368,
+          "approach_state": "STABLE",
+          "ttc_seconds": null,
+          "risk_level": "LOW",
+          "warning_state": "NO_WARNING"
+        },
+        {
+          "track_id": 4,
+          "class_name": "chair",
+          "confidence": 0.378,
+          "bbox": [
+            274.0,
+            404.4,
+            557.2,
+            479.8
+          ],
+          "depth_value": 9.777,
+          "approach_state": "APPROACHING",
+          "ttc_seconds": null,
+          "risk_level": "MEDIUM",
+          "warning_state": "CAUTION"
+        }
+      ]
+    },
+    {
+      "frame_index": 12,
+      "timestamp_sec": 432857.5102,
+      "active_tracks_count": 4,
+      "objects": [
+        {
+          "track_id": 1,
+          "class_name": "bed",
+          "confidence": 0.457,
+          "bbox": [
+            38.5,
+            306.2,
+            422.3,
+            479.4
+          ],
+          "depth_value": 2.309,
+          "approach_state": "APPROACHING",
+          "ttc_seconds": 20.32,
+          "risk_level": "MEDIUM",
+          "warning_state": "CAUTION"
+        },
+        {
+          "track_id": 2,
+          "class_name": "chair",
+          "confidence": 0.363,
+          "bbox": [
+            0.5,
+            390.8,
+            171.9,
+            479.7
+          ],
+          "depth_value": 4.179,
+          "approach_state": "STABLE",
+          "ttc_seconds": 30.0,
+          "risk_level": "LOW",
+          "warning_state": "CAUTION"
+        },
+        {
+          "track_id": 3,
+          "class_name": "bed",
+          "confidence": 0.554,
+          "bbox": [
+            516.1,
+            316.5,
+            639.9,
+            479.4
+          ],
+          "depth_value": 2.312,
+          "approach_state": "STABLE",
+          "ttc_seconds": null,
+          "risk_level": "LOW",
+          "warning_state": "NO_WARNING"
+        },
+        {
+          "track_id": 4,
+          "class_name": "chair",
+          "confidence": 0.433,
+          "bbox": [
+            273.6,
+            404.4,
+            557.2,
+            479.8
+          ],
+          "depth_value": 9.628,
+          "approach_state": "APPROACHING",
+          "ttc_seconds": null,
+          "risk_level": "MEDIUM",
+          "warning_state": "CAUTION"
+        }
+      ]
+    },
+    {
+      "frame_index": 13,
+      "timestamp_sec": 432857.5897,
+      "active_tracks_count": 4,
+      "objects": [
+        {
+          "track_id": 1,
+          "class_name": "bed",
+          "confidence": 0.465,
+          "bbox": [
+            38.9,
+            306.2,
+            422.1,
+            479.3
+          ],
+          "depth_value": 2.318,
+          "approach_state": "APPROACHING",
+          "ttc_seconds": 20.12,
+          "risk_level": "MEDIUM",
+          "warning_state": "CAUTION"
+        },
+        {
+          "track_id": 2,
+          "class_name": "chair",
+          "confidence": 0.321,
+          "bbox": [
+            0.5,
+            390.8,
+            171.7,
+            479.7
+          ],
+          "depth_value": 4.236,
+          "approach_state": "APPROACHING",
+          "ttc_seconds": 30.0,
+          "risk_level": "LOW",
+          "warning_state": "CAUTION"
+        },
+        {
+          "track_id": 3,
+          "class_name": "bed",
+          "confidence": 0.519,
+          "bbox": [
+            516.2,
+            315.4,
+            639.9,
+            479.4
+          ],
+          "depth_value": 2.324,
+          "approach_state": "STABLE",
+          "ttc_seconds": 30.0,
+          "risk_level": "LOW",
+          "warning_state": "NO_WARNING"
+        },
+        {
+          "track_id": 4,
+          "class_name": "chair",
+          "confidence": 0.379,
+          "bbox": [
+            273.7,
+            404.2,
+            557.1,
+            479.7
+          ],
+          "depth_value": 9.591,
+          "approach_state": "APPROACHING",
+          "ttc_seconds": null,
+          "risk_level": "MEDIUM",
+          "warning_state": "CAUTION"
+        }
+      ]
+    },
+    {
+      "frame_index": 14,
+      "timestamp_sec": 432857.6679,
+      "active_tracks_count": 4,
+      "objects": [
+        {
+          "track_id": 1,
+          "class_name": "bed",
+          "confidence": 0.473,
+          "bbox": [
+            38.5,
+            306.1,
+            421.5,
+            479.3
+          ],
+          "depth_value": 2.303,
+          "approach_state": "APPROACHING",
+          "ttc_seconds": 22.98,
+          "risk_level": "MEDIUM",
+          "warning_state": "CAUTION"
+        },
+        {
+          "track_id": 2,
+          "class_name": "chair",
+          "confidence": 0.279,
+          "bbox": [
+            0.5,
+            390.8,
+            172.0,
+            479.7
+          ],
+          "depth_value": 4.234,
+          "approach_state": "APPROACHING",
+          "ttc_seconds": 30.0,
+          "risk_level": "LOW",
+          "warning_state": "CAUTION"
+        },
+        {
+          "track_id": 3,
+          "class_name": "bed",
+          "confidence": 0.564,
+          "bbox": [
+            516.3,
+            316.5,
+            639.8,
+            479.4
+          ],
+          "depth_value": 2.324,
+          "approach_state": "STABLE",
+          "ttc_seconds": 30.0,
+          "risk_level": "LOW",
+          "warning_state": "NO_WARNING"
+        },
+        {
+          "track_id": 4,
+          "class_name": "chair",
+          "confidence": 0.425,
+          "bbox": [
+            273.7,
+            404.3,
+            557.1,
+            479.7
+          ],
+          "depth_value": 9.71,
+          "approach_state": "RECEDING",
+          "ttc_seconds": null,
+          "risk_level": "LOW",
+          "warning_state": "CAUTION"
+        }
+      ]
+    },
+    {
+      "frame_index": 15,
+      "timestamp_sec": 432857.7364,
+      "active_tracks_count": 4,
+      "objects": [
+        {
+          "track_id": 1,
+          "class_name": "bed",
+          "confidence": 0.526,
+          "bbox": [
+            43.4,
+            306.2,
+            421.8,
+            479.5
+          ],
+          "depth_value": 2.332,
+          "approach_state": "APPROACHING",
+          "ttc_seconds": 23.79,
+          "risk_level": "MEDIUM",
+          "warning_state": "CAUTION"
+        },
+        {
+          "track_id": 2,
+          "class_name": "chair",
+          "confidence": 0.365,
+          "bbox": [
+            0.5,
+            390.6,
+            172.1,
+            479.7
+          ],
+          "depth_value": 4.234,
+          "approach_state": "APPROACHING",
+          "ttc_seconds": 30.0,
+          "risk_level": "LOW",
+          "warning_state": "CAUTION"
+        },
+        {
+          "track_id": 3,
+          "class_name": "bed",
+          "confidence": 0.515,
+          "bbox": [
+            515.8,
+            315.4,
+            639.9,
+            479.4
+          ],
+          "depth_value": 2.33,
+          "approach_state": "STABLE",
+          "ttc_seconds": null,
+          "risk_level": "LOW",
+          "warning_state": "NO_WARNING"
+        },
+        {
+          "track_id": 4,
+          "class_name": "chair",
+          "confidence": 0.441,
+          "bbox": [
+            273.5,
+            404.3,
+            557.0,
+            479.7
+          ],
+          "depth_value": 9.778,
+          "approach_state": "RECEDING",
+          "ttc_seconds": null,
+          "risk_level": "LOW",
+          "warning_state": "CAUTION"
+        }
+      ]
+    },
+    {
+      "frame_index": 16,
+      "timestamp_sec": 432857.8136,
+      "active_tracks_count": 4,
+      "objects": [
+        {
+          "track_id": 1,
+          "class_name": "bed",
+          "confidence": 0.517,
+          "bbox": [
+            43.6,
+            306.3,
+            422.1,
+            479.5
+          ],
+          "depth_value": 2.322,
+          "approach_state": "APPROACHING",
+          "ttc_seconds": 23.12,
+          "risk_level": "MEDIUM",
+          "warning_state": "CAUTION"
+        },
+        {
+          "track_id": 2,
+          "class_name": "chair",
+          "confidence": 0.318,
+          "bbox": [
+            0.5,
+            390.6,
+            171.9,
+            479.7
+          ],
+          "depth_value": 4.19,
+          "approach_state": "APPROACHING",
+          "ttc_seconds": 30.0,
+          "risk_level": "LOW",
+          "warning_state": "CAUTION"
+        },
+        {
+          "track_id": 3,
+          "class_name": "bed",
+          "confidence": 0.542,
+          "bbox": [
+            515.9,
+            315.2,
+            639.9,
+            479.4
+          ],
+          "depth_value": 2.312,
+          "approach_state": "STABLE",
+          "ttc_seconds": null,
+          "risk_level": "LOW",
+          "warning_state": "NO_WARNING"
+        },
+        {
+          "track_id": 4,
+          "class_name": "chair",
+          "confidence": 0.365,
+          "bbox": [
+            273.7,
+            404.3,
+            556.9,
+            479.7
+          ],
+          "depth_value": 9.714,
+          "approach_state": "RECEDING",
+          "ttc_seconds": null,
+          "risk_level": "LOW",
+          "warning_state": "CAUTION"
+        }
+      ]
+    },
+    {
+      "frame_index": 17,
+      "timestamp_sec": 432857.895,
+      "active_tracks_count": 4,
+      "objects": [
+        {
+          "track_id": 1,
+          "class_name": "bed",
+          "confidence": 0.533,
+          "bbox": [
+            44.3,
+            306.4,
+            421.9,
+            479.5
+          ],
+          "depth_value": 2.306,
+          "approach_state": "APPROACHING",
+          "ttc_seconds": 25.43,
+          "risk_level": "MEDIUM",
+          "warning_state": "CAUTION"
+        },
+        {
+          "track_id": 2,
+          "class_name": "chair",
+          "confidence": 0.38,
+          "bbox": [
+            0.5,
+            390.6,
+            171.7,
+            479.7
+          ],
+          "depth_value": 4.195,
+          "approach_state": "APPROACHING",
+          "ttc_seconds": 30.0,
+          "risk_level": "LOW",
+          "warning_state": "CAUTION"
+        },
+        {
+          "track_id": 3,
+          "class_name": "bed",
+          "confidence": 0.553,
+          "bbox": [
+            515.8,
+            315.8,
+            639.8,
+            479.4
+          ],
+          "depth_value": 2.379,
+          "approach_state": "STABLE",
+          "ttc_seconds": null,
+          "risk_level": "LOW",
+          "warning_state": "NO_WARNING"
+        },
+        {
+          "track_id": 4,
+          "class_name": "chair",
+          "confidence": 0.387,
+          "bbox": [
+            273.3,
+            404.4,
+            556.8,
+            479.7
+          ],
+          "depth_value": 9.56,
+          "approach_state": "RECEDING",
+          "ttc_seconds": null,
+          "risk_level": "LOW",
+          "warning_state": "CAUTION"
+        }
+      ]
+    },
+    {
+      "frame_index": 18,
+      "timestamp_sec": 432857.9654,
+      "active_tracks_count": 3,
+      "objects": [
+        {
+          "track_id": 1,
+          "class_name": "bed",
+          "confidence": 0.508,
+          "bbox": [
+            40.3,
+            306.3,
+            421.5,
+            479.4
+          ],
+          "depth_value": 2.28,
+          "approach_state": "APPROACHING",
+          "ttc_seconds": 30.0,
+          "risk_level": "MEDIUM",
+          "warning_state": "CAUTION"
+        },
+        {
+          "track_id": 3,
+          "class_name": "bed",
+          "confidence": 0.537,
+          "bbox": [
+            515.8,
+            316.2,
+            639.8,
+            479.4
+          ],
+          "depth_value": 2.361,
+          "approach_state": "STABLE",
+          "ttc_seconds": null,
+          "risk_level": "LOW",
+          "warning_state": "NO_WARNING"
+        },
+        {
+          "track_id": 4,
+          "class_name": "chair",
+          "confidence": 0.362,
+          "bbox": [
+            273.1,
+            404.5,
+            556.8,
+            479.7
+          ],
+          "depth_value": 9.429,
+          "approach_state": "RECEDING",
+          "ttc_seconds": null,
+          "risk_level": "LOW",
+          "warning_state": "CAUTION"
+        }
+      ]
+    },
+    {
+      "frame_index": 19,
+      "timestamp_sec": 432858.0364,
+      "active_tracks_count": 4,
+      "objects": [
+        {
+          "track_id": 1,
+          "class_name": "bed",
+          "confidence": 0.443,
+          "bbox": [
+            40.2,
+            306.4,
+            422.0,
+            479.3
+          ],
+          "depth_value": 2.25,
+          "approach_state": "APPROACHING",
+          "ttc_seconds": 30.0,
+          "risk_level": "MEDIUM",
+          "warning_state": "CAUTION"
+        },
+        {
+          "track_id": 3,
+          "class_name": "bed",
+          "confidence": 0.552,
+          "bbox": [
+            515.8,
+            317.0,
+            639.8,
+            479.4
+          ],
+          "depth_value": 2.39,
+          "approach_state": "STABLE",
+          "ttc_seconds": 30.0,
+          "risk_level": "LOW",
+          "warning_state": "NO_WARNING"
+        },
+        {
+          "track_id": 4,
+          "class_name": "chair",
+          "confidence": 0.43,
+          "bbox": [
+            273.3,
+            404.5,
+            556.8,
+            479.7
+          ],
+          "depth_value": 9.686,
+          "approach_state": "RECEDING",
+          "ttc_seconds": null,
+          "risk_level": "LOW",
+          "warning_state": "CAUTION"
+        },
+        {
+          "track_id": 2,
+          "class_name": "chair",
+          "confidence": 0.355,
+          "bbox": [
+            0.5,
+            390.6,
+            171.6,
+            479.7
+          ],
+          "depth_value": 4.094,
+          "approach_state": "APPROACHING",
+          "ttc_seconds": 30.0,
+          "risk_level": "LOW",
+          "warning_state": "CAUTION"
+        }
+      ]
+    },
+    {
+      "frame_index": 20,
+      "timestamp_sec": 432858.1043,
+      "active_tracks_count": 4,
+      "objects": [
+        {
+          "track_id": 1,
+          "class_name": "bed",
+          "confidence": 0.496,
+          "bbox": [
+            41.7,
+            306.4,
+            420.8,
+            479.2
+          ],
+          "depth_value": 2.26,
+          "approach_state": "APPROACHING",
+          "ttc_seconds": null,
+          "risk_level": "MEDIUM",
+          "warning_state": "CAUTION"
+        },
+        {
+          "track_id": 3,
+          "class_name": "bed",
+          "confidence": 0.583,
+          "bbox": [
+            515.4,
+            316.6,
+            639.8,
+            479.4
+          ],
+          "depth_value": 2.358,
+          "approach_state": "STABLE",
+          "ttc_seconds": 28.42,
+          "risk_level": "LOW",
+          "warning_state": "NO_WARNING"
+        },
+        {
+          "track_id": 4,
+          "class_name": "chair",
+          "confidence": 0.371,
+          "bbox": [
+            273.2,
+            404.5,
+            556.9,
+            479.7
+          ],
+          "depth_value": 9.617,
+          "approach_state": "RECEDING",
+          "ttc_seconds": null,
+          "risk_level": "LOW",
+          "warning_state": "CAUTION"
+        },
+        {
+          "track_id": 2,
+          "class_name": "chair",
+          "confidence": 0.304,
+          "bbox": [
+            0.5,
+            390.8,
+            172.4,
+            479.7
+          ],
+          "depth_value": 4.091,
+          "approach_state": "APPROACHING",
+          "ttc_seconds": null,
+          "risk_level": "LOW",
+          "warning_state": "CAUTION"
+        }
+      ]
+    }
+  ]
+}
