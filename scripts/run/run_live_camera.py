@@ -551,13 +551,19 @@ def run_live_prototype(
         }
     }
 
-    metrics_file = LIVE_DIR / "live_camera_metrics.json"
-    with open(metrics_file, "w", encoding="utf-8") as f:
-        json.dump(metrics_json, f, indent=2)
-    print(f"Saved live camera metrics to {metrics_file}")
-
-    return metrics_json
-
-
 if __name__ == "__main__":
-    run_live_prototype(cam_source=0, max_frames=150, headless=False)
+    import argparse
+    parser = argparse.ArgumentParser(description="Phase 5 — Live Camera Prototype Runner")
+    parser.add_argument("--cam", type=int, default=0, help="Webcam device index (default: 0)")
+    parser.add_argument("--max-frames", type=int, default=150, help="Maximum frames to process (default: 150)")
+    parser.add_argument("--headless", action="store_true", help="Run without graphical preview window")
+    parser.add_argument("--cadence", type=int, default=1, help="Depth inference cadence (default: 1)")
+    args = parser.parse_args()
+
+    run_live_prototype(
+        cam_source=args.cam,
+        max_frames=args.max_frames,
+        headless=args.headless,
+        depth_cadence=args.cadence
+    )
+

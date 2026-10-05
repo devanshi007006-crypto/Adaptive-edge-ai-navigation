@@ -8,15 +8,15 @@
     "depth_engine": "Native TensorRT FP16 Engine (33.8 ms)",
     "detector_model": "YOLO11n (models/detector/yolo11n.pt)",
     "total_frames_processed": 150,
-    "session_time_seconds": 12.124899099988397
+    "session_time_seconds": 11.917939500010107
   },
   "performance": {
-    "mean_fps": 12.37,
+    "mean_fps": 12.59,
     "mean_e2e_latency_ms": 55.7,
-    "p50_e2e_latency_ms": 50.78,
-    "p95_e2e_latency_ms": 59.56,
-    "mean_detector_latency_ms": 14.52,
-    "mean_depth_latency_ms": 27.86
+    "p50_e2e_latency_ms": 50.46,
+    "p95_e2e_latency_ms": 61.11,
+    "mean_detector_latency_ms": 14.75,
+    "mean_depth_latency_ms": 28.34
   },
   "trials_evaluated": [
     {
@@ -46,8 +46,8 @@
   ],
   "readiness_verdict": {
     "webcam_inference_functional": true,
-    "actual_fps": 12.37,
-    "latency_ms": 50.78,
+    "actual_fps": 12.59,
+    "latency_ms": 50.46,
     "audio_behavior": "Non-blocking, hysteresis-dampened speech alerts dispatched cleanly",
     "observed_failures": "Transient track ID switches under rapid head pan; relative depth metric scaling variance at >4m",
     "ready_for_controlled_human_in_loop_demo": true

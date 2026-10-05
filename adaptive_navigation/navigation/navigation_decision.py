@@ -127,8 +127,8 @@ class NavigationEngine:
             # Accumulate lateral occupancy only for objects representing physical hazards or path obstructions
             is_spatial_hazard = (
                 is_blocking
-                or w_state in ("CAUTION", "WARNING", "CRITICAL")
-                or (p_state in ("INSIDE_PATH", "PARTIAL_PATH_OVERLAP") and r_score >= 0.50)
+                or w_state in ("WARNING", "CRITICAL")
+                or (p_state in ("INSIDE_PATH", "PARTIAL_PATH_OVERLAP") and r_score >= 0.50 and w_state != "NO_WARNING")
             )
             if is_spatial_hazard:
                 occ_weight = min(1.0, max(0.2, (spatial.size_norm[0] * 2.0) + (spatial.center_norm[1] * 0.5)))
@@ -159,7 +159,7 @@ class NavigationEngine:
         center_avail = (center_free >= 0.40 and len(blocking_tracks) == 0)
         right_avail = (right_free >= 0.45)
 
-        path_blocked = (len(blocking_tracks) > 0 or (center_free < 0.30 and len(spatial_objects) > 0))
+        path_blocked = (len(blocking_tracks) > 0 or (center_free < 0.30 and (len(critical_tracks) > 0 or any(w.state in ("WARNING", "CRITICAL") for w in warning_decisions.values()))))
 
         # 2. Determine raw candidate navigation state
         raw_state, safe_dir, raw_reason = self._determine_raw_state(
