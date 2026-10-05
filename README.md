@@ -115,6 +115,20 @@ The system provides 5 frozen configuration profiles:
 
 ---
 
+## 7. Model Weights & Deployment Engine Policy
+- **Tracked Canonical ONNX Models**:
+  - Detector: `models/deployment/yolo11n.onnx` (10.3 MB)
+  - Depth: `models/deployment/depth_anything_v2_vits.onnx` (94.38 MB)
+- **Local Compiled TensorRT Engines (Git-Excluded)**:
+  - Compiled TensorRT FP16 binaries (`yolo11n_fp16.engine` ~153.1 MB, `depth_anything_v2_vits_fp16.engine` ~118.2 MB) are hardware-specific binary engines that are excluded from Git repository tracking via `.gitignore`.
+  - When running `scripts/run/run_live_camera.py`, the system automatically loads local TensorRT FP16 engines if present on `cuda:0`, or falls back to ONNX Runtime CUDA FP16 execution seamlessly.
+  - To compile local TensorRT engines from source ONNX models, use ONNX Runtime TensorRT Execution Provider or `trtexec`:
+    ```powershell
+    trtexec --onnx=models/deployment/depth_anything_v2_vits.onnx --saveEngine=models/deployment/depth_anything_v2_vits_fp16.engine --fp16
+    ```
+
+---
+
 ## 8. Running the System (Exact Working Commands)
 
 ### 1. Final Research Prototype (Default)
