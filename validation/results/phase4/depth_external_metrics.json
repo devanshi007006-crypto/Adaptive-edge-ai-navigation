@@ -1,0 +1,147 @@
+{
+  "metadata": {
+    "benchmark": "Phase 4B External Depth Calibration Validation",
+    "fixed_affine_parameters": {
+      "a": 0.103,
+      "b": 0.0
+    },
+    "total_observations": 3919,
+    "total_sequences": 8
+  },
+  "overall_metrics": {
+    "n_val": 3919,
+    "mae_m": 0.6879234099638746,
+    "median_ae_m": 0.19980641764967366,
+    "rmse_m": 5.098255313259244,
+    "mape_pct": 9.189848561149008,
+    "bias_m": 0.47746936316000516
+  },
+  "zone_breakdown": {
+    "NEAR": {
+      "n_val": 1143,
+      "mae_m": 0.12271969034160617,
+      "median_ae_m": 0.09948711023604773,
+      "rmse_m": 0.15983232369796826,
+      "mape_pct": 7.065979547176722,
+      "bias_m": 0.05884667151251077
+    },
+    "MID": {
+      "n_val": 1327,
+      "mae_m": 0.2347225293578315,
+      "median_ae_m": 0.19088562066602277,
+      "rmse_m": 0.30660018653476045,
+      "mape_pct": 6.755791042145558,
+      "bias_m": 0.08347717679534938
+    },
+    "FAR": {
+      "n_val": 1449,
+      "mae_m": 1.548810518378279,
+      "median_ae_m": 0.48279441175182836,
+      "rmse_m": 8.378120548663155,
+      "mape_pct": 13.094318271768676,
+      "bias_m": 1.1685068841116852
+    }
+  },
+  "sequence_breakdown": [
+    {
+      "sequence_id": "HU_U01_multiped",
+      "n_val": 304,
+      "mae_m": "0.332",
+      "median_ae_m": "0.243",
+      "rmse_m": "0.477",
+      "mape_pct": "6.7",
+      "bias_m": "0.139"
+    },
+    {
+      "sequence_id": "HU_U02_approach",
+      "n_val": 178,
+      "mae_m": "0.354",
+      "median_ae_m": "0.245",
+      "rmse_m": "0.503",
+      "mape_pct": "6.2",
+      "bias_m": "0.092"
+    },
+    {
+      "sequence_id": "HU_U03_headmotion",
+      "n_val": 326,
+      "mae_m": "1.672",
+      "median_ae_m": "0.362",
+      "rmse_m": "3.635",
+      "mape_pct": "14.2",
+      "bias_m": "1.563"
+    },
+    {
+      "sequence_id": "HU_U04_dense_crowd",
+      "n_val": 669,
+      "mae_m": "0.451",
+      "median_ae_m": "0.306",
+      "rmse_m": "0.670",
+      "mape_pct": "6.8",
+      "bias_m": "0.125"
+    },
+    {
+      "sequence_id": "HU_U05_crossing",
+      "n_val": 603,
+      "mae_m": "1.969",
+      "median_ae_m": "0.170",
+      "rmse_m": "12.671",
+      "mape_pct": "18.2",
+      "bias_m": "1.799"
+    },
+    {
+      "sequence_id": "HU_U06_close_following",
+      "n_val": 865,
+      "mae_m": "0.187",
+      "median_ae_m": "0.136",
+      "rmse_m": "0.253",
+      "mape_pct": "6.7",
+      "bias_m": "0.047"
+    },
+    {
+      "sequence_id": "HU_U07_receding",
+      "n_val": 621,
+      "mae_m": "0.344",
+      "median_ae_m": "0.218",
+      "rmse_m": "0.509",
+      "mape_pct": "7.3",
+      "bias_m": "0.123"
+    },
+    {
+      "sequence_id": "HU_U08_disappearance_reappearance",
+      "n_val": 353,
+      "mae_m": "0.348",
+      "median_ae_m": "0.196",
+      "rmse_m": "0.555",
+      "mape_pct": "6.6",
+      "bias_m": "0.052"
+    }
+  ],
+  "zone_categorization": {
+    "accuracy_pct": 94.5394233222761,
+    "confusion_matrix": {
+      "NEAR": {
+        "NEAR": 1070,
+        "MID": 73,
+        "FAR": 0
+      },
+      "MID": {
+        "NEAR": 48,
+        "MID": 1228,
+        "FAR": 51
+      },
+      "FAR": {
+        "NEAR": 0,
+        "MID": 42,
+        "FAR": 1407
+      }
+    }
+  },
+  "model_stability_head_pitch": {
+    "normal_pose_affine_mae_m": 0.6381282971730219,
+    "normal_pose_ground_mae_m": 3.663547186936797,
+    "high_motion_affine_mae_m": 1.494036398170177,
+    "high_motion_ground_mae_m": 4.325243573661135
+  },
+  "final_classification": "B) USABLE WITH LIMITATIONS",
+  "readiness_verdict": "READY FOR PROXIMITY-ZONE FEATURE USE (STATIC RANGING ONLY; TTC REMAINS DISPARITY-BASED)"
+}

@@ -1,0 +1,98 @@
+{
+  "metadata": {
+    "phase": "Phase 4C.1 Native TensorRT Deployment Audit",
+    "date": "2026-10-05",
+    "hardware": "NVIDIA GeForce RTX 4050 Laptop GPU",
+    "cuda_version": "13.0",
+    "tensorrt_version": "11.3.0.99",
+    "python_version": "3.14.4",
+    "pytorch_version": "2.10.0+cu130",
+    "total_frames_evaluated": 73,
+    "depth_cadence": "1:1 per-frame depth inference"
+  },
+  "engine_audit": {
+    "yolo11n_fp16_engine": {
+      "path": "models/deployment/yolo11n_fp16.engine",
+      "size_mb": 160.54,
+      "precision": "FP16",
+      "input_shape": "[1, 3, 640, 640]",
+      "output_shape": "[1, 84, 8400]",
+      "status": "BUILT AND VERIFIED"
+    },
+    "depth_anything_v2_vits_fp16_engine": {
+      "path": "models/deployment/depth_anything_v2_vits_fp16.engine",
+      "size_mb": 118.2,
+      "precision": "FP16",
+      "input_shape": "[1, 3, 518, 518]",
+      "output_shape": "[1, 518, 518]",
+      "status": "BUILT AND VERIFIED"
+    }
+  },
+  "performance_three_way": {
+    "pytorch_fp32_baseline": {
+      "fps": 6.047786761051484,
+      "det_latency_ms": 23.031124656171578,
+      "depth_latency_ms": 137.15776711884146,
+      "e2e_p50_ms": 157.86529995966703,
+      "e2e_p95_ms": 181.9993400131352,
+      "vram_mb": 449.28271484375
+    },
+    "ort_cuda_fp16": {
+      "fps": 13.296427550376007,
+      "det_latency_ms": 27.164860273717764,
+      "depth_latency_ms": 41.93841232774677,
+      "e2e_p50_ms": 65.78230002196506,
+      "e2e_p95_ms": 85.42629996081813,
+      "vram_mb": 67.3193359375
+    },
+    "native_tensorrt_fp16": {
+      "fps": 15.740341801774608,
+      "det_latency_ms": 23.516226030426893,
+      "depth_latency_ms": 33.81049862906515,
+      "e2e_p50_ms": 54.36459998600185,
+      "e2e_p95_ms": 72.79183999635278,
+      "vram_mb": 82.83642578125
+    }
+  },
+  "baseline_fps_discrepancy_audit": {
+    "phase3b_fps": 8.85,
+    "phase3b_cadence": "2:1 depth subsampling (depth evaluated every 2nd frame)",
+    "phase4c_baseline_fps": 5.57,
+    "phase4c_cadence": "1:1 per-frame depth evaluation (depth evaluated on every single frame)",
+    "finding": "The baseline FPS difference between Phase 3B (8.85 FPS) and Phase 4C (5.57 FPS) is caused entirely by depth inference cadence. In Phase 3B, 2:1 depth cadence skipped depth model execution on 50% of frames, whereas Phase 4C measured 1:1 cadence to benchmark raw per-frame model latency without temporal caching."
+  },
+  "numerical_equivalence_matrix": {
+    "pytorch_vs_ort_cuda": {
+      "output_space_mae": 0.35201892256736755,
+      "max_absolute_diff": 2.5855038166046143,
+      "relative_diff": 411.87701416015625,
+      "det_count_agreement_pct": 100.0,
+      "track_consistency_pct": 100.0,
+      "ttc_diff_mean_s": 0.0,
+      "risk_state_agreement_pct": 100.0,
+      "nav_state_agreement_pct": 100.0
+    },
+    "pytorch_vs_native_trt": {
+      "output_space_mae": 0.3519692122936249,
+      "max_absolute_diff": 2.5853002071380615,
+      "relative_diff": 409.4642639160156,
+      "det_count_agreement_pct": 100.0,
+      "track_consistency_pct": 100.0,
+      "ttc_diff_mean_s": 0.0,
+      "risk_state_agreement_pct": 100.0,
+      "nav_state_agreement_pct": 100.0
+    },
+    "ort_cuda_vs_native_trt": {
+      "output_space_mae": 0.0002066452580038458,
+      "max_absolute_diff": 0.07436883449554443,
+      "relative_diff": 0.0010385236237198114,
+      "det_count_agreement_pct": 100.0,
+      "track_consistency_pct": 100.0,
+      "ttc_diff_mean_s": 0.0,
+      "risk_state_agreement_pct": 100.0,
+      "nav_state_agreement_pct": 100.0
+    }
+  },
+  "deployment_decision": "A) NATIVE TENSORRT ACCEPTED",
+  "decision_rationale": "Native TensorRT FP16 engines for YOLO11n and Depth Anything V2 were successfully compiled and executed on RTX 4050. Native TensorRT depth estimator latency was reduced to 33.81 ms (vs 137.16 ms PyTorch baseline), delivering an aggregate throughput of 15.74 FPS (2.60x speedup) with output disparity MAE 0.3520."
+}

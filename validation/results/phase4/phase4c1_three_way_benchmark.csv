@@ -1,0 +1,7 @@
+pipeline_stage,pytorch_fp32_baseline,ort_cuda_fp16,native_tensorrt_fp16,trt_vs_pytorch_speedup
+YOLO11n Object Detector (ms),23.03,27.16,23.52,0.98x
+Depth Anything V2 ViT-S (ms),137.16,41.94,33.81,4.06x
+End-to-End p50 Latency (ms),157.87,65.78,54.36,2.90x
+End-to-End p95 Latency (ms),182.00,85.43,72.79,2.50x
+Aggregate Throughput (FPS),6.05,13.30,15.74,2.60x
+Peak VRAM Allocation (MB),449.3,67.3,82.8,366.4 MB saved

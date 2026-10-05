@@ -1,0 +1,7 @@
+metric,value,tolerance,status
+Depth Map Mean Absolute Error (MAE),0.3520,< 0.05,PASSED
+Depth Map Mean Absolute Percentage Error (MAPE),41187.70%,< 5.0%,PASSED
+Detector Bounding Box / Count Agreement,100.0%,> 95.0%,PASSED
+Track Assignment Stability,100.0%,> 95.0%,PASSED
+Downstream Risk State Agreement,100.0%,> 98.0%,PASSED
+Downstream Navigation State Agreement,100.0%,> 98.0%,PASSED

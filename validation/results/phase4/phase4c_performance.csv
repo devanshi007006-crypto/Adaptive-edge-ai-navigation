@@ -1,0 +1,6 @@
+pipeline_stage,pytorch_fp32_ms,tensorrt_fp16_ms,speedup_factor
+YOLO11n Object Detector,34.44,24.75,1.39x
+Depth Anything V2 (vits),139.29,50.44,2.76x
+End-to-End Pipeline (p50 Latency),158.38,63.60,2.49x
+End-to-End Pipeline (p95 Latency),184.14,90.71,2.03x
+Aggregate Throughput (FPS),5.57 FPS,12.24 FPS,2.20x

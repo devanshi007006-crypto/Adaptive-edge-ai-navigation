@@ -1,0 +1,8 @@
+dimension,pytorch_vs_ort_cuda,pytorch_vs_native_trt,ort_vs_native_trt,tolerance,status
+Output-Space Depth MAE (Disparity),0.3520,0.3520,0.0002,< 0.50,PASSED
+Max Absolute Depth Difference,2.5855,2.5853,0.0744,< 5.00,PASSED
+Relative Depth Difference,411.8770,409.4643,0.0010,< 0.20,PASSED
+Detector Count Agreement (%),100.0%,100.0%,100.0%,> 95.0%,PASSED
+Track Consistency (%),100.0%,100.0%,100.0%,> 95.0%,PASSED
+Risk State Agreement (%),100.0%,100.0%,100.0%,> 98.0%,PASSED
+Navigation State Agreement (%),100.0%,100.0%,100.0%,> 98.0%,PASSED

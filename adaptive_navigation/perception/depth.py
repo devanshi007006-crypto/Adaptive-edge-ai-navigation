@@ -114,7 +114,36 @@ class DepthAnythingV2Estimator(DepthEstimatorInterface):
                 f"Please ensure official checkpoint is placed in models/depth/ (e.g. depth_anything_v2_vits.pth)."
             )
 
-        print(f"[DepthAnythingV2Estimator] Loading '{self.model_type}' model from '{p}' onto '{self.resolved_device}'...")
+        if p.suffix == ".engine":
+            print(f"[DepthAnythingV2Estimator] Loading Native TensorRT FP16 Engine from '{p}' onto '{self.resolved_device}'...")
+            import tensorrt as trt
+
+            class NativeTRTDepthWrapper:
+                def __init__(self, engine_path):
+                    self.logger = trt.Logger(trt.Logger.WARNING)
+                    self.runtime = trt.Runtime(self.logger)
+                    with open(engine_path, "rb") as f:
+                        self.engine = self.runtime.deserialize_cuda_engine(f.read())
+                    self.context = self.engine.create_execution_context()
+                    self.stream = torch.cuda.Stream()
+
+                def infer(self, img_gpu):
+                    self.context.set_input_shape("input", img_gpu.shape)
+                    self.context.set_tensor_address("input", img_gpu.data_ptr())
+                    out_tensor = torch.empty((1, 518, 518), dtype=torch.float32, device="cuda:0")
+                    self.context.set_tensor_address("output", out_tensor.data_ptr())
+                    self.context.execute_async_v3(self.stream.cuda_stream)
+                    self.stream.synchronize()
+                    return out_tensor
+
+            self.trt_engine = NativeTRTDepthWrapper(str(p))
+            self.use_trt = True
+            self.model = None
+            print(f"[DepthAnythingV2Estimator] Native TensorRT Engine Loaded Successfully. Metric Depth: {self.is_metric}")
+            return
+
+        self.use_trt = False
+        print(f"[DepthAnythingV2Estimator] Loading '{self.model_type}' PyTorch model from '{p}' onto '{self.resolved_device}'...")
         config = self.MODEL_CONFIGS[self.model_type]
         self.model = DepthAnythingV2(**config)
 
@@ -126,7 +155,7 @@ class DepthAnythingV2Estimator(DepthEstimatorInterface):
 
     def estimate_depth(self, frame: np.ndarray, timestamp: float) -> DepthResult:
         """Estimates full-frame depth map with spatial dimensions matching the input frame."""
-        if self.model is None:
+        if not getattr(self, "use_trt", False) and self.model is None:
             raise RuntimeError("ERROR: Depth model is not loaded.")
 
         if frame is None or not isinstance(frame, np.ndarray) or frame.size == 0:
@@ -137,9 +166,14 @@ class DepthAnythingV2Estimator(DepthEstimatorInterface):
         t_start = time.perf_counter()
 
         try:
-            with torch.no_grad():
-                # infer_image takes BGR frame (numpy uint8) and returns 2D float32 depth map of shape (h, w)
-                depth_map = self.model.infer_image(frame, input_size=self.input_size)
+            if getattr(self, "use_trt", False):
+                img_in = cv2.resize(frame, (self.input_size, self.input_size)).astype(np.float32) / 255.0
+                img_gpu = torch.from_numpy(img_in).permute(2, 0, 1).unsqueeze(0).cuda().contiguous()
+                out_gpu = self.trt_engine.infer(img_gpu)
+                depth_map = cv2.resize(out_gpu.squeeze().cpu().numpy(), (w, h))
+            else:
+                with torch.no_grad():
+                    depth_map = self.model.infer_image(frame, input_size=self.input_size)
         except Exception as e:
             print(f"ERROR during Depth Anything V2 inference: {e}")
             depth_map = np.zeros((h, w), dtype=np.float32)

@@ -1,0 +1,9 @@
+sequence_id,min_delta_id,max_delta_id,mean_delta_id,median_delta_id,effective_sampling_fps,old_valid_ttc,new_valid_ttc,old_min_ttc_s,new_min_ttc_s,old_median_ttc_s,new_median_ttc_s,old_p95_ttc_s,new_p95_ttc_s,old_approaching,new_approaching,old_receding,new_receding,old_warn_transitions,new_warn_transitions
+HU_U01_multiped,1,6,1.64,1.0,18.31,170,163,1.24,1.24,4.29,6.26,30.00,30.00,74,80,78,69,3,1
+HU_U02_approach,1,5,1.48,1.0,20.34,125,116,2.30,2.85,3.84,5.20,16.48,21.45,98,90,9,18,1,5
+HU_U03_headmotion,1,6,1.61,1.0,18.66,199,188,0.28,0.45,2.05,2.90,8.72,11.84,113,98,44,54,2,3
+HU_U04_dense_crowd,1,8,1.70,1.0,17.61,256,197,0.65,0.93,3.67,6.24,22.41,30.00,225,177,245,318,9,5
+HU_U05_crossing,1,5,1.61,1.0,18.60,384,362,0.27,0.27,3.99,6.13,29.95,30.00,320,352,95,98,7,8
+HU_U06_close_following,1,6,1.81,1.0,16.60,429,416,0.35,0.61,6.12,9.99,29.05,30.00,281,274,258,245,8,7
+HU_U07_receding,1,6,1.57,1.0,19.13,462,463,0.41,0.41,2.67,4.09,13.71,19.54,354,349,76,72,2,8
+HU_U08_disappearance_reappearance,1,8,1.77,1.0,16.90,233,234,0.36,0.70,1.44,2.58,7.99,9.99,203,199,66,59,5,4

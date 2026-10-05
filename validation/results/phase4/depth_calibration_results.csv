@@ -1,0 +1,5 @@
+model,params,rmse_m,mae_m,mape_pct,delta1_pct
+Model A (Direct Inverse),"s=9.731, k=0.000",0.448,0.321,9.0,97.0
+Model B (Affine Inverse),"a=0.103, b=0.000",0.448,0.321,9.0,97.0
+Model C (Ground Geometry),"H=1.51m, theta=2.97deg",0.060,0.033,0.6,100.0
+Model D (Power Law),"c0=9.982, c1=-1.063",0.427,0.282,6.7,98.9

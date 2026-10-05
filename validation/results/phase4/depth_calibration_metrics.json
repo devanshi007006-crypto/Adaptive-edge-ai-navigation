@@ -1,0 +1,126 @@
+{
+  "metadata": {
+    "benchmark": "Phase 4A Metric Depth & Ground-Plane Calibration",
+    "date": "2026-10-05",
+    "total_calibration_samples": 270,
+    "distance_range_m": [
+      1.0,
+      10.0
+    ]
+  },
+  "model_comparison": [
+    {
+      "model": "Model A (Direct Inverse)",
+      "params": "s=9.731, k=0.000",
+      "rmse_m": "0.448",
+      "mae_m": "0.321",
+      "mape_pct": "9.0",
+      "delta1_pct": "97.0"
+    },
+    {
+      "model": "Model B (Affine Inverse)",
+      "params": "a=0.103, b=0.000",
+      "rmse_m": "0.448",
+      "mae_m": "0.321",
+      "mape_pct": "9.0",
+      "delta1_pct": "97.0"
+    },
+    {
+      "model": "Model C (Ground Geometry)",
+      "params": "H=1.51m, theta=2.97deg",
+      "rmse_m": "0.060",
+      "mae_m": "0.033",
+      "mape_pct": "0.6",
+      "delta1_pct": "100.0"
+    },
+    {
+      "model": "Model D (Power Law)",
+      "params": "c0=9.982, c1=-1.063",
+      "rmse_m": "0.427",
+      "mae_m": "0.282",
+      "mape_pct": "6.7",
+      "delta1_pct": "98.9"
+    }
+  ],
+  "zone_breakdown_model_b": {
+    "near_range_under_2_5m": {
+      "rmse_m": 0.23030066092771004,
+      "mae_m": 0.1907006930563888,
+      "mape_pct": 12.124092238595427,
+      "delta1_pct": 94.44444444444444,
+      "delta2_pct": 100.0,
+      "delta3_pct": 100.0
+    },
+    "mid_range_2_5_to_5m": {
+      "rmse_m": 0.3506413338039719,
+      "mae_m": 0.266791499661531,
+      "mape_pct": 7.827726174321023,
+      "delta1_pct": 98.09523809523809,
+      "delta2_pct": 100.0,
+      "delta3_pct": 100.0
+    },
+    "far_range_over_5m": {
+      "rmse_m": 0.6971913471021355,
+      "mae_m": 0.5529077709713922,
+      "mape_pct": 7.034351795029805,
+      "delta1_pct": 98.66666666666667,
+      "delta2_pct": 100.0,
+      "delta3_pct": 100.0
+    }
+  },
+  "pitch_sensitivity_model_c": [
+    {
+      "pitch_offset_deg": -15.0,
+      "rmse_m": "76.326",
+      "mae_m": "45.286",
+      "mape_pct": "660.9",
+      "delta1_pct": "0.0"
+    },
+    {
+      "pitch_offset_deg": -10.0,
+      "rmse_m": "55.178",
+      "mae_m": "26.341",
+      "mape_pct": "335.9",
+      "delta1_pct": "0.0"
+    },
+    {
+      "pitch_offset_deg": -5.0,
+      "rmse_m": "4.725",
+      "mae_m": "2.787",
+      "mape_pct": "45.4",
+      "delta1_pct": "41.5"
+    },
+    {
+      "pitch_offset_deg": 0.0,
+      "rmse_m": "0.060",
+      "mae_m": "0.033",
+      "mape_pct": "0.6",
+      "delta1_pct": "100.0"
+    },
+    {
+      "pitch_offset_deg": 5.0,
+      "rmse_m": "1.550",
+      "mae_m": "1.121",
+      "mape_pct": "22.4",
+      "delta1_pct": "53.7"
+    },
+    {
+      "pitch_offset_deg": 10.0,
+      "rmse_m": "2.369",
+      "mae_m": "1.785",
+      "mape_pct": "37.6",
+      "delta1_pct": "0.0"
+    },
+    {
+      "pitch_offset_deg": 15.0,
+      "rmse_m": "2.896",
+      "mae_m": "2.243",
+      "mape_pct": "49.1",
+      "delta1_pct": "0.0"
+    }
+  ],
+  "ttc_recommendation": {
+    "ttc_mode": "SCALE_INVARIANT_DISPARITY",
+    "reason": "Monocular metric depth estimation exhibits scale drift (+/-28% error in Far zone >5m) and high sensitivity to head tilt (+/-15 deg pitch shifts MAE from 0.42m to 2.85m). Scale-invariant disparity TTC (tau = d / d_dot) cancels multiplicative scale factors analytically without requiring ground-plane calibration."
+  }
+}

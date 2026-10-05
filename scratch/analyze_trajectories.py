@@ -26,7 +26,6 @@ def analyze_split(split):
                 pass
                 
     # Load trajectories
-    # row[2] is coordinates string: e.g. [[agent_id, x, y, z], ...]
     agent_tracks = defaultdict(list) # agent_id -> [(fid, x, y, z)]
     frame_agents = defaultdict(list) # fid -> [agent_id]
     
@@ -34,38 +33,53 @@ def analyze_split(split):
         r = csv.reader(f)
         next(r)
         for row in r:
-            try:
-                fid = int(row[1].strip('"'))
-                coords = ast.literal_eval(row[2])
-                for item in coords:
-                    aid = int(item[0])
-                    x, y, z = float(item[1]), float(item[2]), float(item[3])
-                    agent_tracks[aid].append((fid, x, y, z))
-                    frame_agents[fid].append(aid)
-            except Exception:
-                pass
+            if len(row) > 2 and row[2].strip() not in ('[]', ''):
+                try:
+                    fid = int(row[1].strip('"'))
+                    coords = ast.literal_eval(row[2])
+                    for item in coords:
+                        aid = int(item['id'])
+                        x, y, z = float(item['x']), float(item['y']), float(item['z'])
+                        agent_tracks[aid].append((fid, x, y, z))
+                        frame_agents[fid].append(aid)
+                except Exception as e:
+                    pass
                 
     print(f"\n=== {split.upper()} STATS ===")
-    print(f"Total agents: {len(agent_tracks)}, frames with pedestrians: {len(frame_agents)}")
+    print(f"Total distinct agents: {len(agent_tracks)}, frames with pedestrians: {len(frame_agents)}")
     
     # Sort agents by track length
     long_tracks = []
     for aid, track in agent_tracks.items():
-        if len(track) >= 50:
+        if len(track) >= 30:
             fids = [p[0] for p in track]
-            # check continuity: are fids mostly contiguous?
             span = max(fids) - min(fids) + 1
             z_start = track[0][3]
             z_end = track[-1][3]
-            dz = z_end - z_start
-            long_tracks.append((aid, len(track), min(fids), max(fids), span, z_start, z_end, dz))
+            x_start = track[0][1]
+            x_end = track[-1][1]
+            y_start = track[0][2]
+            y_end = track[-1][2]
+            # In camera frame, distance is sqrt(x^2 + y^2 + z^2)
+            d_start = np.sqrt(x_start**2 + y_start**2 + z_start**2)
+            d_end = np.sqrt(x_end**2 + y_end**2 + z_end**2)
+            dd = d_end - d_start
+            dx = x_end - x_start
+            long_tracks.append((aid, len(track), min(fids), max(fids), span, d_start, d_end, dd, dx))
             
     long_tracks.sort(key=lambda x: x[1], reverse=True)
-    print(f"Tracks >= 50 frames: {len(long_tracks)}")
-    for t in long_tracks[:15]:
-        aid, length, f_min, f_max, span, z_start, z_end, dz = t
-        motion = "APPROACHING" if dz < -1.0 else ("RECEDING" if dz > 1.0 else "STATIONARY/LATERAL")
-        print(f"  Agent {aid:3d}: len={length:4d}, frames={f_min:5d}-{f_max:5d} (span={span:4d}), z={z_start:4.1f}->{z_end:4.1f} ({motion})")
+    print(f"Tracks >= 30 frames: {len(long_tracks)}")
+    for t in long_tracks[:20]:
+        aid, length, f_min, f_max, span, d_start, d_end, dd, dx = t
+        if dd < -1.5:
+            motion = "APPROACHING"
+        elif dd > 1.5:
+            motion = "RECEDING"
+        elif abs(dx) > 1.5:
+            motion = "CROSSING/LATERAL"
+        else:
+            motion = "STATIC/STABLE"
+        print(f"  Agent {aid:3d}: len={length:4d}, frames={f_min:5d}-{f_max:5d} (span={span:4d}), dist={d_start:4.1f}->{d_end:4.1f}m ({motion})")
 
 for s in ["easy", "hard", "unconstrained"]:
     analyze_split(s)

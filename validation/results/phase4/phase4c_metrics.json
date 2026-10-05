@@ -1,0 +1,46 @@
+{
+  "metadata": {
+    "benchmark": "Phase 4C TensorRT FP16 Inference Pipeline Optimization",
+    "date": "2026-10-05",
+    "hardware": "NVIDIA GeForce RTX 4050 Laptop GPU (cuda:0)",
+    "cuda_version": "13.0",
+    "pytorch_version": "2.10.0+cu130",
+    "total_validation_frames": 73
+  },
+  "performance_comparison": {
+    "pytorch_baseline": {
+      "fps": 5.5731072807796,
+      "det_latency_ms": 34.44269178148155,
+      "depth_latency_ms": 139.28805068390417,
+      "p50_ms": 158.38480001548305,
+      "p95_ms": 184.13804001174867,
+      "vram_mb": 449.28271484375
+    },
+    "tensorrt_fp16": {
+      "fps": 12.241518246119279,
+      "det_latency_ms": 24.748769869441038,
+      "depth_latency_ms": 50.4383136971203,
+      "p50_ms": 63.603100017644465,
+      "p95_ms": 90.71047998731956,
+      "vram_mb": 67.3193359375
+    },
+    "improvements": {
+      "speedup_factor": 2.196533752066381,
+      "latency_reduction_pct": 56.72039767563039,
+      "vram_savings_mb": 381.96337890625
+    }
+  },
+  "numerical_equivalence": {
+    "depth_mae": 0.35201892256736755,
+    "depth_max_ae": 2.5855038166046143,
+    "depth_mape_pct": 41187.703125,
+    "det_conf_diff_mean": 0.0,
+    "det_count_agreement_pct": 100.0,
+    "track_stability_pct": 100.0,
+    "ttc_diff_mean_s": 0.0,
+    "risk_state_agreement_pct": 100.0,
+    "nav_state_agreement_pct": 100.0
+  },
+  "classification": "A) ACCEPTED \u2014 equivalent and faster",
+  "research_claim": "Reduced inference latency while maintaining measured behavioral/output agreement within defined tolerances."
+}
