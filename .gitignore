@@ -22,9 +22,11 @@ models/depth/*.pth
 models/depth/*.pt
 models/depth/*.onnx
 models/deployment/*.engine
+models/deployment/*.onnx
 *.pth
 *.pt
 *.engine
+*.onnx
 scratch/
 
 # Evaluation logs and temp results
