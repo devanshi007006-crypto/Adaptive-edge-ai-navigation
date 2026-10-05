@@ -235,6 +235,8 @@ The canonical feed-forward perception and decision pipeline operates through 15 
 | `scripts/tools/resume_heads_up_unconstrained.py`| Tool | Resumable chunk downloader with retry logic (reads `HF_TOKEN`) | `urllib` | Researchers | **ACTIVE** |
 | `scripts/tools/finalize_heads_up_sequences.py`| Tool | Prunes placeholder frames & compiles sequence MP4 videos | `cv2`, `json` | Pipeline | **ACTIVE** |
 | `scripts/run/run_pipeline.py`| Runner | Convenience wrapper for root `main.py` | `main.py` | CLI Users | **ACTIVE** |
+| `scripts/run/run_live_camera.py`| Runner | Live camera prototype runner (Native TRT FP16) | `main.py` | Phase 5 | **ACTIVE** |
+| `scripts/run/run_demo_control_center.py`| Demo GUI | Phase 5.1 Desktop Control Center GUI (S01–S06 runner) | `run_live_camera.py`| Phase 5.1 | **ACTIVE** |
 | `scripts/run/run_phase2a_validation.py`| Runner | Phase 2A automated execution runner across 5 videos | `main.py` | Phase 2A | **ACTIVE** |
 | `scripts/run/run_phase2b_validation.py`| Runner | Phase 2B automated execution runner across 5 videos | `main.py` | Phase 2B | **ACTIVE** |
 | `scripts/run/run_phase2c_validation.py`| Runner | Phase 2C automated execution runner (2:1 cadence & ego-motion) | `main.py` | Phase 2C | **ACTIVE** |

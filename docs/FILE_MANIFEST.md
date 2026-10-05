@@ -73,6 +73,7 @@
 
 | File Path | Category | Purpose | Status | Owner Area | Notes |
 | :--- | :--- | :--- | :---: | :--- | :--- |
+| `scripts/run/run_demo_control_center.py` | Demo GUI | Desktop Control Center GUI (S01–S06 runner) | **ACTIVE** | Execution | Tkinter + OpenCV + Telemetry Log |
 | `scripts/run/run_live_camera.py` | Live Runner | Interactive live webcam navigation prototype | **ACTIVE** | Execution | Webcam 0, TensorRT Depth, TTS |
 | `scripts/run/run_pipeline.py` | Pipeline Runner | Main pipeline wrapper | **ACTIVE** | Execution | Root CLI helper |
 | `scripts/run/run_phase2a_validation.py` | Benchmark | Phase 2A baseline real GPU runner | **ACTIVE** | Validation | 5 videos (5,235 frames) |
