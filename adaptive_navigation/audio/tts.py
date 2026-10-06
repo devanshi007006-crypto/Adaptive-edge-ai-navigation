@@ -40,11 +40,14 @@ class TTSEngine:
         self.backend_choice = audio_cfg.get("backend", "auto").lower()
         self.language = audio_cfg.get("language", "en")
         self.volume = float(audio_cfg.get("volume", 1.0))
+        self.rate = int(audio_cfg.get("rate", 180))
         self.allow_interrupt = bool(audio_cfg.get("allow_priority_interrupt", True))
         self.max_queue_size = int(audio_cfg.get("max_queue_size", 2))
 
         self.active_backend: str = "none"
         self.audio_available: bool = False
+        self.last_error: str = ""
+        self.selected_voice: str = "Default"
         self._pyttsx3_engine = None
 
         # Thread-safe queue and worker
@@ -55,26 +58,44 @@ class TTSEngine:
         self._worker_thread: Optional[threading.Thread] = None
 
         if self.enabled:
-            self._initialize_backend()
             self._start_worker()
 
-    def _initialize_backend(self) -> None:
-        """Select and initialize the chosen speech backend."""
-        # 1. Try pyttsx3
+    def _start_worker(self) -> None:
+        """Starts background speech worker thread."""
+        self._worker_thread = threading.Thread(target=self._worker_loop, daemon=True)
+        self._worker_thread.start()
+
+    def _worker_loop(self) -> None:
+        """Worker loop processing prioritized speech utterances inside worker thread."""
+        # 1. Initialize COM on worker thread (Windows SAPI5 requirement)
+        try:
+            import pythoncom
+            pythoncom.CoInitialize()
+        except Exception:
+            pass
+
+        # 2. Initialize Backend inside worker thread context
         if self.backend_choice in ("auto", "pyttsx3"):
             try:
                 import pyttsx3
-                self._pyttsx3_engine = pyttsx3.init()
-                self._pyttsx3_engine.setProperty("volume", self.volume)
+                engine = pyttsx3.init()
+                engine.setProperty("volume", self.volume)
+                engine.setProperty("rate", self.rate)
+                voices = engine.getProperty("voices")
+                if voices:
+                    # Select first available English voice safely
+                    eng_voice = next((v for v in voices if "EN" in v.id.upper() or "ENGLISH" in v.name.upper()), voices[0])
+                    engine.setProperty("voice", eng_voice.id)
+                    self.selected_voice = eng_voice.name
+                self._pyttsx3_engine = engine
                 self.active_backend = "pyttsx3"
                 self.audio_available = True
-                logger.info("[TTSEngine] Initialized offline pyttsx3 backend.")
-                return
+                logger.info(f"[TTSEngine] Worker thread initialized pyttsx3 backend (Voice: {self.selected_voice}).")
             except Exception as e:
-                logger.warning(f"[TTSEngine] pyttsx3 init failed: {e}")
+                logger.warning(f"[TTSEngine] pyttsx3 init in worker thread failed: {e}")
+                self.last_error = str(e)
 
-        # 2. Try PowerShell System.Speech (Windows native)
-        if self.backend_choice in ("auto", "powershell"):
+        if not self.audio_available and self.backend_choice in ("auto", "powershell"):
             try:
                 res = subprocess.run(
                     ["powershell", "-NoProfile", "-Command", "Add-Type -AssemblyName System.Speech; Write-Output 'OK'"],
@@ -83,23 +104,19 @@ class TTSEngine:
                 if "OK" in res.stdout:
                     self.active_backend = "powershell"
                     self.audio_available = True
+                    self.selected_voice = "Windows System.Speech (PowerShell)"
                     logger.info("[TTSEngine] Initialized Windows System.Speech PowerShell backend.")
-                    return
             except Exception as e:
                 logger.warning(f"[TTSEngine] PowerShell System.Speech init failed: {e}")
+                self.last_error = str(e)
 
-        # 3. Fallback to dummy
-        self.active_backend = "dummy"
-        self.audio_available = True
-        logger.info("[TTSEngine] Fallback to dummy non-blocking audio backend.")
+        if not self.audio_available:
+            self.active_backend = "dummy"
+            self.audio_available = True
+            self.selected_voice = "Dummy Silent Fallback"
+            logger.info("[TTSEngine] Fallback to dummy non-blocking audio backend.")
 
-    def _start_worker(self) -> None:
-        """Starts background speech worker thread."""
-        self._worker_thread = threading.Thread(target=self._worker_loop, daemon=True)
-        self._worker_thread.start()
-
-    def _worker_loop(self) -> None:
-        """Worker loop processing prioritized speech utterances."""
+        # Main speech processing loop
         while not self._stop_event.is_set():
             try:
                 priority_item = self._speech_queue.get(timeout=0.2)
@@ -118,11 +135,25 @@ class TTSEngine:
                 continue
             except Exception as e:
                 logger.error(f"[TTSEngine] Error in speech worker: {e}")
+                self.last_error = str(e)
                 self._is_speaking = False
                 self._current_priority = 0
 
+        # Cleanup COM on worker thread termination
+        if self._pyttsx3_engine is not None:
+            try:
+                self._pyttsx3_engine.stop()
+            except Exception:
+                pass
+
+        try:
+            import pythoncom
+            pythoncom.CoUninitialize()
+        except Exception:
+            pass
+
     def _execute_speech(self, text: str) -> None:
-        """Executes speech using active backend."""
+        """Executes speech using active backend inside worker thread."""
         if not text or not self.audio_available:
             return
 
@@ -132,7 +163,8 @@ class TTSEngine:
                 self._pyttsx3_engine.runAndWait()
 
             elif self.active_backend == "powershell":
-                ps_cmd = f'Add-Type -AssemblyName System.Speech; $s = New-Object System.Speech.Synthesis.SpeechSynthesizer; $s.Speak("{text}")'
+                vol_int = int(self.volume * 100)
+                ps_cmd = f'Add-Type -AssemblyName System.Speech; $s = New-Object System.Speech.Synthesis.SpeechSynthesizer; $s.Volume = {vol_int}; $s.Speak("{text}")'
                 subprocess.run(
                     ["powershell", "-NoProfile", "-Command", ps_cmd],
                     capture_output=True, timeout=5.0
@@ -143,21 +175,31 @@ class TTSEngine:
 
         except Exception as e:
             logger.error(f"[TTSEngine] Speech execution failed: {e}")
+            self.last_error = str(e)
 
     def speak(self, text: str, priority: str = "MEDIUM") -> bool:
         """
         Dispatches an utterance to be spoken asynchronously.
-        Higher priority warnings may interrupt lower-priority ongoing speech.
+        Higher priority warnings interrupt lower-priority ongoing speech and flush obsolete items.
         """
         if not self.enabled or not self.audio_available or not text:
             return False
 
         prio_val = self.PRIORITY_LEVELS.get(priority.upper(), 2)
 
-        # Check interruption
-        if self._is_speaking and self.allow_interrupt:
-            if prio_val > self._current_priority:
-                self.stop()
+        # Single Active Queue Policy: Higher priority flushes lower priority queued items
+        if prio_val > self._current_priority:
+            while not self._speech_queue.empty():
+                try:
+                    self._speech_queue.get_nowait()
+                    self._speech_queue.task_done()
+                except queue.Empty:
+                    break
+            if self.allow_interrupt and self.active_backend == "pyttsx3" and self._pyttsx3_engine:
+                try:
+                    self._pyttsx3_engine.stop()
+                except Exception:
+                    pass
 
         # Manage queue overflow
         if self._speech_queue.full():
@@ -182,6 +224,18 @@ class TTSEngine:
     def is_speaking(self) -> bool:
         """Returns True if an utterance is actively being spoken or queued."""
         return self._is_speaking or not self._speech_queue.empty()
+
+    def get_status_text(self) -> str:
+        """Returns current high-level status string for GUI indicators."""
+        if self.last_error:
+            return f"ERROR ({self.last_error[:20]})"
+        if not self.audio_available:
+            return "DISABLED"
+        if self._is_speaking:
+            return "SPEAKING"
+        if not self._speech_queue.empty():
+            return "QUEUED"
+        return "READY"
 
     def stop(self) -> None:
         """Stops current speech and clears pending queue."""

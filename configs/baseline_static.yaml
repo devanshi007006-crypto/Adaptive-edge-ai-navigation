@@ -1,0 +1,53 @@
+system:
+  version: v1.4.0-baseline-static
+  mode: baseline
+  device: auto
+  debug: false
+  random_seed: 42
+  log_level: INFO
+  headless: false
+camera:
+  source: 0
+  width: 640
+  height: 480
+  fps: 30
+detector:
+  model: yolo11n.pt
+  confidence_threshold: 0.28
+  iou_threshold: 0.45
+  image_size: 640
+  device: auto
+  precision: fp16
+  max_detections: 15
+tracker:
+  enabled: false
+depth:
+  enabled: true
+  cadence_strategy: full
+  model_type: vits
+  checkpoint: models/depth/depth_anything_v2_vits.pth
+  input_size: 518
+  precision: fp16
+  is_metric: true
+  object_statistic: median
+temporal:
+  enabled: false
+camera_motion:
+  enabled: false
+ttc:
+  enabled: false
+risk:
+  enabled: false
+  static_proximity:
+    critical_distance: 1.5
+    caution_distance: 3.0
+warning:
+  enabled: true
+  minimum_persistence_frames: 1
+navigation:
+  enabled: false
+audio:
+  enabled: true
+  backend: auto
+  volume: 1.0
+  rate: 175

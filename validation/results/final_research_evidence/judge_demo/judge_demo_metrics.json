@@ -1,0 +1,11 @@
+{
+  "prototype": "Adaptive Edge-AI Navigation System",
+  "version": "v1.4.0-final",
+  "primary_detector": "YOLO26n",
+  "depth_engine": "Depth Anything V2 (Native TensorRT FP16 Engine)",
+  "mean_fps": 17.68,
+  "mean_latency_ms": 50.13,
+  "false_warning_reduction_pct": 100.0,
+  "unnecessary_stop_elimination_pct": 100.0,
+  "unit_tests_passing": "17/17"
+}

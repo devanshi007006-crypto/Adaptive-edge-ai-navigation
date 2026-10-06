@@ -441,6 +441,10 @@ class WarningStateMachine:
         self.enabled = bool(self.config.get("enabled", True))
         self.trackers: Dict[int, TrackWarningTracker] = {}
 
+    def reset(self) -> None:
+        """Reset all per-track warning state trackers."""
+        self.trackers.clear()
+
     def update(
         self,
         risk_assessments: Dict[int, RiskAssessment],

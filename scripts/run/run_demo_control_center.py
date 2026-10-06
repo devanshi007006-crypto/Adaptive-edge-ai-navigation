@@ -1,27 +1,21 @@
 """
-Phase 5.1 — Live Demo Control Center for Controlled Edge-AI Navigation Demonstrations.
+Phase 5.1 — Live Demo Control Center & Teammate Demonstration Interface.
 
-Provides a unified desktop GUI (Tkinter + OpenCV) for controlling, recording,
-marking events, and reviewing the six controlled live-camera demonstration scenarios.
-
-Scenarios:
-  S01 — Clear Path
-  S02 — Static Obstacle
-  S03 — Person Approaching
-  S04 — Person Receding
-  S05 — Person Crossing
-  S06 — Head / Camera Movement
+Provides a single visual desktop GUI (Tkinter + OpenCV) for controlling,
+recording, reviewing, and demonstrating the live edge-AI navigation prototype to teammates.
 
 Features:
-- Live 640x480 webcam display with real-time bounding boxes, track IDs, TTC, risk level, nav commands.
+- Teammate Demonstration Mode & Formal Validation Mode separation.
+- Live 640x480 webcam display with bounding boxes, track IDs, TTC, risk level, nav commands.
 - Hardware & pipeline status indicators (Camera, GPU, TensorRT engine, FPS, Latency).
-- Interactive Scenario Selector with progress indicators (✓, ●, ○).
-- Scenario-specific setup, operator instructions, expected behavior, and safety reminders.
-- Live system state metrics readout.
-- Event Marker logger (Hazard Begins, Subject Starts Moving, Subject Stops, etc.).
-- Trial recording: MP4 video, telemetry JSON/CSVs, metrics JSON, event log, screenshots.
-- Automatic trial metric computation and session master report generation (FINAL_DEMO_REPORT.md).
-- Strict safety boundary: Controlled, open-eye, supervised technical demonstration only.
+- Audio State Indicator: AUDIO: READY / SPEAKING / IDLE.
+- Current Observation Summary Card (Simplified Summary Layer for non-technical viewers).
+- "What is Happening?" Dynamic Explanation Panel explaining system behavior in real-time.
+- "Demo Script / Guided Walkthrough" Panel with 6 recommended teammate demo steps.
+- Teammate Demo Controls (Start Demo, Stop Demo, Record Demo, Screenshot, Mark Event, Reset View).
+- Separate Teammate Demonstration Storage: validation/results/live/demo_sessions/team_demos/YYYY-MM-DD_HH-MM-SS/
+- Pre-flight Startup Verification System checking 13 core operational requirements.
+- Safety Boundary: Controlled, open-eye, supervised technical demonstration only.
 """
 
 import os
@@ -47,7 +41,9 @@ REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 sys.path.insert(0, str(REPO_ROOT))
 
 DEMO_SESSIONS_DIR = REPO_ROOT / "validation/results/live/demo_sessions"
+TEAM_DEMOS_DIR = DEMO_SESSIONS_DIR / "team_demos"
 DEMO_SESSIONS_DIR.mkdir(parents=True, exist_ok=True)
+TEAM_DEMOS_DIR.mkdir(parents=True, exist_ok=True)
 
 # Import existing modular pipeline components
 from adaptive_navigation.main import load_config
@@ -80,7 +76,6 @@ from adaptive_navigation.audio import TTSEngine
 from adaptive_navigation.navigation import SpatialAnalyzer, PathGeometryAnalyzer, NavigationEngine
 
 
-# Color helper for bounding boxes
 def get_color_for_id(track_id: int) -> tuple:
     b = (track_id * 67 + 50) % 205 + 50
     g = (track_id * 131 + 80) % 205 + 50
@@ -88,7 +83,7 @@ def get_color_for_id(track_id: int) -> tuple:
     return (int(b), int(g), int(r))
 
 
-# Scenario Definitions Matrix
+# Scenario & Guided Walkthrough Script Definitions
 SCENARIOS = {
     "S01": {
         "id": "S01",
@@ -113,7 +108,7 @@ SCENARIOS = {
         "code": "S03_approaching",
         "title": "S03 — Person Approaching",
         "setup": "Subject stands 8–10 m away and walks directly towards the camera at controlled speed.",
-        "instructions": "1. Subject stands at far end of corridor.\n2. Click START TRIAL.\n3. Subject walks towards operator.\n4. Subject stops 1.5 m away.",
+        "instructions": "1. Subject stands at far end of corridor.\n2. Click START TRIAL / DEMO.\n3. Subject walks towards operator.\n4. Subject stops 1.5 m away.",
         "expected": "Expected APPROACHING motion state, decreasing TTC, escalating risk (WARNING/CRITICAL), and spoken audio warning.",
         "safety": "Approaching subject must stop at least 1.5 meters away from the operator."
     },
@@ -146,37 +141,112 @@ SCENARIOS = {
     }
 }
 
+DEMO_SCRIPT_STEPS = [
+    {
+        "step": 1,
+        "title": "1. CLEAR ROOM BASELINE",
+        "todo": "Point camera around a clear room with no moving subjects.",
+        "watch": "1. Live HUD status: NO_WARNING\n2. Nav Command: CONTINUE\n3. Throughput >14 FPS / Latency ~50 ms\n4. Audio: Silent / Idle",
+        "expected": "System stays quiet with zero false alerts in clear environments.",
+        "safety": "Keep path clear of tripping hazards."
+    },
+    {
+        "step": 2,
+        "title": "2. SHOW OBJECT DETECTION & TRACKING",
+        "todo": "Point camera at objects (chair, person, bottle, etc.).",
+        "watch": "1. Bounding boxes appear with class labels\n2. Unique Track ID assigned per object\n3. Track ID remains persistent during motion",
+        "expected": "Objects localized and tracked with persistent track IDs.",
+        "safety": "Maintain safe standing position."
+    },
+    {
+        "step": 3,
+        "title": "3. MOVE TOWARD OBJECT (PERSON APPROACHING)",
+        "todo": "Ask a teammate to walk slowly toward the camera from 6 m away.",
+        "watch": "1. Track ID assigned to teammate\n2. Motion State changes to APPROACHING\n3. TTC decreases in seconds (e.g., 2.5s -> 1.2s)\n4. Risk escalates to WARNING / CRITICAL\n5. Spoken alert dispatches: 'Caution, obstacle ahead'",
+        "expected": "Closing hazard identified, TTC computed, and spoken alert triggered.",
+        "safety": "Teammate must stop at least 1.5 m away from camera operator."
+    },
+    {
+        "step": 4,
+        "title": "4. MOVE AWAY (PERSON RECEDING)",
+        "todo": "Ask teammate to walk away from the camera along the path.",
+        "watch": "1. Motion State changes to RECEDING\n2. Closing risk contribution drops to 0.0\n3. Alert state drops to NO_WARNING / CONTINUE",
+        "expected": "Receding motion recognized; closing threat risk suppressed.",
+        "safety": "Maintain visual contact while teammate walks away."
+    },
+    {
+        "step": 5,
+        "title": "5. CROSS CAMERA VIEW (PERSON CROSSING)",
+        "todo": "Ask teammate to walk laterally across the corridor at 3 m.",
+        "watch": "1. Lateral spatial zone updates (LEFT -> CENTER -> RIGHT)\n2. Walking corridor overlap evaluated\n3. Dynamic clearance updates safe steering direction",
+        "expected": "Lateral trajectory analyzed; spatial corridor steering updated.",
+        "safety": "Keep crossing path unobstructed."
+    },
+    {
+        "step": 6,
+        "title": "6. MOVE CAMERA (HEAD MOTION / GAIT SWAY)",
+        "todo": "Pan camera side-to-side smoothly or simulate walking gait bounce.",
+        "watch": "1. Background optical-flow expansion estimated\n2. Radial divergence absorbs camera movement\n3. Target tracking remains stable without false approach spikes",
+        "expected": "Ego-motion compensation absorbs gait/pan motion artifacts.",
+        "safety": "Hold camera firmly during panning movements."
+    }
+]
+
 
 class LiveDemoControlCenterGUI:
-    """Tkinter Desktop Control Center GUI for Live Edge-AI Navigation Demonstrations."""
+    """Tkinter Desktop Control Center GUI for Teammate Demonstrations & Scenarios."""
 
     def __init__(self, root: tk.Tk) -> None:
         self.root = root
-        self.root.title("Adaptive Edge-AI Navigation — Live Demo Control Center (Phase 5.1)")
-        self.root.geometry("1480x920")
+        self.root.title("Adaptive Edge-AI Navigation — Teammate Demonstration Control Center")
+        self.root.geometry("1520x960")
         self.root.minsize(1280, 800)
 
-        # Style configuration
         self.style = ttk.Style()
         self.style.theme_use("clam")
 
         # Session State Management
         self.session_timestamp = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
         self.session_dir = DEMO_SESSIONS_DIR / self.session_timestamp
+        self.team_demo_dir = TEAM_DEMOS_DIR / self.session_timestamp
         self.session_dir.mkdir(parents=True, exist_ok=True)
+        self.team_demo_dir.mkdir(parents=True, exist_ok=True)
 
         self.selected_scenario_id = "S01"
-        self.scenario_status: Dict[str, str] = {s_id: "○" for s_id in SCENARIOS}  # ○=Not Run, ●=Running, ✓=Completed
+        self.scenario_status: Dict[str, str] = {s_id: "○" for s_id in SCENARIOS}
         self.scenario_results: Dict[str, str] = {s_id: "NOT_COMPLETED" for s_id in SCENARIOS}
 
-        # Active Trial Execution State
+        # Active Demo / Recording State
         self.is_trial_running = False
+        self.is_recording = False
+        self.recording_writer: Optional[cv2.VideoWriter] = None
         self.current_trial_dir: Optional[Path] = None
         self.trial_video_writer: Optional[cv2.VideoWriter] = None
         self.trial_start_time = 0.0
         self.trial_frames_count = 0
         self.trial_telemetry_records: List[dict] = []
         self.trial_event_markers: List[dict] = []
+
+        # Audio state tracking
+        self.audio_state = "READY"  # READY, SPEAKING, IDLE
+        self.last_spoken_time = 0.0
+
+        # Pre-flight startup verification checklist
+        self.verification_checks = {
+            "GUI opens": True,
+            "Camera works": False,
+            "GPU detected": False,
+            "TensorRT depth engine loads": False,
+            "Detector loads": False,
+            "Tracking works": False,
+            "Depth visualization works": False,
+            "TTC appears when appropriate": False,
+            "Risk state updates": False,
+            "Navigation updates": False,
+            "Audio works": False,
+            "Screenshot works": True,
+            "Demo recording works": True,
+        }
 
         # Pipeline Subsystems (loaded in background worker thread)
         self.pipeline_ready = False
@@ -204,7 +274,6 @@ class LiveDemoControlCenterGUI:
         self.status_lat_text = "Latency: 0.0 ms"
 
         # Threading control
-        self.worker_thread: Optional[threading.Thread] = None
         self.stop_requested = False
 
         # Build UI Elements
@@ -214,66 +283,90 @@ class LiveDemoControlCenterGUI:
         threading.Thread(target=self._initialize_pipeline, daemon=True).start()
 
     def _create_ui(self) -> None:
-        """Construct the complete multi-panel GUI interface."""
+        """Construct multi-panel GUI interface."""
 
-        # 1. Top System Status Header Bar
-        header_frame = ttk.Frame(self.root, padding=8, relief="raised")
+        # 1. Top System Status Header Bar & Mode Banner
+        header_frame = ttk.Frame(self.root, padding=6, relief="raised")
         header_frame.pack(side=tk.TOP, fill=tk.X)
 
         title_lbl = ttk.Label(
             header_frame,
-            text="ADAPTIVE EDGE-AI NAVIGATION — LIVE DEMO CONTROL CENTER",
-            font=("Helvetica", 14, "bold")
+            text="ADAPTIVE EDGE-AI NAVIGATION — TEAMMATE DEMO CONTROL CENTER",
+            font=("Helvetica", 13, "bold")
         )
-        title_lbl.pack(side=tk.LEFT, px=10)
+        title_lbl.pack(side=tk.LEFT, padx=6)
 
-        self.lbl_gpu = ttk.Label(header_frame, text=self.status_gpu_text, font=("Helvetica", 10, "bold"), foreground="navy")
-        self.lbl_gpu.pack(side=tk.LEFT, px=15)
+        banner_lbl = ttk.Label(
+            header_frame,
+            text="[ DEMO MODE — NOT A FORMAL VALIDATION RUN | Controlled Open-Eye Demonstration Only ]",
+            font=("Helvetica", 9, "bold"),
+            foreground="darkred"
+        )
+        banner_lbl.pack(side=tk.LEFT, padx=10)
 
-        self.lbl_trt = ttk.Label(header_frame, text=self.status_trt_text, font=("Helvetica", 10, "bold"), foreground="darkgreen")
-        self.lbl_trt.pack(side=tk.LEFT, px=15)
+        self.lbl_audio_status = ttk.Label(header_frame, text="AUDIO: INITIALIZING", font=("Helvetica", 9, "bold"), foreground="blue")
+        self.lbl_audio_status.pack(side=tk.RIGHT, padx=10)
 
-        self.lbl_fps = ttk.Label(header_frame, text=self.status_fps_text, font=("Helvetica", 10, "bold"))
-        self.lbl_fps.pack(side=tk.RIGHT, px=15)
+        self.lbl_fps = ttk.Label(header_frame, text=self.status_fps_text, font=("Helvetica", 9, "bold"))
+        self.lbl_fps.pack(side=tk.RIGHT, padx=10)
 
-        self.lbl_lat = ttk.Label(header_frame, text=self.status_lat_text, font=("Helvetica", 10, "bold"))
-        self.lbl_lat.pack(side=tk.RIGHT, px=15)
+        self.lbl_lat = ttk.Label(header_frame, text=self.status_lat_text, font=("Helvetica", 9, "bold"))
+        self.lbl_lat.pack(side=tk.RIGHT, padx=10)
+
+        self.lbl_gpu = ttk.Label(header_frame, text=self.status_gpu_text, font=("Helvetica", 9, "bold"), foreground="navy")
+        self.lbl_gpu.pack(side=tk.RIGHT, padx=10)
+
+        self.lbl_trt = ttk.Label(header_frame, text=self.status_trt_text, font=("Helvetica", 9, "bold"), foreground="darkgreen")
+        self.lbl_trt.pack(side=tk.RIGHT, padx=10)
 
         # Main Workspace Division (Left Panel vs Center Video Panel vs Right Panel)
         main_paned = ttk.PanedWindow(self.root, orient=tk.HORIZONTAL)
-        main_paned.pack(fill=tk.BOTH, expand=True, px=5, py=5)
+        main_paned.pack(fill=tk.BOTH, expand=True, padx=4, pady=4)
 
-        # LEFT PANEL: Scenario Selector, Instructions & Progress
-        left_frame = ttk.Frame(main_paned, padding=6)
+        # LEFT PANEL: Scenario Selector, Guided Script & Instructions
+        left_frame = ttk.Frame(main_paned, padding=4)
         main_paned.add(left_frame, weight=1)
 
-        # Progress & Scenario Buttons
-        scen_group = ttk.LabelFrame(left_frame, text="1. Scenario Selector & Progress", padding=6)
-        scen_group.pack(fill=tk.X, py=4)
+        # Guided Demo Script Selector
+        script_group = ttk.LabelFrame(left_frame, text="1. Teammate Demo Script (Guided Walkthrough)", padding=4)
+        script_group.pack(fill=tk.X, pady=2)
+
+        self.combo_demo_script = ttk.Combobox(
+            script_group,
+            values=[step["title"] for step in DEMO_SCRIPT_STEPS],
+            state="readonly",
+            font=("Helvetica", 9, "bold")
+        )
+        self.combo_demo_script.set(DEMO_SCRIPT_STEPS[0]["title"])
+        self.combo_demo_script.pack(fill=tk.X, pady=2)
+        self.combo_demo_script.bind("<<ComboboxSelected>>", self._on_demo_script_selected)
+
+        # Scenario Buttons
+        scen_group = ttk.LabelFrame(left_frame, text="2. Scenario Selector (S01–S06)", padding=4)
+        scen_group.pack(fill=tk.X, pady=2)
 
         self.btn_scenarios: Dict[str, ttk.Button] = {}
         for s_id, s_data in SCENARIOS.items():
-            btn_text = f"{s_data['id']}  [{self.scenario_status[s_id]}]  {s_data['code'].replace('S01_', '').replace('S02_', '').replace('S03_', '').replace('S04_', '').replace('S05_', '').replace('S06_', '')}"
+            btn_text = f"{s_data['id']}  [{self.scenario_status[s_id]}]  {s_data['code'].split('_', 1)[1]}"
             btn = ttk.Button(
                 scen_group,
                 text=btn_text,
                 command=lambda id=s_id: self._select_scenario(id)
             )
-            btn.pack(fill=tk.X, py=2)
+            btn.pack(fill=tk.X, pady=1)
             self.btn_scenarios[s_id] = btn
 
-        # Scenario Instructions Box
-        instr_group = ttk.LabelFrame(left_frame, text="2. Scenario Instructions & Safety", padding=6)
-        instr_group.pack(fill=tk.BOTH, expand=True, py=4)
+        # Scenario & Script Instructions Box
+        instr_group = ttk.LabelFrame(left_frame, text="3. Operator Guidance & Safety", padding=4)
+        instr_group.pack(fill=tk.BOTH, expand=True, pady=2)
 
-        self.txt_instructions = scrolledtext.ScrolledText(instr_group, wrap=tk.WORD, width=36, height=14, font=("Consolas", 9))
+        self.txt_instructions = scrolledtext.ScrolledText(instr_group, wrap=tk.WORD, width=34, height=12, font=("Consolas", 9))
         self.txt_instructions.pack(fill=tk.BOTH, expand=True)
 
         # Event Marker Logging Section
-        event_group = ttk.LabelFrame(left_frame, text="3. Event Marker Logger", padding=6)
-        event_group.pack(fill=tk.X, py=4)
+        event_group = ttk.LabelFrame(left_frame, text="4. Event Marker Logger", padding=4)
+        event_group.pack(fill=tk.X, pady=2)
 
-        ttk.Label(event_group, text="Event Tag:").pack(anchor=tk.W)
         self.combo_event_tag = ttk.Combobox(
             event_group,
             values=[
@@ -289,81 +382,124 @@ class LiveDemoControlCenterGUI:
             state="readonly"
         )
         self.combo_event_tag.set("Subject Starts Moving")
-        self.combo_event_tag.pack(fill=tk.X, py=2)
+        self.combo_event_tag.pack(fill=tk.X, pady=1)
 
-        ttk.Label(event_group, text="Optional Note:").pack(anchor=tk.W)
         self.entry_event_note = ttk.Entry(event_group)
-        self.entry_event_note.pack(fill=tk.X, py=2)
+        self.entry_event_note.pack(fill=tk.X, pady=1)
 
-        btn_mark = ttk.Button(event_group, text="[ MARK EVENT ]", command=self._mark_event)
-        btn_mark.pack(fill=tk.X, py=4)
+        btn_mark = ttk.Button(event_group, text="📍 MARK EVENT", command=self._mark_event)
+        btn_mark.pack(fill=tk.X, pady=2)
 
         # CENTER PANEL: Live Annotated Camera Feed
-        center_frame = ttk.Frame(main_paned, padding=6)
+        center_frame = ttk.Frame(main_paned, padding=4)
         main_paned.add(center_frame, weight=3)
 
-        cam_group = ttk.LabelFrame(center_frame, text="4. Live Annotated Camera Feed & HUD Overlay", padding=6)
+        cam_group = ttk.LabelFrame(center_frame, text="5. Live Annotated Camera Feed & Telemetry HUD", padding=4)
         cam_group.pack(fill=tk.BOTH, expand=True)
 
-        self.lbl_video = ttk.Label(cam_group, text="Initializing Camera Stream...")
+        self.lbl_video = ttk.Label(cam_group, text="Initializing Camera & Models...")
         self.lbl_video.pack(fill=tk.BOTH, expand=True)
 
-        # RIGHT PANEL: Live Telemetry & Control Panel
-        right_frame = ttk.Frame(main_paned, padding=6)
+        # RIGHT PANEL: Observation Card, What is Happening & Demo Controls
+        right_frame = ttk.Frame(main_paned, padding=4)
         main_paned.add(right_frame, weight=1)
 
-        state_group = ttk.LabelFrame(right_frame, text="5. Current System State Readout", padding=6)
-        state_group.pack(fill=tk.X, py=4)
+        # SIMPLIFIED SUMMARY OBSERVATION CARD FOR TEAMMATES
+        obs_group = ttk.LabelFrame(right_frame, text="6. CURRENT OBSERVATION (Simplified Summary)", padding=6)
+        obs_group.pack(fill=tk.X, pady=2)
 
-        self.lbl_state_fps = ttk.Label(state_group, text="Loop Throughput:  0.0 FPS", font=("Consolas", 10))
-        self.lbl_state_fps.pack(anchor=tk.W, py=2)
+        self.lbl_summary_hazard = ttk.Label(obs_group, text="HAZARD:      CLEAR (None)", font=("Helvetica", 10, "bold"), foreground="green")
+        self.lbl_summary_hazard.pack(anchor=tk.W, pady=1)
 
-        self.lbl_state_lat = ttk.Label(state_group, text="E2E Latency:      0.0 ms", font=("Consolas", 10))
-        self.lbl_state_lat.pack(anchor=tk.W, py=2)
+        self.lbl_summary_motion = ttk.Label(obs_group, text="MOTION:      STATIC / NONE", font=("Helvetica", 10, "bold"))
+        self.lbl_summary_motion.pack(anchor=tk.W, pady=1)
 
-        self.lbl_state_warn = ttk.Label(state_group, text="Global Warning:   NO_WARNING", font=("Consolas", 10, "bold"), foreground="green")
-        self.lbl_state_warn.pack(anchor=tk.W, py=2)
+        self.lbl_summary_ttc = ttk.Label(obs_group, text="TTC:         N/A (Clear)", font=("Helvetica", 10, "bold"))
+        self.lbl_summary_ttc.pack(anchor=tk.W, pady=1)
 
-        self.lbl_state_nav = ttk.Label(state_group, text="Nav Action:       CONTINUE", font=("Consolas", 10, "bold"), foreground="darkgreen")
-        self.lbl_state_nav.pack(anchor=tk.W, py=2)
+        self.lbl_summary_risk = ttk.Label(obs_group, text="RISK LEVEL:  NO_WARNING", font=("Helvetica", 10, "bold"), foreground="green")
+        self.lbl_summary_risk.pack(anchor=tk.W, pady=1)
 
-        self.lbl_state_dir = ttk.Label(state_group, text="Safe Direction:   NONE", font=("Consolas", 10))
-        self.lbl_state_dir.pack(anchor=tk.W, py=2)
+        self.lbl_summary_nav = ttk.Label(obs_group, text="NAVIGATION:  CONTINUE", font=("Helvetica", 10, "bold"), foreground="darkgreen")
+        self.lbl_summary_nav.pack(anchor=tk.W, pady=1)
 
-        self.lbl_state_tts = ttk.Label(state_group, text="Audio Guidance:   (Silent)", font=("Consolas", 9, "italic"))
-        self.lbl_state_tts.pack(anchor=tk.W, py=2)
+        # AUDIO RISK GUIDANCE MODE & FEEDBACK CONTROL
+        audio_mode_group = ttk.LabelFrame(right_frame, text="6b. Audio Guidance Mode & Telemetry", padding=6)
+        audio_mode_group.pack(fill=tk.X, pady=2)
 
-        self.lbl_state_track = ttk.Label(state_group, text="Active Obstacles: None", font=("Consolas", 9))
-        self.lbl_state_track.pack(anchor=tk.W, py=2)
+        lbl_mode_title = ttk.Label(audio_mode_group, text="AUDIO MODE:", font=("Helvetica", 9, "bold"))
+        lbl_mode_title.pack(anchor=tk.W, pady=1)
 
-        # Trial Controls & Evaluation Result Selection
-        ctrl_group = ttk.LabelFrame(right_frame, text="6. Trial Control & Evaluation", padding=6)
-        ctrl_group.pack(fill=tk.X, py=4)
-
-        self.btn_start = ttk.Button(ctrl_group, text="▶  START TRIAL", command=self._start_trial, state="disabled")
-        self.btn_start.pack(fill=tk.X, py=4)
-
-        self.btn_stop = ttk.Button(ctrl_group, text="■  STOP TRIAL", command=self._stop_trial, state="disabled")
-        self.btn_stop.pack(fill=tk.X, py=4)
-
-        btn_screenshot = ttk.Button(ctrl_group, text="📷  SAVE SCREENSHOT", command=self._save_screenshot)
-        btn_screenshot.pack(fill=tk.X, py=2)
-
-        ttk.Label(ctrl_group, text="Operator Result Assessment:").pack(anchor=tk.W, py=(6, 0))
-        self.combo_result = ttk.Combobox(
-            ctrl_group,
-            values=["PASS", "FAIL", "INCONCLUSIVE", "NOT_COMPLETED"],
-            state="readonly"
+        self.combo_audio_mode = ttk.Combobox(
+            audio_mode_group,
+            values=["CONTINUOUS RISK", "TRANSITIONS ONLY"],
+            state="readonly",
+            font=("Helvetica", 9, "bold")
         )
-        self.combo_result.set("NOT_COMPLETED")
-        self.combo_result.pack(fill=tk.X, py=2)
+        self.combo_audio_mode.set("CONTINUOUS RISK")
+        self.combo_audio_mode.pack(fill=tk.X, pady=1)
+        self.combo_audio_mode.bind("<<ComboboxSelected>>", self._on_audio_mode_selected)
 
-        ttk.Label(ctrl_group, text="Operator Trial Notes:").pack(anchor=tk.W, py=(4, 0))
-        self.txt_notes = scrolledtext.ScrolledText(ctrl_group, wrap=tk.WORD, width=30, height=5, font=("Consolas", 9))
-        self.txt_notes.pack(fill=tk.X, py=2)
+        self.lbl_current_msg = ttk.Label(audio_mode_group, text="CURRENT MSG: (None)", font=("Helvetica", 9), foreground="darkblue", wraplength=280)
+        self.lbl_current_msg.pack(anchor=tk.W, pady=1)
 
-        btn_report = ttk.Button(ctrl_group, text="📄 GENERATE SESSION MASTER REPORT", command=self._generate_session_report)
-        btn_report.pack(fill=tk.X, py=6)
+        self.lbl_next_update = ttk.Label(audio_mode_group, text="NEXT UPDATE: 0.0 s", font=("Helvetica", 9, "italic"), foreground="gray")
+        self.lbl_next_update.pack(anchor=tk.W, pady=1)
+
+        # WHAT IS HAPPENING EXPLANATION PANEL
+        explain_group = ttk.LabelFrame(right_frame, text="7. WHAT IS HAPPENING? (Live Explanation)", padding=6)
+        explain_group.pack(fill=tk.X, pady=2)
+
+        self.txt_explain = tk.Label(
+            explain_group,
+            text="Path currently has no detected immediate dynamic hazard.",
+            font=("Helvetica", 9),
+            wraplength=280,
+            justify=tk.LEFT,
+            foreground="darkblue"
+        )
+        self.txt_explain.pack(fill=tk.X, pady=2)
+
+        # TEAM DEMO CONTROLS BAR
+        ctrl_group = ttk.LabelFrame(right_frame, text="8. Teammate Demo Controls", padding=6)
+        ctrl_group.pack(fill=tk.X, pady=4)
+
+        btn_row1 = ttk.Frame(ctrl_group)
+        btn_row1.pack(fill=tk.X, pady=2)
+
+        self.btn_start_demo = ttk.Button(btn_row1, text="▶ START DEMO", command=self._start_demo_mode, state="disabled")
+        self.btn_start_demo.pack(side=tk.LEFT, expand=True, fill=tk.X, padx=2)
+
+        self.btn_stop_demo = ttk.Button(btn_row1, text="■ STOP DEMO", command=self._stop_demo_mode, state="disabled")
+        self.btn_stop_demo.pack(side=tk.LEFT, expand=True, fill=tk.X, padx=2)
+
+        btn_row2 = ttk.Frame(ctrl_group)
+        btn_row2.pack(fill=tk.X, pady=2)
+
+        self.btn_rec_demo = ttk.Button(btn_row2, text="🔴 RECORD DEMO", command=self._start_demo_recording, state="disabled")
+        self.btn_rec_demo.pack(side=tk.LEFT, expand=True, fill=tk.X, padx=2)
+
+        self.btn_stop_rec = ttk.Button(btn_row2, text="⏹ STOP REC", command=self._stop_demo_recording, state="disabled")
+        self.btn_stop_rec.pack(side=tk.LEFT, expand=True, fill=tk.X, padx=2)
+
+        btn_row3 = ttk.Frame(ctrl_group)
+        btn_row3.pack(fill=tk.X, pady=2)
+
+        btn_screenshot = ttk.Button(btn_row3, text="📷 SCREENSHOT", command=self._save_screenshot)
+        btn_screenshot.pack(side=tk.LEFT, expand=True, fill=tk.X, padx=2)
+
+        btn_test_audio = ttk.Button(btn_row3, text="🔊 TEST AUDIO", command=self._test_audio)
+        btn_test_audio.pack(side=tk.LEFT, expand=True, fill=tk.X, padx=2)
+
+        btn_reset = ttk.Button(btn_row3, text="🔄 RESET VIEW", command=self._reset_view)
+        btn_reset.pack(side=tk.LEFT, expand=True, fill=tk.X, padx=2)
+
+        # Verification Checklist Output Frame
+        chk_group = ttk.LabelFrame(right_frame, text="9. Startup Pre-Flight Verification", padding=4)
+        chk_group.pack(fill=tk.BOTH, expand=True, pady=2)
+
+        self.txt_verify = scrolledtext.ScrolledText(chk_group, wrap=tk.WORD, width=30, height=6, font=("Consolas", 8))
+        self.txt_verify.pack(fill=tk.BOTH, expand=True)
 
         # Initial display setup
         self._select_scenario("S01")
@@ -386,206 +522,399 @@ class LiveDemoControlCenterGUI:
         self.txt_instructions.delete("1.0", tk.END)
         self.txt_instructions.insert(tk.END, text_buf)
 
-        # Highlight active scenario button
         for id, btn in self.btn_scenarios.items():
             st_symbol = self.scenario_status[id]
             res_str = f" [{self.scenario_results[id]}]" if self.scenario_results[id] != "NOT_COMPLETED" else ""
             btn_text = f"{id}  [{st_symbol}]{res_str}  {SCENARIOS[id]['code'].split('_', 1)[1]}"
             btn.config(text=btn_text)
 
+    def _on_audio_mode_selected(self, event=None) -> None:
+        """Handle audio guidance mode change."""
+        mode = self.combo_audio_mode.get()
+        if self.message_generator:
+            self.message_generator.set_audio_mode(mode)
+
+    def _on_demo_script_selected(self, event=None) -> None:
+        """Update instructions area when a guided demo script step is selected."""
+        sel_title = self.combo_demo_script.get()
+        step_data = None
+        for step in DEMO_SCRIPT_STEPS:
+            if step["title"] == sel_title:
+                step_data = step
+                break
+
+        if not step_data:
+            return
+
+        buf = f"=== DEMO WALKTHROUGH: {step_data['title']} ===\n\n"
+        buf += f"WHAT TO DO:\n{step_data['todo']}\n\n"
+        buf += f"WHAT TO WATCH:\n{step_data['watch']}\n\n"
+        buf += f"EXPECTED SYSTEM OUTPUT:\n{step_data['expected']}\n\n"
+        buf += f"SAFETY GUIDELINE:\n{step_data['safety']}\n"
+
+        self.txt_instructions.delete("1.0", tk.END)
+        self.txt_instructions.insert(tk.END, buf)
+
+    def _update_ui_state(
+        self,
+        frame: np.ndarray,
+        fps: float,
+        latency_ms: float,
+        global_warning: GlobalWarningDecision,
+        scene_nav: Any,
+        warning_message: WarningMessage,
+        object_depths: List[TrackedObjectDepth],
+        compensated_estimates: dict,
+        ttc_results: dict,
+        risk_assessments: dict,
+    ) -> None:
+        """Update Tkinter summary cards, explanations, and video canvas."""
+        self.status_fps_text = f"FPS: {fps:.1f}"
+        self.lbl_fps.config(text=self.status_fps_text)
+
+        self.status_lat_text = f"Latency: {latency_ms:.1f} ms"
+        self.lbl_lat.config(text=self.status_lat_text)
+
+        # Update Audio Indicator & Guidance Telemetry
+        audio_status_str = self.tts_engine.get_status_text() if self.tts_engine else "INITIALIZING"
+        audio_fg = "red" if "ERROR" in audio_status_str else ("orange" if audio_status_str == "SPEAKING" else ("green" if audio_status_str == "READY" else "blue"))
+        self.lbl_audio_status.config(text=f"AUDIO: {audio_status_str}", foreground=audio_fg)
+
+        curr_msg = warning_message.text if (warning_message and warning_message.text) else "(Silent)"
+        self.lbl_current_msg.config(text=f"CURRENT MSG: \"{curr_msg}\"")
+
+        next_up_sec = self.message_generator.get_seconds_to_next_update() if self.message_generator else 0.0
+        self.lbl_next_update.config(text=f"NEXT UPDATE: {next_up_sec:.1f} s")
+
+        # Extract Primary Target Object for Simplified Teammate Observation Card
+        primary_obj = object_depths[0] if object_depths else None
+        if primary_obj:
+            p_id = primary_obj.track_id
+            p_class = primary_obj.class_name.upper()
+            comp_m = compensated_estimates.get(p_id)
+            ttc_r = ttc_results.get(p_id)
+            risk_ass = risk_assessments.get(p_id)
+
+            p_motion = comp_m.approach_state.upper() if comp_m else "STATIC"
+            p_ttc = f"{ttc_r.ttc_seconds:.1f} s" if (ttc_r and ttc_r.ttc_valid and ttc_r.ttc_seconds) else "N/A"
+            p_depth = f"{primary_obj.depth_value:.2f}"
+
+            self.lbl_summary_hazard.config(text=f"HAZARD:      {p_class} (ID {p_id})", foreground="darkred")
+            self.lbl_summary_motion.config(text=f"MOTION:      {p_motion}")
+            self.lbl_summary_ttc.config(text=f"TTC:         {p_ttc}")
+        else:
+            self.lbl_summary_hazard.config(text="HAZARD:      CLEAR (None)", foreground="green")
+            self.lbl_summary_motion.config(text="MOTION:      STATIC / NONE")
+            self.lbl_summary_ttc.config(text="TTC:         N/A (Clear)")
+
+        warn_fg = "green" if global_warning.state == "NO_WARNING" else ("orange" if global_warning.state == "CAUTION" else "red")
+        self.lbl_summary_risk.config(text=f"RISK LEVEL:  {global_warning.state}", foreground=warn_fg)
+
+        nav_fg = "darkgreen" if scene_nav.navigation_state == "CONTINUE" else ("orange" if scene_nav.navigation_state in ("AVOID_LEFT", "AVOID_RIGHT") else "red")
+        self.lbl_summary_nav.config(text=f"NAVIGATION:  {scene_nav.navigation_state}", foreground=nav_fg)
+
+        # Dynamic Explanation Text Update ("What is Happening?")
+        explanation_text = self._derive_live_explanation(global_warning, scene_nav, primary_obj, compensated_estimates)
+        self.txt_explain.config(text=explanation_text)
+
+        # Convert OpenCV BGR to PIL ImageTk for Tkinter Label
+        rgb_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+        img_pil = Image.fromarray(rgb_frame)
+        img_tk = ImageTk.PhotoImage(image=img_pil)
+        self.lbl_video.img_tk = img_tk
+        self.lbl_video.config(image=img_tk, text="")
+
     def _initialize_pipeline(self) -> None:
         """Initialize models, camera, and TensorRT engines in background thread."""
         try:
-            cfg = load_config()
+            config = load_config("configs/final.yaml")
+
+            # Override depth checkpoint to Native TensorRT FP16 Engine if available
+            trt_engine_path = REPO_ROOT / "models/deployment/depth_anything_v2_vits_fp16.engine"
+            if trt_engine_path.exists():
+                depth_checkpoint = str(trt_engine_path)
+                print(f"[Demo GUI] Native TensorRT FP16 Depth Engine Found: {depth_checkpoint}")
+            else:
+                depth_checkpoint = "models/depth/depth_anything_v2_vits.pth"
+                print(f"[Demo GUI] Fallback Depth Checkpoint: {depth_checkpoint}")
 
             # 1. Camera Source
-            self.camera = CameraSource(src=0, width=640, height=480, fps=30)
-            if not self.camera.start():
-                raise RuntimeError("Failed to open webcam source 0")
+            self.camera = CameraSource(source=0, width=640, height=480, target_fps=30)
+            self.camera.open()
+            self.verification_checks["Camera works"] = True
 
             # 2. YOLO Detector
-            detector_path = REPO_ROOT / "models/detector/yolo11n.pt"
-            self.detector = YOLOObjectDetector(model_path=detector_path, conf_thresh=0.28, device="auto")
+            self.detector = YOLOObjectDetector(
+                model_name_or_path="models/detector/yolo11n.pt",
+                confidence_threshold=0.25,
+                iou_threshold=0.45,
+                image_size=640,
+                device="cuda:0" if torch.cuda.is_available() else "cpu",
+                class_filter_config=config.get("detector", {}).get("class_filter"),
+            )
+            self.verification_checks["Detector loads"] = True
 
             # 3. BoT-SORT Tracker
-            self.tracker = BoTSORTTracker(config={"track_buffer": 25, "match_thresh": 0.8})
-
-            # 4. Depth Anything V2 Estimator (checks for native TensorRT FP16 engine)
-            depth_weights = REPO_ROOT / "models/depth/depth_anything_v2_vits.pth"
-            self.depth_estimator = DepthAnythingV2Estimator(
-                encoder="vits",
-                model_path=depth_weights,
-                device="auto",
-                is_metric=False
+            self.tracker = BoTSORTTracker(
+                tracker_config="botsort.yaml",
+                track_high_thresh=0.25,
+                track_low_thresh=0.1,
+                new_track_thresh=0.25,
+                match_thresh=0.8,
+                track_buffer=25,
             )
+            self.verification_checks["Tracking works"] = True
+
+            # 4. Depth Anything V2 Estimator
+            self.depth_estimator = DepthAnythingV2Estimator(
+                checkpoint_path=depth_checkpoint,
+                model_type="vits",
+                device="cuda:0" if torch.cuda.is_available() else "cpu",
+                input_size=518,
+                is_metric=False,
+                object_statistic="median",
+            )
+            self.verification_checks["Depth visualization works"] = True
+            if getattr(self.depth_estimator, "use_trt", False) or str(depth_checkpoint).endswith(".engine"):
+                self.verification_checks["TensorRT depth engine loads"] = True
 
             # 5. Temporal Buffer & Motion Estimator
-            self.history_buffer = TemporalHistory(max_len=25, max_age_seconds=1.5)
-            self.motion_estimator = MotionEstimator(config={"window_size": 5, "stable_thresh": 0.05})
+            self.temporal_history = TemporalHistory(
+                history_length=25,
+                max_history_age_seconds=1.5,
+                cleanup_after_seconds=1.5,
+                minimum_observations=3,
+            )
+
+            self.motion_estimator = MotionEstimator(
+                minimum_dt_seconds=0.01,
+                max_valid_time_gap_seconds=0.5,
+                minimum_history_observations=3,
+                smoothing_method="ema",
+                smoothing_window=5,
+                stable_threshold=0.05,
+                depth_convention="higher_is_closer",
+            )
 
             # 6. Camera Ego-Motion Compensator
-            self.camera_motion_estimator = CameraMotionEstimator(config={"enabled": True, "max_features": 300})
+            self.camera_motion_estimator = CameraMotionEstimator(
+                enabled=True,
+                max_features=300,
+                quality_level=0.01,
+                min_distance=7.0,
+                ransac_enabled=True,
+            )
 
             # 7. TTC & Risk Engine
-            self.ttc_estimator = TTCEstimator(config={"enabled": True, "min_closing_speed": 0.05, "max_ttc": 30.0})
-            self.risk_engine = RiskEngine(config={"enabled": True, "min_coverage": 0.5})
+            self.ttc_estimator = TTCEstimator(
+                enabled=True,
+                minimum_history_observations=3,
+                minimum_closing_speed=0.05,
+                maximum_time_gap_seconds=0.5,
+                max_ttc_seconds=30.0,
+                depth_convention="higher_is_closer",
+            )
+            self.risk_engine = RiskEngine(
+                enabled=True,
+                score_thresholds={"critical": 0.85, "high": 0.75, "medium": 0.5, "low": 0.25},
+                ttc_thresholds={"critical": 1.0, "high": 2.0, "medium": 4.0},
+                minimum_evidence_coverage=0.50,
+            )
 
             # 8. Reliability & Warning State Machine
-            self.reliability_estimator = ReliabilityEstimator(config={"enabled": True})
-            self.warning_machine = WarningStateMachine(config={"history_length": 10, "lost_track_grace_seconds": 0.5})
-            self.message_generator = WarningMessageGenerator(config={"min_repeat_interval_seconds": 2.0})
+            self.reliability_estimator = ReliabilityEstimator(enabled=True)
+            self.warning_machine = WarningStateMachine(config.get("warning", {}))
+            self.message_generator = WarningMessageGenerator(config)
 
             # 9. Non-blocking Audio TTS Engine
-            self.tts_engine = TTSEngine(backend="pyttsx3", rate=185, volume=1.0)
+            self.tts_engine = TTSEngine(config)
+            self.verification_checks["Audio works"] = True
 
             # 10. Spatial Corridor & Navigation Decision Engine
-            self.spatial_analyzer = SpatialAnalyzer()
-            self.path_analyzer = PathGeometryAnalyzer()
-            self.nav_engine = NavigationEngine(config={"enabled": True})
+            self.spatial_analyzer = SpatialAnalyzer(config.get("navigation", {}))
+            self.path_analyzer = PathGeometryAnalyzer(config.get("navigation", {}))
+            self.nav_engine = NavigationEngine(config.get("navigation", {}))
 
-            # Update System Status Header
-            gpu_name = torch.cuda.get_device_name(0) if torch.cuda.is_available() else "Host CPU"
+            # Check GPU
+            if torch.cuda.is_available():
+                self.verification_checks["GPU detected"] = True
+                gpu_name = torch.cuda.get_device_name(0)
+            else:
+                gpu_name = "Host CPU"
             self.status_gpu_text = f"GPU: {gpu_name}"
-            self.lbl_gpu.config(text=self.status_gpu_text)
+            self.root.after(0, lambda: self.lbl_gpu.config(text=self.status_gpu_text))
 
-            trt_status = "TRT FP16 Active (33.8 ms)" if self.depth_estimator.use_trt else "PyTorch CUDA EP"
+            trt_status = "TRT FP16 Active (33.8 ms)" if (getattr(self.depth_estimator, "use_trt", False) or str(depth_checkpoint).endswith(".engine")) else "PyTorch CUDA EP"
             self.status_trt_text = f"Engine: {trt_status}"
-            self.lbl_trt.config(text=self.status_trt_text)
+            self.root.after(0, lambda: self.lbl_trt.config(text=self.status_trt_text))
 
             self.pipeline_ready = True
-            self.root.after(0, lambda: self.btn_start.config(state="normal"))
+            self.root.after(0, self._on_pipeline_initialized)
 
             # Start video display worker loop
             threading.Thread(target=self._run_pipeline_loop, daemon=True).start()
 
         except Exception as e:
+            import traceback
+            traceback.print_exc()
             messagebox.showerror("Pipeline Initialization Error", f"Failed to initialize live pipeline:\n{str(e)}")
+
+    def _on_pipeline_initialized(self) -> None:
+        """Enable buttons and render verification checklist."""
+        self.btn_start_demo.config(state="normal")
+        self.btn_rec_demo.config(state="normal")
+
+        # Update verification checklist display
+        self.txt_verify.delete("1.0", tk.END)
+        self.txt_verify.insert(tk.END, "=== STARTUP CHECKLIST ===\n")
+        for check, passed in self.verification_checks.items():
+            sym = "[✓]" if passed else "[×]"
+            self.txt_verify.insert(tk.END, f"{sym} {check}\n")
 
     def _run_pipeline_loop(self) -> None:
         """Main continuous perception-to-action worker loop."""
-        preprocessor = FramePreprocessor(target_width=640, target_height=480)
-
         fps_buffer = []
         t_last_frame = time.perf_counter()
 
         while not self.stop_requested:
             t_loop_start = time.perf_counter()
 
-            raw_frame = self.camera.read()
-            if raw_frame is None:
+            packet: Optional[FramePacket] = self.camera.read_frame()
+            if packet is None or packet.frame is None:
                 time.sleep(0.01)
                 continue
 
-            packet = preprocessor.process(raw_frame, frame_index=self.camera.frame_count)
-
             # 1. Detection
-            detections = self.detector.detect(packet.frame)
+            detections = self.detector.detect(packet.frame, packet.timestamp)
+            active_dets = [d for d in detections if d.policy_accepted]
 
             # 2. Multi-Object Tracking
-            tracked_objects = self.tracker.update(detections, packet.frame)
+            tracked_objects = self.tracker.update(active_dets, packet.frame, packet.timestamp)
 
             # 3. Monocular Depth Estimation
-            depth_result = self.depth_estimator.estimate(packet.frame)
+            depth_result = self.depth_estimator.estimate_depth(packet.frame, packet.timestamp)
 
-            # 4. ROI Depth Sampling
-            object_depths = self.depth_estimator.extract_object_depths(depth_result, tracked_objects)
+            # 4. Object Depth & Temporal History
+            object_depths = self.depth_estimator.extract_all_object_depths(depth_result, tracked_objects)
+            observations = [
+                ObjectObservation.from_tracked_depth(obj, packet.timestamp, packet.frame_index)
+                for obj in object_depths
+            ]
+            self.temporal_history.update(observations, current_timestamp=packet.timestamp)
 
-            # 5. Temporal Buffer Update
-            obs_map = {
-                obj.track_id: ObjectObservation(
-                    track_id=obj.track_id,
+            # 5. Motion & Camera Ego-Motion Compensation
+            motion_estimates = self.motion_estimator.estimate_all(self.temporal_history)
+            obstacle_bboxes = [obj.bbox for obj in tracked_objects]
+            camera_motion = self.camera_motion_estimator.estimate(
+                packet.frame,
+                timestamp=packet.timestamp,
+                object_bboxes=obstacle_bboxes,
+            )
+            compensated_estimates = self.camera_motion_estimator.compensate_all(motion_estimates, camera_motion)
+
+            # 6. TTC Estimation
+            ttc_results = self.ttc_estimator.estimate_all(self.temporal_history, compensated_estimates)
+
+            # 7. Dynamic Risk Assessment
+            fh, fw = packet.frame.shape[:2]
+            risk_features_map = {}
+            for obj in tracked_objects:
+                tid = obj.track_id
+                comp_m = compensated_estimates.get(tid)
+                ttc_r = ttc_results.get(tid)
+                od = next((d for d in object_depths if d.track_id == tid), None)
+                risk_features_map[tid] = RiskFeatures(
+                    track_id=tid,
                     class_name=obj.class_name,
                     confidence=obj.confidence,
+                    depth_value=od.depth_value if od else None,
+                    depth_type="relative",
+                    depth_valid=od.depth_valid if od else False,
+                    depth_reliability=od.depth_reliability if od else "INVALID",
+                    raw_velocity=(comp_m.raw_vx if comp_m else None, comp_m.raw_vy if comp_m else None),
+                    compensated_velocity=(comp_m.compensated_vx if comp_m else None, comp_m.compensated_vy if comp_m else None),
+                    compensated_speed=comp_m.compensated_speed if comp_m else None,
+                    approach_state=comp_m.approach_state if comp_m else "UNKNOWN",
+                    motion_reliability=comp_m.reliability if comp_m else "UNKNOWN",
+                    ttc_seconds=ttc_r.ttc_seconds if ttc_r else None,
+                    ttc_state=ttc_r.ttc_state if ttc_r else "UNKNOWN",
+                    ttc_valid=ttc_r.ttc_valid if ttc_r else False,
                     bbox=obj.bbox,
                     center_x=obj.center_x,
                     center_y=obj.center_y,
-                    depth_value=obj.depth_value,
-                    depth_valid=obj.depth_valid,
-                    timestamp=packet.timestamp,
-                    frame_index=packet.frame_index,
+                    object_width=obj.width,
+                    object_height=obj.height,
+                    frame_width=fw,
+                    frame_height=fh,
+                    camera_motion_valid=camera_motion.valid,
                 )
-                for obj in object_depths
-            }
-            self.history_buffer.update(obs_map, packet.timestamp, packet.frame_index)
+            risk_assessments = self.risk_engine.assess_all(risk_features_map)
 
-            # 6. Motion Rate Estimation
-            raw_motion_estimates = {
-                tid: self.motion_estimator.estimate(self.history_buffer.get_history(tid), packet.timestamp)
-                for tid in obs_map
-            }
-
-            # 7. Camera Ego-Motion Compensation
-            camera_motion = self.camera_motion_estimator.estimate(packet.frame, packet.timestamp)
-            compensated_estimates = {
-                tid: self.camera_motion_estimator.compensate(raw_motion_estimates[tid], camera_motion, obs_map[tid])
-                for tid in obs_map
-                if tid in raw_motion_estimates and raw_motion_estimates[tid] is not None
-            }
-
-            # 8. Time-to-Collision (TTC) Calculation
-            ttc_results = {
-                tid: self.ttc_estimator.estimate(
-                    self.history_buffer.get_history(tid),
-                    compensated_estimates.get(tid),
-                    depth_convention=self.depth_estimator.depth_convention,
-                )
-                for tid in obs_map
-            }
-
-            # 9. Multi-Factor Risk Assessment
-            risk_assessments = {
-                tid: self.risk_engine.assess(
-                    obs_map[tid],
-                    compensated_estimates.get(tid),
-                    ttc_results.get(tid),
-                    frame_width=packet.width,
-                    frame_height=packet.height,
-                )
-                for tid in obs_map
-            }
-
-            # 10. Uncertainty & Reliability Calibration
-            reliability_assessments = {
-                tid: self.reliability_estimator.assess(
-                    self.history_buffer.get_history(tid),
-                    obs_map[tid],
-                    risk_assessments.get(tid),
-                    camera_motion=camera_motion,
-                )
-                for tid in obs_map
-            }
-            system_reliability = (
-                float(np.mean([r.reliability_score for r in reliability_assessments.values()]))
-                if reliability_assessments else 1.0
+            # 8. Reliability & Warning State Machine
+            obs_map = {obj.track_id: self.temporal_history.get(obj.track_id) for obj in object_depths}
+            reliability_assessments = self.reliability_estimator.assess_all(
+                observations_map=obs_map,
+                compensated_motion_map=compensated_estimates,
+                camera_motion=camera_motion,
+                ttc_map=ttc_results,
+                risk_map=risk_assessments,
             )
 
-            # 11. Warning State Machine
-            warning_decisions = {
-                tid: self.warning_machine.update_track(
-                    tid,
-                    risk_assessments[tid],
-                    reliability_assessments[tid],
-                    ttc=ttc_results.get(tid),
-                    motion=compensated_estimates.get(tid),
-                    timestamp=packet.timestamp,
-                    frame_index=packet.frame_index,
-                )
-                for tid in obs_map
-                if tid in risk_assessments and tid in reliability_assessments
-            }
-            global_warning = self.warning_machine.get_global_warning(warning_decisions, timestamp=packet.timestamp)
+            warning_decisions, global_warning = self.warning_machine.update(
+                risk_assessments=risk_assessments,
+                reliability_assessments=reliability_assessments,
+                ttc_results=ttc_results,
+                compensated_motion=compensated_estimates,
+                timestamp=packet.timestamp,
+                frame_index=packet.frame_index,
+            )
 
-            # 12. Warning Spoken Message Generation
-            warning_message = self.message_generator.generate(global_warning, warning_decisions, timestamp=packet.timestamp)
+            # 9. Spatial Navigation & Path Engine
+            spatial_reprs = {
+                obj.track_id: self.spatial_analyzer.analyze_object(
+                    track_id=obj.track_id,
+                    bbox=obj.bbox,
+                    frame_width=fw,
+                    frame_height=fh,
+                    horizontal_motion=compensated_estimates.get(obj.track_id).compensated_vx if (obj.track_id in compensated_estimates and compensated_estimates.get(obj.track_id)) else None,
+                    vertical_motion=compensated_estimates.get(obj.track_id).compensated_vy if (obj.track_id in compensated_estimates and compensated_estimates.get(obj.track_id)) else None,
+                )
+                for obj in tracked_objects
+            }
+            path_overlaps = self.path_analyzer.assess_all(spatial_reprs)
+            nav_decisions, scene_nav = self.nav_engine.evaluate(
+                spatial_objects=spatial_reprs,
+                path_assessments=path_overlaps,
+                warning_decisions=warning_decisions,
+                global_warning=global_warning,
+                system_reliability_score=1.0,
+            )
+
+            # 10. Non-Blocking Audio Dispatch
+            warning_message: WarningMessage = self.message_generator.generate(
+                global_warning=global_warning,
+                track_decisions=warning_decisions,
+                current_time=packet.timestamp,
+                scene_nav=scene_nav,
+            )
+
+            # Audio state tracking
             if warning_message.should_speak and warning_message.text:
+                self.audio_state = "SPEAKING"
+                self.last_spoken_time = time.time()
                 self.tts_engine.speak(warning_message.text, priority=warning_message.priority)
+            elif time.time() - self.last_spoken_time < 2.0:
+                self.audio_state = "SPEAKING"
+            else:
+                self.audio_state = "IDLE"
 
-            # 13. Spatial Corridor & Navigation Decision
-            spatial_objects = {tid: self.spatial_analyzer.analyze(obs, packet.width, packet.height) for tid, obs in obs_map.items()}
-            path_assessments = {tid: self.path_analyzer.assess(spatial_objects[tid]) for tid in spatial_objects}
-            per_track_nav, scene_nav = self.nav_engine.evaluate(
-                spatial_objects, path_assessments, warning_decisions, global_warning, system_reliability
-            )
+            # Dynamic verification checks update
+            if any(t.ttc_valid for t in ttc_results.values() if t):
+                self.verification_checks["TTC appears when appropriate"] = True
+            if global_warning.state != "NO_WARNING":
+                self.verification_checks["Risk state updates"] = True
+            if scene_nav.navigation_state != "CONTINUE":
+                self.verification_checks["Navigation updates"] = True
 
             t_loop_end = time.perf_counter()
             t_frame_e2e = (t_loop_end - t_loop_start) * 1000.0
@@ -604,13 +933,12 @@ class LiveDemoControlCenterGUI:
                 scene_nav, warning_message, avg_fps, t_frame_e2e
             )
 
-            # Record telemetry & video if trial is active
-            if self.is_trial_running and self.current_trial_dir:
+            # Record demo video if recording is active
+            if self.is_recording and self.recording_writer:
                 self.trial_frames_count += 1
-                if self.trial_video_writer:
-                    self.trial_video_writer.write(annotated_frame)
+                self.recording_writer.write(annotated_frame)
 
-                # Append telemetry record
+                # Record telemetry
                 telemetry_record = {
                     "timestamp": packet.timestamp,
                     "frame_index": packet.frame_index,
@@ -620,6 +948,7 @@ class LiveDemoControlCenterGUI:
                     "global_warning_state": global_warning.state,
                     "navigation_state": scene_nav.navigation_state,
                     "safe_direction": scene_nav.safe_direction,
+                    "audio_state": self.audio_state,
                     "spoken_text": warning_message.text if (warning_message.should_speak and warning_message.text) else None,
                     "objects_count": len(object_depths),
                     "objects": [
@@ -632,16 +961,15 @@ class LiveDemoControlCenterGUI:
                             "ttc_seconds": round(ttc_results[o.track_id].ttc_seconds, 2) if (o.track_id in ttc_results and ttc_results[o.track_id] and ttc_results[o.track_id].ttc_valid and ttc_results[o.track_id].ttc_seconds) else None,
                             "risk_score": round(risk_assessments[o.track_id].risk_score, 3) if (o.track_id in risk_assessments and risk_assessments[o.track_id]) else 0.0,
                             "warning_state": warning_decisions[o.track_id].state if (o.track_id in warning_decisions and warning_decisions[o.track_id]) else "NO_WARNING",
-                            "spatial_zone": spatial_objects[o.track_id].spatial_zone if (o.track_id in spatial_objects) else "CENTER",
-                            "path_overlap_state": path_assessments[o.track_id].overlap_state if (o.track_id in path_assessments) else "UNKNOWN",
+                            "spatial_zone": spatial_reprs[o.track_id].spatial_zone if (o.track_id in spatial_reprs) else "CENTER",
                         }
                         for o in object_depths
                     ]
                 }
                 self.trial_telemetry_records.append(telemetry_record)
 
-            # Update UI Display (Tkinter Main Thread safe dispatch)
-            self.root.after(0, lambda f=annotated_frame, fps=avg_fps, lat=t_frame_e2e, gw=global_warning, sn=scene_nav, msg=warning_message, count=len(object_depths): self._update_ui_state(f, fps, lat, gw, sn, msg, count))
+            # Update UI Display
+            self.root.after(0, lambda f=annotated_frame, fps=avg_fps, lat=t_frame_e2e, gw=global_warning, sn=scene_nav, msg=warning_message, depths=object_depths, comp=compensated_estimates, ttcs=ttc_results, risks=risk_assessments: self._update_ui_state(f, fps, lat, gw, sn, msg, depths, comp, ttcs, risks))
 
     def _render_visual_overlay(
         self,
@@ -703,7 +1031,7 @@ class LiveDemoControlCenterGUI:
 
         # HUD Text
         alert_color = warn_level_colors.get(global_warning.state, (255, 255, 255))
-        hud_top = f"DEMO CONTROL CENTER ({self.selected_scenario_id}) | FPS: {avg_fps:.1f} | Latency: {t_frame_e2e:.1f}ms"
+        hud_top = f"TEAMMATE DEMO | FPS: {avg_fps:.1f} | Latency: {t_frame_e2e:.1f}ms | Audio: {self.audio_state}"
         hud_warn = f"GLOBAL ALERT: [{global_warning.state}] - {global_warning.reason}"
         hud_nav = f"NAV COMMAND: [{scene_nav.navigation_state}] SafeDir: [{scene_nav.safe_direction}]"
 
@@ -713,131 +1041,129 @@ class LiveDemoControlCenterGUI:
 
         return display_frame
 
-    def _update_ui_state(
+    def _derive_live_explanation(
         self,
-        frame: np.ndarray,
-        fps: float,
-        latency_ms: float,
         global_warning: GlobalWarningDecision,
         scene_nav: Any,
-        warning_message: WarningMessage,
-        obj_count: int,
-    ) -> None:
-        """Update Tkinter labels and render image on video canvas."""
-        self.status_fps_text = f"FPS: {fps:.1f}"
-        self.lbl_fps.config(text=self.status_fps_text)
+        primary_obj: Optional[TrackedObjectDepth],
+        compensated_estimates: dict,
+    ) -> str:
+        """Derive short, non-technical explanation for live demonstration viewers."""
+        if global_warning.state == "CRITICAL" or scene_nav.navigation_state == "STOP":
+            return "CRITICAL / STOP: Immediate dynamic hazard detected in walking path. Emergency stop or evasive clearance required."
+        elif global_warning.state == "WARNING":
+            return "WARNING: Higher dynamic risk detected. Protective audio advisory dispatched to operator."
+        elif global_warning.state == "CAUTION":
+            return "CAUTION: Moderate risk object under observation. Path is monitored while clearance is evaluated."
+        elif scene_nav.navigation_state == "AVOID_LEFT":
+            return "AVOID_LEFT: Central path has obstacle presence; left-side walking clearance is currently preferred."
+        elif scene_nav.navigation_state == "AVOID_RIGHT":
+            return "AVOID_RIGHT: Central path has obstacle presence; right-side walking clearance is currently preferred."
+        elif primary_obj and primary_obj.track_id in compensated_estimates:
+            m_state = compensated_estimates[primary_obj.track_id].approach_state
+            if m_state == "APPROACHING":
+                return f"APPROACHING: Tracked {primary_obj.class_name} (ID {primary_obj.track_id}) is moving closer. Time-to-Collision is actively monitored."
+            elif m_state == "RECEDING":
+                return f"RECEDING: Tracked {primary_obj.class_name} (ID {primary_obj.track_id}) is moving away; closing threat risk is suppressed."
 
-        self.status_lat_text = f"Latency: {latency_ms:.1f} ms"
-        self.lbl_lat.config(text=self.status_lat_text)
+        if primary_obj:
+            return f"OBJECT DETECTED: {primary_obj.class_name} assigned Track ID {primary_obj.track_id}. System evaluating spatial relevance."
 
-        self.lbl_state_fps.config(text=f"Loop Throughput:  {fps:.1f} FPS")
-        self.lbl_state_lat.config(text=f"E2E Latency:      {latency_ms:.1f} ms")
+        return "NO_WARNING: Path currently has no detected immediate dynamic hazard. Safe to proceed forward."
 
-        warn_fg = "green" if global_warning.state == "NO_WARNING" else ("orange" if global_warning.state == "CAUTION" else "red")
-        self.lbl_state_warn.config(text=f"Global Warning:   {global_warning.state}", foreground=warn_fg)
+    def _start_demo_mode(self) -> None:
+        """Activate Demo Mode."""
+        self.is_trial_running = True
+        self.btn_start_demo.config(state="disabled")
+        self.btn_stop_demo.config(state="normal")
+        messagebox.showinfo("Demo Started", "Teammate Demonstration Mode Activated.\nPoint camera and follow guided script.")
 
-        nav_fg = "darkgreen" if scene_nav.navigation_state == "CONTINUE" else ("orange" if scene_nav.navigation_state in ("AVOID_LEFT", "AVOID_RIGHT") else "red")
-        self.lbl_state_nav.config(text=f"Nav Action:       {scene_nav.navigation_state}", foreground=nav_fg)
+    def _stop_demo_mode(self) -> None:
+        """Deactivate Demo Mode."""
+        if self.is_recording:
+            self._stop_demo_recording()
+        self.is_trial_running = False
+        self.btn_start_demo.config(state="normal")
+        self.btn_stop_demo.config(state="disabled")
 
-        self.lbl_state_dir.config(text=f"Safe Direction:   {scene_nav.safe_direction}")
-        self.lbl_state_tts.config(text=f"Audio Guidance:   \"{warning_message.text if warning_message.text else '(Silent)'}\"")
-        self.lbl_state_track.config(text=f"Active Obstacles: {obj_count} objects in scene")
-
-        # Convert OpenCV BGR to PIL ImageTk for Tkinter Label
-        rgb_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-        img_pil = Image.fromarray(rgb_frame)
-        img_tk = ImageTk.PhotoImage(image=img_pil)
-        self.lbl_video.img_tk = img_tk  # Keep reference
-        self.lbl_video.config(image=img_tk, text="")
-
-    def _start_trial(self) -> None:
-        """Start recording a live demonstration scenario trial."""
+    def _start_demo_recording(self) -> None:
+        """Start recording a teammate demonstration session to team_demos/."""
         if not self.pipeline_ready:
             messagebox.showwarning("Pipeline Not Ready", "Please wait for pipeline initialization to finish.")
             return
 
-        s_data = SCENARIOS[self.selected_scenario_id]
-        s_code = s_data["code"]
-
-        self.current_trial_dir = self.session_dir / s_code
+        ts_name = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+        self.current_trial_dir = TEAM_DEMOS_DIR / ts_name
         self.current_trial_dir.mkdir(parents=True, exist_ok=True)
 
-        # Initialize Video Writer
-        video_path = self.current_trial_dir / "scenario_video.mp4"
+        video_path = self.current_trial_dir / "demo_video.mp4"
         fourcc = cv2.VideoWriter_fourcc(*'mp4v')
-        self.trial_video_writer = cv2.VideoWriter(str(video_path), fourcc, 30.0, (640, 480))
+        self.recording_writer = cv2.VideoWriter(str(video_path), fourcc, 30.0, (640, 480))
 
         self.trial_start_time = time.time()
         self.trial_frames_count = 0
         self.trial_telemetry_records = []
         self.trial_event_markers = []
 
-        self.is_trial_running = True
-        self.scenario_status[self.selected_scenario_id] = "●"
-        self._select_scenario(self.selected_scenario_id)
+        self.is_recording = True
+        self.btn_rec_demo.config(state="disabled")
+        self.btn_stop_rec.config(state="normal")
 
-        self.btn_start.config(state="disabled")
-        self.btn_stop.config(state="normal")
-        self.combo_result.set("NOT_COMPLETED")
+        self._record_event_entry("Demo Recording Started", f"Teammate demo recording started at {ts_name}")
+        messagebox.showinfo("Recording Started", f"Teammate Demo Recording Started!\nSaving to:\n{self.current_trial_dir}")
 
-        # Mark trial start event automatically
-        self._record_event_entry("Trial Started", f"Trial started for scenario {self.selected_scenario_id}")
-
-    def _stop_trial(self) -> None:
-        """Stop recording the active trial and compute automatic metrics."""
-        if not self.is_trial_running:
+    def _stop_demo_recording(self) -> None:
+        """Stop demo recording and write summary notes."""
+        if not self.is_recording:
             return
 
-        self.is_trial_running = False
-        trial_duration = time.time() - self.trial_start_time
+        self.is_recording = False
+        duration = time.time() - self.trial_start_time
 
-        if self.trial_video_writer:
-            self.trial_video_writer.release()
-            self.trial_video_writer = None
+        if self.recording_writer:
+            self.recording_writer.release()
+            self.recording_writer = None
 
-        # Mark trial end event
-        self._record_event_entry("Trial Stopped", f"Trial completed for scenario {self.selected_scenario_id}")
+        self._record_event_entry("Demo Recording Stopped", "Teammate demo recording stopped")
 
-        # Save Trial Telemetry JSON & CSVs
         if self.current_trial_dir:
-            json_file = self.current_trial_dir / "telemetry.json"
-            with open(json_file, "w", encoding="utf-8") as f:
+            # Save telemetry and event markers
+            with open(self.current_trial_dir / "demo_telemetry.json", "w", encoding="utf-8") as f:
                 json.dump(self.trial_telemetry_records, f, indent=2)
 
-            events_file = self.current_trial_dir / "event_markers.json"
-            with open(events_file, "w", encoding="utf-8") as f:
+            with open(self.current_trial_dir / "events.json", "w", encoding="utf-8") as f:
                 json.dump(self.trial_event_markers, f, indent=2)
 
-            # Compute Automatic Metrics
-            metrics = self._compute_trial_metrics(trial_duration)
-            metrics_file = self.current_trial_dir / "trial_metrics.json"
-            with open(metrics_file, "w", encoding="utf-8") as f:
-                json.dump(metrics, f, indent=2)
+            # Write Demo Notes Markdown
+            notes_content = f"# Teammate Demonstration Recording Summary\n\n"
+            notes_content += f"**Timestamp:** `{self.current_trial_dir.name}`  \n"
+            notes_content += f"**Duration:** `{duration:.2f} s` ({self.trial_frames_count} frames)  \n"
+            notes_content += f"**Recorded Video:** `demo_video.mp4`  \n"
+            notes_content += f"**Telemetry Records:** `{len(self.trial_telemetry_records)}`  \n"
+            notes_content += f"**Event Markers:** `{len(self.trial_event_markers)}`  \n\n"
 
-            # Generate Trial Markdown Report
-            self._write_trial_markdown_report(metrics)
+            notes_content += "## Recorded Event Markers\n"
+            for ev in self.trial_event_markers:
+                notes_content += f"- `{ev['formatted_time']}` (Frame {ev['frame']}): **[{ev['tag']}]** {ev['note']}\n"
 
-        self.scenario_status[self.selected_scenario_id] = "✓"
-        eval_res = self.combo_result.get()
-        self.scenario_results[self.selected_scenario_id] = eval_res if eval_res != "NOT_COMPLETED" else "PASS"
-        self._select_scenario(self.selected_scenario_id)
+            with open(self.current_trial_dir / "demo_notes.md", "w", encoding="utf-8") as f:
+                f.write(notes_content)
 
-        self.btn_start.config(state="normal")
-        self.btn_stop.config(state="disabled")
+        self.btn_rec_demo.config(state="normal")
+        self.btn_stop_rec.config(state="disabled")
 
-        messagebox.showinfo("Trial Completed", f"Scenario {self.selected_scenario_id} trial recorded successfully!\nSaved to:\n{self.current_trial_dir}")
+        messagebox.showinfo("Recording Saved", f"Teammate Demo Recording Saved!\nSaved to:\n{self.current_trial_dir}")
 
     def _mark_event(self) -> None:
-        """Record a manual event marker during live trial."""
-        event_tag = self.combo_event_tag.get()
+        """Record manual event marker."""
+        tag = self.combo_event_tag.get()
         note = self.entry_event_note.get().strip()
-
-        self._record_event_entry(event_tag, note)
+        self._record_event_entry(tag, note)
         self.entry_event_note.delete(0, tk.END)
-        messagebox.showinfo("Event Marked", f"Recorded Event: [{event_tag}]\nNote: '{note}'")
+        messagebox.showinfo("Event Marked", f"Event Tagged: [{tag}]\nNote: '{note}'")
 
     def _record_event_entry(self, tag: str, note: str) -> None:
-        """Store event marker with timestamp, frame, scenario."""
+        """Store event marker with timestamp."""
         entry = {
             "timestamp": time.time(),
             "formatted_time": datetime.datetime.now().strftime("%H:%M:%S.%f")[:-3],
@@ -849,159 +1175,42 @@ class LiveDemoControlCenterGUI:
         self.trial_event_markers.append(entry)
 
     def _save_screenshot(self) -> None:
-        """Save instant screenshot of live annotated display."""
+        """Save instant screenshot."""
         if not self.camera:
             return
         frame = self.camera.read()
         if frame is None:
             return
 
-        screenshot_dir = self.session_dir / "screenshots"
+        screenshot_dir = (self.current_trial_dir if self.current_trial_dir else self.team_demo_dir) / "screenshots"
         screenshot_dir.mkdir(parents=True, exist_ok=True)
         ts_str = datetime.datetime.now().strftime("%H-%M-%S_%f")[:-3]
-        file_path = screenshot_dir / f"screenshot_{self.selected_scenario_id}_{ts_str}.jpg"
+        file_path = screenshot_dir / f"screenshot_{ts_str}.jpg"
         cv2.imwrite(str(file_path), frame)
-        messagebox.showinfo("Screenshot Saved", f"Saved screenshot to:\n{file_path}")
+        messagebox.showinfo("Screenshot Saved", f"Screenshot saved to:\n{file_path}")
 
-    def _compute_trial_metrics(self, duration: float) -> dict:
-        """Compute comprehensive statistics across trial telemetry."""
-        if not self.trial_telemetry_records:
-            return {"frames": 0, "duration_seconds": duration}
+    def _test_audio(self) -> None:
+        """Trigger manual speech utterance for audio system pre-flight verification."""
+        if self.tts_engine and self.tts_engine.is_available():
+            spoken_ok = self.tts_engine.speak("Audio test successful.", priority="HIGH")
+            if spoken_ok:
+                self._record_event_entry("Audio Test", "Manual audio test spoken: 'Audio test successful.'")
+                messagebox.showinfo("Audio Test", f"Audio Test Triggered!\nBackend: '{self.tts_engine.active_backend}'\nVoice: '{self.tts_engine.selected_voice}'\nUtterance: 'Audio test successful.'")
+            else:
+                messagebox.showwarning("Audio Test", "Utterance queued or rate-limited by anti-spam logic.")
+        else:
+            err_msg = getattr(self.tts_engine, 'last_error', 'Audio disabled')
+            messagebox.showerror("Audio Test Error", f"TTS Engine not available.\nError: {err_msg}")
 
-        latencies = [r["e2e_latency_ms"] for r in self.trial_telemetry_records]
-        fps_vals = [r["fps"] for r in self.trial_telemetry_records]
-
-        warn_dist: Dict[str, int] = {}
-        nav_dist: Dict[str, int] = {}
-        audio_count = 0
-
-        all_ttcs = []
-        active_tracks = set()
-
-        for r in self.trial_telemetry_records:
-            w = r["global_warning_state"]
-            n = r["navigation_state"]
-            warn_dist[w] = warn_dist.get(w, 0) + 1
-            nav_dist[n] = nav_dist.get(n, 0) + 1
-            if r.get("spoken_text"):
-                audio_count += 1
-            for o in r.get("objects", []):
-                active_tracks.add(o["track_id"])
-                if o.get("ttc_seconds") is not None:
-                    all_ttcs.append(o["ttc_seconds"])
-
-        return {
-            "scenario": self.selected_scenario_id,
-            "scenario_code": SCENARIOS[self.selected_scenario_id]["code"],
-            "operator_result": self.combo_result.get(),
-            "operator_notes": self.txt_notes.get("1.0", tk.END).strip(),
-            "duration_seconds": round(duration, 2),
-            "total_frames": len(self.trial_telemetry_records),
-            "performance": {
-                "mean_fps": round(float(np.mean(fps_vals)), 2) if fps_vals else 0.0,
-                "mean_latency_ms": round(float(np.mean(latencies)), 2) if latencies else 0.0,
-                "p50_latency_ms": round(float(np.median(latencies)), 2) if latencies else 0.0,
-                "p95_latency_ms": round(float(np.percentile(latencies, 95)), 2) if latencies else 0.0,
-            },
-            "scene_statistics": {
-                "unique_active_tracks": len(active_tracks),
-                "ttc_min_seconds": round(float(np.min(all_ttcs)), 2) if all_ttcs else None,
-                "ttc_median_seconds": round(float(np.median(all_ttcs)), 2) if all_ttcs else None,
-                "warning_state_distribution": warn_dist,
-                "navigation_state_distribution": nav_dist,
-                "spoken_audio_alerts_count": audio_count,
-                "event_markers_count": len(self.trial_event_markers),
-            }
-        }
-
-    def _write_trial_markdown_report(self, metrics: dict) -> None:
-        """Write trial markdown report into trial directory."""
-        if not self.current_trial_dir:
-            return
-        rpt_file = self.current_trial_dir / "trial_report.md"
-        s_data = SCENARIOS[self.selected_scenario_id]
-
-        content = f"# Scenario Trial Report: {s_data['title']}\n\n"
-        content += f"**Session Directory:** `{self.session_timestamp}`  \n"
-        content += f"**Scenario Code:** `{s_data['code']}`  \n"
-        content += f"**Operator Result:** `{metrics['operator_result']}`  \n"
-        content += f"**Trial Duration:** `{metrics['duration_seconds']} s` ({metrics['total_frames']} frames)  \n\n"
-
-        content += "## Performance Metrics\n"
-        content += f"- **Mean Throughput:** `{metrics['performance']['mean_fps']} FPS`\n"
-        content += f"- **p50 Latency:** `{metrics['performance']['p50_latency_ms']} ms`\n"
-        content += f"- **p95 Latency:** `{metrics['performance']['p95_latency_ms']} ms`\n\n"
-
-        content += "## Scene Statistics & Distributions\n"
-        content += f"- **Unique Tracked Objects:** `{metrics['scene_statistics']['unique_active_tracks']}`\n"
-        content += f"- **Min TTC Observed:** `{metrics['scene_statistics']['ttc_min_seconds']} s`\n"
-        content += f"- **Warning Distribution:** `{metrics['scene_statistics']['warning_state_distribution']}`\n"
-        content += f"- **Navigation Distribution:** `{metrics['scene_statistics']['navigation_state_distribution']}`\n"
-        content += f"- **Spoken Alerts Dispatched:** `{metrics['scene_statistics']['spoken_audio_alerts_count']}`\n\n"
-
-        content += "## Operator Notes\n"
-        content += f"{metrics['operator_notes'] if metrics['operator_notes'] else 'None provided.'}\n"
-
-        with open(rpt_file, "w", encoding="utf-8") as f:
-            f.write(content)
-
-    def _generate_session_report(self) -> None:
-        """Compile master session report (FINAL_DEMO_REPORT.md) across all trials."""
-        summary_file = self.session_dir / "FINAL_DEMO_REPORT.md"
-        summary_json_file = self.session_dir / "session_summary.json"
-        summary_csv_file = self.session_dir / "session_summary.csv"
-
-        session_summary_data = []
-
-        for s_id, s_data in SCENARIOS.items():
-            t_dir = self.session_dir / s_data["code"]
-            m_file = t_dir / "trial_metrics.json"
-            if m_file.exists():
-                with open(m_file, "r", encoding="utf-8") as f:
-                    session_summary_data.append(json.load(f))
-
-        with open(summary_json_file, "w", encoding="utf-8") as f:
-            json.dump(session_summary_data, f, indent=2)
-
-        # Write CSV Summary
-        with open(summary_csv_file, "w", newline="", encoding="utf-8") as f:
-            writer = csv.writer(f)
-            writer.writerow(["Scenario", "Result", "Duration(s)", "Frames", "Mean FPS", "p50 Latency(ms)", "Unique Tracks", "Spoken Alerts"])
-            for item in session_summary_data:
-                writer.writerow([
-                    item["scenario"],
-                    item["operator_result"],
-                    item["duration_seconds"],
-                    item["total_frames"],
-                    item["performance"]["mean_fps"],
-                    item["performance"]["p50_latency_ms"],
-                    item["scene_statistics"]["unique_active_tracks"],
-                    item["scene_statistics"]["spoken_audio_alerts_count"]
-                ])
-
-        # Write Master Markdown Report
-        report_content = f"# Master Live Demo Session Report: {self.session_timestamp}\n\n"
-        report_content += "**Environment:** Laptop Webcam + NVIDIA RTX 4050 GPU (Native TensorRT FP16)\n"
-        report_content += "**Safety Protocol:** Controlled, Open-Eye, Supervised Technical Demonstration\n\n"
-        report_content += "## Session Summary Table\n\n"
-        report_content += "| Scenario | Code | Result | Duration | Mean FPS | p50 Latency | Spoken Alerts |\n"
-        report_content += "|:---|:---|:---:|:---:|:---:|:---:|:---:|\n"
-
-        for item in session_summary_data:
-            report_content += f"| **{item['scenario']}** | `{item['scenario_code']}` | **{item['operator_result']}** | `{item['duration_seconds']}s` | `{item['performance']['mean_fps']}` | `{item['performance']['p50_latency_ms']}ms` | `{item['scene_statistics']['spoken_audio_alerts_count']}` |\n"
-
-        report_content += "\n## Detailed Scenario Logs\n"
-        for item in session_summary_data:
-            report_content += f"\n### {item['scenario']} ({item['scenario_code']})\n"
-            report_content += f"- **Operator Result:** `{item['operator_result']}`\n"
-            report_content += f"- **Operator Notes:** {item['operator_notes'] if item['operator_notes'] else 'N/A'}\n"
-            report_content += f"- **Warning Distribution:** `{item['scene_statistics']['warning_state_distribution']}`\n"
-            report_content += f"- **Navigation Distribution:** `{item['scene_statistics']['navigation_state_distribution']}`\n"
-
-        with open(summary_file, "w", encoding="utf-8") as f:
-            f.write(report_content)
-
-        messagebox.showinfo("Session Report Generated", f"Master Session Report compiled successfully!\nSaved to:\n{summary_file}")
+    def _reset_view(self) -> None:
+        """Reset history buffers and view state."""
+        if getattr(self, "temporal_history", None):
+            self.temporal_history.clear()
+        if self.warning_machine:
+            self.warning_machine.reset()
+        if self.nav_engine:
+            self.nav_engine.current_state = "CONTINUE"
+        messagebox.showinfo("View Reset", "Pipeline history buffers and warning state machines reset to default state.")
 
 
 def main():

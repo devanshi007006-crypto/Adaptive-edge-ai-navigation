@@ -1,0 +1,7 @@
+"Scenario","Frames","Objects/Tracks","Motion Observations","Valid TTC","Risk Distribution","Navigation Distribution","Audio Events","Observed Limitation"
+"S01 Clear Path","150","0","0","0","100% NO_WARNING","100% FORWARD","0 Alerts","Sterile background feature sparsity"
+"S02 Static Obstacle","150","150","150","0 (Static)","80% CAUTION, 20% CRITICAL","80% FORWARD, 20% STOP","2 Advisories","Fixed boundary thresholding"
+"S03 Person Approaching","150","150","150","124 Valid","30% CAUTION, 40% WARNING, 30% CRITICAL","70% FORWARD, 30% STOP","4 Advisories","Linear velocity assumption"
+"S04 Person Receding","150","150","150","0 (Receding)","100% NO_WARNING (Suppressed)","100% FORWARD","0 Alerts","Relies on track persistence"
+"S05 Person Crossing","150","150","150","0 (Lateral)","60% CAUTION, 40% WARNING","60% FORWARD, 40% LEFT","3 Advisories","Requires lateral clear space"
+"S06 Camera / Head Sway","150","150","150","45 Valid","85% NO_WARNING, 15% CAUTION","85% FORWARD, 15% LEFT","1 Advisory","2D image-plane sway limit"

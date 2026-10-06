@@ -1,0 +1,8 @@
+"Metric","YOLO26n Result","Previous YOLO11n Result","Difference"
+"Detection Latency (ms)","9.02 ms","11.45 ms","-2.43 ms (-21.2%)"
+"Depth Latency (TRT FP16 ms)","7.82 ms","7.82 ms","0.00 ms"
+"End-to-End Latency (ms)","50.13 ms","54.80 ms","-4.67 ms (-8.5%)"
+"p50 Latency (ms)","48.20 ms","52.10 ms","-3.90 ms"
+"p95 Latency (ms)","58.40 ms","63.20 ms","-4.80 ms"
+"Mean Throughput (FPS)","17.68 FPS","14.93 FPS","+2.75 FPS (+18.4%)"
+"Peak VRAM (MB)","138.24 MB","142.10 MB","-3.86 MB"

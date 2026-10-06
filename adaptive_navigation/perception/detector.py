@@ -36,7 +36,7 @@ class YOLOObjectDetector(DetectorInterface):
     """Ultralytics YOLO implementation conforming to the standardized detection interface."""
     def __init__(
         self,
-        model_name_or_path: str = "yolo11n.pt",
+        model_name_or_path: str = "models/detector/yolo26n.pt",
         confidence_threshold: float = 0.25,
         iou_threshold: float = 0.45,
         image_size: int = 640,

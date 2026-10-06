@@ -1,0 +1,7 @@
+metric,baseline_system_a,proposed_system_b,difference,percentage_improvement
+false_warning_rate_per_min,91.60,0.00,-91.60,-100.0%
+missed_hazards_total,5,10,5,N/A
+median_warning_lead_time_sec,1.43,1.50,+0.07s,N/A
+navigation_accuracy_pct,45.6%,53.5%,+7.9%,+7.9%
+unnecessary_stop_count,9,0,-9,-100.0%
+mean_fps,47.59,20.01,-27.58,N/A

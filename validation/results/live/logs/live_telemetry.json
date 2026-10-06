@@ -1,12 +1,1180 @@
 [
   {
     "frame_index": 0,
-    "timestamp_sec": 436446.223,
-    "loop_fps": 0.93,
-    "det_latency_ms": 521.19,
-    "depth_latency_ms": 108.89,
-    "e2e_latency_ms": 649.47,
-    "active_tracks_count": 3,
+    "timestamp_sec": 457943.0584,
+    "loop_fps": 1.0,
+    "det_latency_ms": 468.41,
+    "depth_latency_ms": 80.07,
+    "e2e_latency_ms": 570.64,
+    "active_tracks_count": 1,
+    "global_warning_state": "NO_WARNING",
+    "navigation_state": "CONTINUE",
+    "safe_direction": "NONE",
+    "audio_spoken": true,
+    "audio_text": "Path clear.",
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.927,
+        "bbox": [
+          82.5,
+          70.0,
+          543.4,
+          478.9
+        ],
+        "depth_value": 3.038,
+        "approach_state": "UNKNOWN",
+        "ttc_seconds": null,
+        "risk_level": "HIGH",
+        "warning_state": "NO_WARNING"
+      }
+    ]
+  },
+  {
+    "frame_index": 1,
+    "timestamp_sec": 457943.7203,
+    "loop_fps": 2.18,
+    "det_latency_ms": 10.74,
+    "depth_latency_ms": 31.22,
+    "e2e_latency_ms": 206.52,
+    "active_tracks_count": 1,
+    "global_warning_state": "CAUTION",
+    "navigation_state": "CONTINUE",
+    "safe_direction": "NONE",
+    "audio_spoken": true,
+    "audio_text": "Caution. Person nearby.",
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.926,
+        "bbox": [
+          84.0,
+          70.5,
+          542.1,
+          478.8
+        ],
+        "depth_value": 3.079,
+        "approach_state": "UNKNOWN",
+        "ttc_seconds": null,
+        "risk_level": "HIGH",
+        "warning_state": "CAUTION"
+      }
+    ]
+  },
+  {
+    "frame_index": 2,
+    "timestamp_sec": 457943.9461,
+    "loop_fps": 5.78,
+    "det_latency_ms": 10.28,
+    "depth_latency_ms": 31.64,
+    "e2e_latency_ms": 57.76,
+    "active_tracks_count": 1,
+    "global_warning_state": "CAUTION",
+    "navigation_state": "CONTINUE",
+    "safe_direction": "NONE",
+    "audio_spoken": false,
+    "audio_text": "",
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.925,
+        "bbox": [
+          83.6,
+          70.6,
+          542.0,
+          478.8
+        ],
+        "depth_value": 3.098,
+        "approach_state": "STABLE",
+        "ttc_seconds": 30.0,
+        "risk_level": "LOW",
+        "warning_state": "CAUTION"
+      }
+    ]
+  },
+  {
+    "frame_index": 3,
+    "timestamp_sec": 457944.0178,
+    "loop_fps": 8.13,
+    "det_latency_ms": 9.58,
+    "depth_latency_ms": 30.3,
+    "e2e_latency_ms": 52.01,
+    "active_tracks_count": 1,
+    "global_warning_state": "CAUTION",
+    "navigation_state": "CAUTION",
+    "safe_direction": "NONE",
+    "audio_spoken": true,
+    "audio_text": "Caution. Person nearby.",
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.929,
+        "bbox": [
+          83.8,
+          70.6,
+          541.9,
+          478.8
+        ],
+        "depth_value": 3.122,
+        "approach_state": "STABLE",
+        "ttc_seconds": 30.0,
+        "risk_level": "LOW",
+        "warning_state": "CAUTION"
+      }
+    ]
+  },
+  {
+    "frame_index": 4,
+    "timestamp_sec": 457944.0828,
+    "loop_fps": 9.21,
+    "det_latency_ms": 16.15,
+    "depth_latency_ms": 31.38,
+    "e2e_latency_ms": 60.82,
+    "active_tracks_count": 1,
+    "global_warning_state": "NO_WARNING",
+    "navigation_state": "CAUTION",
+    "safe_direction": "NONE",
+    "audio_spoken": true,
+    "audio_text": "Risk cleared. Path clear.",
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.927,
+        "bbox": [
+          85.0,
+          70.8,
+          541.6,
+          478.8
+        ],
+        "depth_value": 3.108,
+        "approach_state": "STABLE",
+        "ttc_seconds": 30.0,
+        "risk_level": "LOW",
+        "warning_state": "NO_WARNING"
+      }
+    ]
+  },
+  {
+    "frame_index": 5,
+    "timestamp_sec": 457944.1585,
+    "loop_fps": 10.02,
+    "det_latency_ms": 11.96,
+    "depth_latency_ms": 31.32,
+    "e2e_latency_ms": 56.36,
+    "active_tracks_count": 1,
+    "global_warning_state": "NO_WARNING",
+    "navigation_state": "CAUTION",
+    "safe_direction": "NONE",
+    "audio_spoken": false,
+    "audio_text": "",
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.926,
+        "bbox": [
+          84.4,
+          70.5,
+          541.6,
+          478.9
+        ],
+        "depth_value": 3.117,
+        "approach_state": "STABLE",
+        "ttc_seconds": 30.0,
+        "risk_level": "LOW",
+        "warning_state": "NO_WARNING"
+      }
+    ]
+  },
+  {
+    "frame_index": 6,
+    "timestamp_sec": 457944.2335,
+    "loop_fps": 10.53,
+    "det_latency_ms": 11.52,
+    "depth_latency_ms": 30.62,
+    "e2e_latency_ms": 54.76,
+    "active_tracks_count": 1,
+    "global_warning_state": "NO_WARNING",
+    "navigation_state": "CONTINUE",
+    "safe_direction": "NONE",
+    "audio_spoken": false,
+    "audio_text": "",
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.926,
+        "bbox": [
+          84.8,
+          70.8,
+          541.5,
+          478.9
+        ],
+        "depth_value": 3.137,
+        "approach_state": "APPROACHING",
+        "ttc_seconds": 30.0,
+        "risk_level": "MEDIUM",
+        "warning_state": "NO_WARNING"
+      }
+    ]
+  },
+  {
+    "frame_index": 7,
+    "timestamp_sec": 457944.304,
+    "loop_fps": 9.61,
+    "det_latency_ms": 13.58,
+    "depth_latency_ms": 30.98,
+    "e2e_latency_ms": 296.89,
+    "active_tracks_count": 1,
+    "global_warning_state": "CAUTION",
+    "navigation_state": "CONTINUE",
+    "safe_direction": "NONE",
+    "audio_spoken": true,
+    "audio_text": "Caution. Person nearby.",
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.923,
+        "bbox": [
+          84.6,
+          70.4,
+          541.5,
+          478.9
+        ],
+        "depth_value": 3.059,
+        "approach_state": "APPROACHING",
+        "ttc_seconds": 30.0,
+        "risk_level": "MEDIUM",
+        "warning_state": "CAUTION"
+      }
+    ]
+  },
+  {
+    "frame_index": 8,
+    "timestamp_sec": 457944.6227,
+    "loop_fps": 10.0,
+    "det_latency_ms": 10.74,
+    "depth_latency_ms": 29.86,
+    "e2e_latency_ms": 54.88,
+    "active_tracks_count": 1,
+    "global_warning_state": "CAUTION",
+    "navigation_state": "CONTINUE",
+    "safe_direction": "NONE",
+    "audio_spoken": false,
+    "audio_text": "",
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.914,
+        "bbox": [
+          86.0,
+          69.2,
+          542.8,
+          479.3
+        ],
+        "depth_value": 2.942,
+        "approach_state": "APPROACHING",
+        "ttc_seconds": null,
+        "risk_level": "MEDIUM",
+        "warning_state": "CAUTION"
+      }
+    ]
+  },
+  {
+    "frame_index": 9,
+    "timestamp_sec": 457944.7071,
+    "loop_fps": 10.22,
+    "det_latency_ms": 10.09,
+    "depth_latency_ms": 29.32,
+    "e2e_latency_ms": 52.41,
+    "active_tracks_count": 1,
+    "global_warning_state": "CAUTION",
+    "navigation_state": "CAUTION",
+    "safe_direction": "NONE",
+    "audio_spoken": true,
+    "audio_text": "Caution. Person nearby.",
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.91,
+        "bbox": [
+          83.0,
+          67.5,
+          544.4,
+          479.0
+        ],
+        "depth_value": 2.959,
+        "approach_state": "APPROACHING",
+        "ttc_seconds": null,
+        "risk_level": "MEDIUM",
+        "warning_state": "CAUTION"
+      }
+    ]
+  },
+  {
+    "frame_index": 10,
+    "timestamp_sec": 457944.7762,
+    "loop_fps": 10.61,
+    "det_latency_ms": 9.42,
+    "depth_latency_ms": 29.93,
+    "e2e_latency_ms": 52.21,
+    "active_tracks_count": 1,
+    "global_warning_state": "CAUTION",
+    "navigation_state": "CAUTION",
+    "safe_direction": "NONE",
+    "audio_spoken": false,
+    "audio_text": "",
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.914,
+        "bbox": [
+          87.0,
+          66.9,
+          547.1,
+          479.2
+        ],
+        "depth_value": 2.931,
+        "approach_state": "APPROACHING",
+        "ttc_seconds": null,
+        "risk_level": "MEDIUM",
+        "warning_state": "CAUTION"
+      }
+    ]
+  },
+  {
+    "frame_index": 11,
+    "timestamp_sec": 457944.8516,
+    "loop_fps": 10.82,
+    "det_latency_ms": 10.96,
+    "depth_latency_ms": 29.55,
+    "e2e_latency_ms": 52.92,
+    "active_tracks_count": 1,
+    "global_warning_state": "CAUTION",
+    "navigation_state": "CAUTION",
+    "safe_direction": "NONE",
+    "audio_spoken": false,
+    "audio_text": "",
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.909,
+        "bbox": [
+          87.4,
+          67.0,
+          547.9,
+          479.4
+        ],
+        "depth_value": 2.951,
+        "approach_state": "APPROACHING",
+        "ttc_seconds": null,
+        "risk_level": "MEDIUM",
+        "warning_state": "CAUTION"
+      }
+    ]
+  },
+  {
+    "frame_index": 12,
+    "timestamp_sec": 457944.9244,
+    "loop_fps": 11.05,
+    "det_latency_ms": 9.58,
+    "depth_latency_ms": 30.04,
+    "e2e_latency_ms": 52.07,
+    "active_tracks_count": 1,
+    "global_warning_state": "CAUTION",
+    "navigation_state": "CAUTION",
+    "safe_direction": "NONE",
+    "audio_spoken": false,
+    "audio_text": "",
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.911,
+        "bbox": [
+          84.5,
+          66.1,
+          547.2,
+          479.0
+        ],
+        "depth_value": 2.899,
+        "approach_state": "APPROACHING",
+        "ttc_seconds": null,
+        "risk_level": "MEDIUM",
+        "warning_state": "CAUTION"
+      }
+    ]
+  },
+  {
+    "frame_index": 13,
+    "timestamp_sec": 457944.9952,
+    "loop_fps": 11.29,
+    "det_latency_ms": 8.76,
+    "depth_latency_ms": 29.14,
+    "e2e_latency_ms": 50.94,
+    "active_tracks_count": 1,
+    "global_warning_state": "CAUTION",
+    "navigation_state": "CAUTION",
+    "safe_direction": "NONE",
+    "audio_spoken": false,
+    "audio_text": "",
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.901,
+        "bbox": [
+          86.9,
+          66.7,
+          547.7,
+          479.4
+        ],
+        "depth_value": 2.946,
+        "approach_state": "RECEDING",
+        "ttc_seconds": null,
+        "risk_level": "LOW",
+        "warning_state": "CAUTION"
+      }
+    ]
+  },
+  {
+    "frame_index": 14,
+    "timestamp_sec": 457945.0751,
+    "loop_fps": 11.31,
+    "det_latency_ms": 15.41,
+    "depth_latency_ms": 28.82,
+    "e2e_latency_ms": 56.97,
+    "active_tracks_count": 1,
+    "global_warning_state": "CAUTION",
+    "navigation_state": "CAUTION",
+    "safe_direction": "NONE",
+    "audio_spoken": false,
+    "audio_text": "",
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.899,
+        "bbox": [
+          87.1,
+          65.0,
+          549.0,
+          479.2
+        ],
+        "depth_value": 2.964,
+        "approach_state": "RECEDING",
+        "ttc_seconds": null,
+        "risk_level": "LOW",
+        "warning_state": "CAUTION"
+      }
+    ]
+  },
+  {
+    "frame_index": 15,
+    "timestamp_sec": 457945.1467,
+    "loop_fps": 11.53,
+    "det_latency_ms": 11.2,
+    "depth_latency_ms": 29.54,
+    "e2e_latency_ms": 53.36,
+    "active_tracks_count": 1,
+    "global_warning_state": "NO_WARNING",
+    "navigation_state": "CAUTION",
+    "safe_direction": "NONE",
+    "audio_spoken": true,
+    "audio_text": "Risk cleared. Path clear.",
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.903,
+        "bbox": [
+          87.0,
+          64.1,
+          549.5,
+          479.2
+        ],
+        "depth_value": 2.959,
+        "approach_state": "RECEDING",
+        "ttc_seconds": null,
+        "risk_level": "LOW",
+        "warning_state": "NO_WARNING"
+      }
+    ]
+  },
+  {
+    "frame_index": 16,
+    "timestamp_sec": 457945.2195,
+    "loop_fps": 11.63,
+    "det_latency_ms": 16.27,
+    "depth_latency_ms": 28.07,
+    "e2e_latency_ms": 55.86,
+    "active_tracks_count": 1,
+    "global_warning_state": "NO_WARNING",
+    "navigation_state": "CAUTION",
+    "safe_direction": "NONE",
+    "audio_spoken": false,
+    "audio_text": "",
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.903,
+        "bbox": [
+          86.6,
+          63.9,
+          549.6,
+          479.2
+        ],
+        "depth_value": 2.972,
+        "approach_state": "RECEDING",
+        "ttc_seconds": null,
+        "risk_level": "LOW",
+        "warning_state": "NO_WARNING"
+      }
+    ]
+  },
+  {
+    "frame_index": 17,
+    "timestamp_sec": 457948.488,
+    "loop_fps": 11.0,
+    "det_latency_ms": 9.8,
+    "depth_latency_ms": 29.14,
+    "e2e_latency_ms": 49.18,
+    "active_tracks_count": 1,
+    "global_warning_state": "NO_WARNING",
+    "navigation_state": "CONTINUE",
+    "safe_direction": "NONE",
+    "audio_spoken": false,
+    "audio_text": "",
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.875,
+        "bbox": [
+          80.4,
+          66.9,
+          533.2,
+          479.6
+        ],
+        "depth_value": 2.683,
+        "approach_state": "UNKNOWN",
+        "ttc_seconds": null,
+        "risk_level": "HIGH",
+        "warning_state": "NO_WARNING"
+      }
+    ]
+  },
+  {
+    "frame_index": 18,
+    "timestamp_sec": 457948.5516,
+    "loop_fps": 11.18,
+    "det_latency_ms": 13.23,
+    "depth_latency_ms": 30.07,
+    "e2e_latency_ms": 55.17,
+    "active_tracks_count": 1,
+    "global_warning_state": "NO_WARNING",
+    "navigation_state": "CONTINUE",
+    "safe_direction": "NONE",
+    "audio_spoken": false,
+    "audio_text": "",
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.862,
+        "bbox": [
+          80.6,
+          67.6,
+          525.2,
+          479.1
+        ],
+        "depth_value": 2.734,
+        "approach_state": "RECEDING",
+        "ttc_seconds": null,
+        "risk_level": "LOW",
+        "warning_state": "NO_WARNING"
+      }
+    ]
+  },
+  {
+    "frame_index": 19,
+    "timestamp_sec": 457948.6333,
+    "loop_fps": 11.26,
+    "det_latency_ms": 9.6,
+    "depth_latency_ms": 29.28,
+    "e2e_latency_ms": 51.4,
+    "active_tracks_count": 1,
+    "global_warning_state": "NO_WARNING",
+    "navigation_state": "CONTINUE",
+    "safe_direction": "NONE",
+    "audio_spoken": false,
+    "audio_text": "",
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.912,
+        "bbox": [
+          59.4,
+          71.9,
+          514.2,
+          477.7
+        ],
+        "depth_value": 2.758,
+        "approach_state": "RECEDING",
+        "ttc_seconds": null,
+        "risk_level": "LOW",
+        "warning_state": "NO_WARNING"
+      }
+    ]
+  },
+  {
+    "frame_index": 20,
+    "timestamp_sec": 457948.6971,
+    "loop_fps": 11.5,
+    "det_latency_ms": 9.77,
+    "depth_latency_ms": 29.11,
+    "e2e_latency_ms": 49.3,
+    "active_tracks_count": 1,
+    "global_warning_state": "NO_WARNING",
+    "navigation_state": "CONTINUE",
+    "safe_direction": "NONE",
+    "audio_spoken": false,
+    "audio_text": "",
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.912,
+        "bbox": [
+          54.3,
+          70.7,
+          513.7,
+          479.3
+        ],
+        "depth_value": 2.731,
+        "approach_state": "RECEDING",
+        "ttc_seconds": null,
+        "risk_level": "LOW",
+        "warning_state": "NO_WARNING"
+      }
+    ]
+  },
+  {
+    "frame_index": 21,
+    "timestamp_sec": 457948.7639,
+    "loop_fps": 11.63,
+    "det_latency_ms": 10.03,
+    "depth_latency_ms": 29.56,
+    "e2e_latency_ms": 51.37,
+    "active_tracks_count": 1,
+    "global_warning_state": "NO_WARNING",
+    "navigation_state": "CONTINUE",
+    "safe_direction": "NONE",
+    "audio_spoken": false,
+    "audio_text": "",
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.864,
+        "bbox": [
+          74.9,
+          75.3,
+          505.8,
+          477.4
+        ],
+        "depth_value": 2.978,
+        "approach_state": "RECEDING",
+        "ttc_seconds": null,
+        "risk_level": "LOW",
+        "warning_state": "NO_WARNING"
+      }
+    ]
+  },
+  {
+    "frame_index": 22,
+    "timestamp_sec": 457948.8267,
+    "loop_fps": 11.8,
+    "det_latency_ms": 12.89,
+    "depth_latency_ms": 29.29,
+    "e2e_latency_ms": 53.47,
+    "active_tracks_count": 1,
+    "global_warning_state": "NO_WARNING",
+    "navigation_state": "CONTINUE",
+    "safe_direction": "NONE",
+    "audio_spoken": false,
+    "audio_text": "",
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.874,
+        "bbox": [
+          58.6,
+          74.5,
+          506.5,
+          478.8
+        ],
+        "depth_value": 2.815,
+        "approach_state": "RECEDING",
+        "ttc_seconds": null,
+        "risk_level": "LOW",
+        "warning_state": "NO_WARNING"
+      }
+    ]
+  },
+  {
+    "frame_index": 23,
+    "timestamp_sec": 457948.9073,
+    "loop_fps": 11.84,
+    "det_latency_ms": 10.57,
+    "depth_latency_ms": 29.21,
+    "e2e_latency_ms": 50.88,
+    "active_tracks_count": 1,
+    "global_warning_state": "NO_WARNING",
+    "navigation_state": "CONTINUE",
+    "safe_direction": "NONE",
+    "audio_spoken": false,
+    "audio_text": "",
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.887,
+        "bbox": [
+          53.9,
+          73.2,
+          505.6,
+          479.8
+        ],
+        "depth_value": 2.675,
+        "approach_state": "RECEDING",
+        "ttc_seconds": null,
+        "risk_level": "LOW",
+        "warning_state": "NO_WARNING"
+      }
+    ]
+  },
+  {
+    "frame_index": 24,
+    "timestamp_sec": 457948.976,
+    "loop_fps": 11.94,
+    "det_latency_ms": 9.39,
+    "depth_latency_ms": 29.28,
+    "e2e_latency_ms": 51.66,
+    "active_tracks_count": 1,
+    "global_warning_state": "NO_WARNING",
+    "navigation_state": "CONTINUE",
+    "safe_direction": "NONE",
+    "audio_spoken": false,
+    "audio_text": "",
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.878,
+        "bbox": [
+          49.5,
+          73.7,
+          504.1,
+          480.0
+        ],
+        "depth_value": 2.759,
+        "approach_state": "RECEDING",
+        "ttc_seconds": null,
+        "risk_level": "LOW",
+        "warning_state": "NO_WARNING"
+      }
+    ]
+  },
+  {
+    "frame_index": 25,
+    "timestamp_sec": 457949.0426,
+    "loop_fps": 12.09,
+    "det_latency_ms": 9.46,
+    "depth_latency_ms": 29.1,
+    "e2e_latency_ms": 48.45,
+    "active_tracks_count": 1,
+    "global_warning_state": "NO_WARNING",
+    "navigation_state": "CONTINUE",
+    "safe_direction": "NONE",
+    "audio_spoken": false,
+    "audio_text": "",
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.878,
+        "bbox": [
+          49.5,
+          73.7,
+          504.0,
+          480.0
+        ],
+        "depth_value": 2.759,
+        "approach_state": "RECEDING",
+        "ttc_seconds": null,
+        "risk_level": "LOW",
+        "warning_state": "NO_WARNING"
+      }
+    ]
+  },
+  {
+    "frame_index": 26,
+    "timestamp_sec": 457949.1062,
+    "loop_fps": 12.21,
+    "det_latency_ms": 9.19,
+    "depth_latency_ms": 29.43,
+    "e2e_latency_ms": 50.34,
+    "active_tracks_count": 1,
+    "global_warning_state": "NO_WARNING",
+    "navigation_state": "CONTINUE",
+    "safe_direction": "NONE",
+    "audio_spoken": false,
+    "audio_text": "",
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.898,
+        "bbox": [
+          44.1,
+          73.6,
+          503.8,
+          480.0
+        ],
+        "depth_value": 2.729,
+        "approach_state": "RECEDING",
+        "ttc_seconds": null,
+        "risk_level": "LOW",
+        "warning_state": "NO_WARNING"
+      }
+    ]
+  },
+  {
+    "frame_index": 27,
+    "timestamp_sec": 457949.1706,
+    "loop_fps": 12.33,
+    "det_latency_ms": 9.07,
+    "depth_latency_ms": 29.04,
+    "e2e_latency_ms": 49.39,
+    "active_tracks_count": 1,
+    "global_warning_state": "NO_WARNING",
+    "navigation_state": "CONTINUE",
+    "safe_direction": "NONE",
+    "audio_spoken": false,
+    "audio_text": "",
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.914,
+        "bbox": [
+          39.1,
+          72.9,
+          504.6,
+          480.0
+        ],
+        "depth_value": 2.686,
+        "approach_state": "RECEDING",
+        "ttc_seconds": null,
+        "risk_level": "LOW",
+        "warning_state": "NO_WARNING"
+      }
+    ]
+  },
+  {
+    "frame_index": 28,
+    "timestamp_sec": 457949.2329,
+    "loop_fps": 12.48,
+    "det_latency_ms": 9.22,
+    "depth_latency_ms": 26.52,
+    "e2e_latency_ms": 47.04,
+    "active_tracks_count": 2,
+    "global_warning_state": "NO_WARNING",
+    "navigation_state": "CONTINUE",
+    "safe_direction": "NONE",
+    "audio_spoken": false,
+    "audio_text": "",
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.915,
+        "bbox": [
+          36.2,
+          72.4,
+          505.3,
+          480.0
+        ],
+        "depth_value": 2.63,
+        "approach_state": "RECEDING",
+        "ttc_seconds": null,
+        "risk_level": "LOW",
+        "warning_state": "NO_WARNING"
+      },
+      {
+        "track_id": 4,
+        "class_name": "tie",
+        "confidence": 0.35,
+        "bbox": [
+          284.0,
+          337.2,
+          336.5,
+          479.4
+        ],
+        "depth_value": 4.15,
+        "approach_state": "UNKNOWN",
+        "ttc_seconds": null,
+        "risk_level": "MEDIUM",
+        "warning_state": "NO_WARNING"
+      }
+    ]
+  },
+  {
+    "frame_index": 29,
+    "timestamp_sec": 457949.3008,
+    "loop_fps": 12.54,
+    "det_latency_ms": 9.36,
+    "depth_latency_ms": 27.36,
+    "e2e_latency_ms": 49.11,
+    "active_tracks_count": 1,
+    "global_warning_state": "NO_WARNING",
+    "navigation_state": "CONTINUE",
+    "safe_direction": "NONE",
+    "audio_spoken": false,
+    "audio_text": "",
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.907,
+        "bbox": [
+          34.4,
+          72.2,
+          506.2,
+          480.0
+        ],
+        "depth_value": 2.591,
+        "approach_state": "RECEDING",
+        "ttc_seconds": null,
+        "risk_level": "LOW",
+        "warning_state": "NO_WARNING"
+      }
+    ]
+  },
+  {
+    "frame_index": 30,
+    "timestamp_sec": 457949.3635,
+    "loop_fps": 13.05,
+    "det_latency_ms": 9.66,
+    "depth_latency_ms": 26.74,
+    "e2e_latency_ms": 48.64,
+    "active_tracks_count": 1,
+    "global_warning_state": "NO_WARNING",
+    "navigation_state": "CONTINUE",
+    "safe_direction": "NONE",
+    "audio_spoken": false,
+    "audio_text": "",
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.898,
+        "bbox": [
+          37.4,
+          69.5,
+          507.9,
+          479.4
+        ],
+        "depth_value": 2.71,
+        "approach_state": "RECEDING",
+        "ttc_seconds": null,
+        "risk_level": "LOW",
+        "warning_state": "NO_WARNING"
+      }
+    ]
+  },
+  {
+    "frame_index": 31,
+    "timestamp_sec": 457949.4279,
+    "loop_fps": 13.46,
+    "det_latency_ms": 9.22,
+    "depth_latency_ms": 26.48,
+    "e2e_latency_ms": 47.72,
+    "active_tracks_count": 1,
+    "global_warning_state": "NO_WARNING",
+    "navigation_state": "CONTINUE",
+    "safe_direction": "NONE",
+    "audio_spoken": false,
+    "audio_text": "",
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.908,
+        "bbox": [
+          31.9,
+          69.1,
+          509.5,
+          479.8
+        ],
+        "depth_value": 2.605,
+        "approach_state": "RECEDING",
+        "ttc_seconds": null,
+        "risk_level": "LOW",
+        "warning_state": "NO_WARNING"
+      }
+    ]
+  },
+  {
+    "frame_index": 32,
+    "timestamp_sec": 457949.5004,
+    "loop_fps": 13.48,
+    "det_latency_ms": 9.51,
+    "depth_latency_ms": 27.7,
+    "e2e_latency_ms": 48.55,
+    "active_tracks_count": 1,
+    "global_warning_state": "NO_WARNING",
+    "navigation_state": "CONTINUE",
+    "safe_direction": "NONE",
+    "audio_spoken": false,
+    "audio_text": "",
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.897,
+        "bbox": [
+          30.8,
+          68.1,
+          512.9,
+          480.0
+        ],
+        "depth_value": 2.636,
+        "approach_state": "RECEDING",
+        "ttc_seconds": null,
+        "risk_level": "LOW",
+        "warning_state": "NO_WARNING"
+      }
+    ]
+  },
+  {
+    "frame_index": 33,
+    "timestamp_sec": 457949.5693,
+    "loop_fps": 13.45,
+    "det_latency_ms": 9.73,
+    "depth_latency_ms": 26.62,
+    "e2e_latency_ms": 49.51,
+    "active_tracks_count": 1,
+    "global_warning_state": "NO_WARNING",
+    "navigation_state": "CONTINUE",
+    "safe_direction": "NONE",
+    "audio_spoken": false,
+    "audio_text": "",
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.884,
+        "bbox": [
+          66.6,
+          59.4,
+          526.6,
+          480.0
+        ],
+        "depth_value": 2.622,
+        "approach_state": "RECEDING",
+        "ttc_seconds": null,
+        "risk_level": "LOW",
+        "warning_state": "NO_WARNING"
+      }
+    ]
+  },
+  {
+    "frame_index": 34,
+    "timestamp_sec": 457949.6308,
+    "loop_fps": 13.56,
+    "det_latency_ms": 9.64,
+    "depth_latency_ms": 26.49,
+    "e2e_latency_ms": 47.27,
+    "active_tracks_count": 1,
+    "global_warning_state": "NO_WARNING",
+    "navigation_state": "CONTINUE",
+    "safe_direction": "NONE",
+    "audio_spoken": false,
+    "audio_text": "",
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.895,
+        "bbox": [
+          62.1,
+          63.5,
+          529.5,
+          480.0
+        ],
+        "depth_value": 2.618,
+        "approach_state": "RECEDING",
+        "ttc_seconds": null,
+        "risk_level": "LOW",
+        "warning_state": "NO_WARNING"
+      }
+    ]
+  },
+  {
+    "frame_index": 35,
+    "timestamp_sec": 457949.6956,
+    "loop_fps": 13.59,
+    "det_latency_ms": 9.04,
+    "depth_latency_ms": 26.96,
+    "e2e_latency_ms": 49.37,
+    "active_tracks_count": 1,
+    "global_warning_state": "NO_WARNING",
+    "navigation_state": "CONTINUE",
+    "safe_direction": "NONE",
+    "audio_spoken": false,
+    "audio_text": "",
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.901,
+        "bbox": [
+          48.6,
+          60.2,
+          536.7,
+          480.0
+        ],
+        "depth_value": 2.548,
+        "approach_state": "RECEDING",
+        "ttc_seconds": null,
+        "risk_level": "LOW",
+        "warning_state": "NO_WARNING"
+      }
+    ]
+  },
+  {
+    "frame_index": 36,
+    "timestamp_sec": 457949.7617,
+    "loop_fps": 13.65,
+    "det_latency_ms": 9.56,
+    "depth_latency_ms": 26.66,
+    "e2e_latency_ms": 48.2,
+    "active_tracks_count": 1,
     "global_warning_state": "NO_WARNING",
     "navigation_state": "CONTINUE",
     "safe_direction": "NONE",
@@ -18,45 +1186,13 @@
         "class_name": "person",
         "confidence": 0.902,
         "bbox": [
-          79.1,
-          51.6,
-          585.8,
-          479.4
+          38.7,
+          62.8,
+          539.0,
+          480.0
         ],
-        "depth_value": 3.482,
-        "approach_state": "UNKNOWN",
-        "ttc_seconds": null,
-        "risk_level": "HIGH",
-        "warning_state": "NO_WARNING"
-      },
-      {
-        "track_id": 2,
-        "class_name": "person",
-        "confidence": 0.589,
-        "bbox": [
-          528.6,
-          241.2,
-          607.2,
-          392.0
-        ],
-        "depth_value": 0.424,
-        "approach_state": "UNKNOWN",
-        "ttc_seconds": null,
-        "risk_level": "LOW",
-        "warning_state": "NO_WARNING"
-      },
-      {
-        "track_id": 3,
-        "class_name": "person",
-        "confidence": 0.376,
-        "bbox": [
-          598.4,
-          283.0,
-          639.8,
-          378.0
-        ],
-        "depth_value": 0.447,
-        "approach_state": "UNKNOWN",
+        "depth_value": 2.573,
+        "approach_state": "RECEDING",
         "ttc_seconds": null,
         "risk_level": "LOW",
         "warning_state": "NO_WARNING"
@@ -64,47 +1200,79 @@
     ]
   },
   {
-    "frame_index": 1,
-    "timestamp_sec": 436446.92,
-    "loop_fps": 5.51,
-    "det_latency_ms": 12.3,
-    "depth_latency_ms": 30.68,
-    "e2e_latency_ms": 51.64,
+    "frame_index": 37,
+    "timestamp_sec": 457949.8258,
+    "loop_fps": 14.07,
+    "det_latency_ms": 9.75,
+    "depth_latency_ms": 26.1,
+    "e2e_latency_ms": 47.71,
     "active_tracks_count": 2,
-    "global_warning_state": "CAUTION",
+    "global_warning_state": "NO_WARNING",
     "navigation_state": "CONTINUE",
     "safe_direction": "NONE",
-    "audio_spoken": true,
-    "audio_text": "Caution, person nearby.",
+    "audio_spoken": false,
+    "audio_text": "",
     "objects": [
       {
         "track_id": 1,
         "class_name": "person",
-        "confidence": 0.9,
+        "confidence": 0.905,
         "bbox": [
-          88.4,
-          62.8,
-          584.4,
-          479.4
+          38.1,
+          63.8,
+          541.3,
+          480.0
         ],
-        "depth_value": 3.038,
-        "approach_state": "UNKNOWN",
+        "depth_value": 2.545,
+        "approach_state": "RECEDING",
         "ttc_seconds": null,
-        "risk_level": "HIGH",
-        "warning_state": "CAUTION"
+        "risk_level": "LOW",
+        "warning_state": "NO_WARNING"
       },
       {
-        "track_id": 2,
-        "class_name": "person",
-        "confidence": 0.446,
+        "track_id": 4,
+        "class_name": "tie",
+        "confidence": 0.572,
         "bbox": [
-          526.7,
-          242.0,
-          587.7,
-          386.4
+          332.2,
+          335.7,
+          372.9,
+          479.9
         ],
-        "depth_value": 0.462,
+        "depth_value": 3.865,
         "approach_state": "UNKNOWN",
+        "ttc_seconds": null,
+        "risk_level": "MEDIUM",
+        "warning_state": "NO_WARNING"
+      }
+    ]
+  },
+  {
+    "frame_index": 38,
+    "timestamp_sec": 457949.8905,
+    "loop_fps": 14.12,
+    "det_latency_ms": 14.3,
+    "depth_latency_ms": 26.32,
+    "e2e_latency_ms": 52.49,
+    "active_tracks_count": 1,
+    "global_warning_state": "NO_WARNING",
+    "navigation_state": "CONTINUE",
+    "safe_direction": "NONE",
+    "audio_spoken": false,
+    "audio_text": "",
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.902,
+        "bbox": [
+          36.2,
+          63.9,
+          543.6,
+          480.0
+        ],
+        "depth_value": 2.568,
+        "approach_state": "RECEDING",
         "ttc_seconds": null,
         "risk_level": "LOW",
         "warning_state": "NO_WARNING"
@@ -112,13 +1280,589 @@
     ]
   },
   {
-    "frame_index": 2,
-    "timestamp_sec": 436446.9827,
-    "loop_fps": 8.52,
-    "det_latency_ms": 10.96,
-    "depth_latency_ms": 31.76,
-    "e2e_latency_ms": 57.69,
+    "frame_index": 39,
+    "timestamp_sec": 457949.9549,
+    "loop_fps": 14.25,
+    "det_latency_ms": 9.85,
+    "depth_latency_ms": 27.01,
+    "e2e_latency_ms": 49.47,
+    "active_tracks_count": 1,
+    "global_warning_state": "NO_WARNING",
+    "navigation_state": "CONTINUE",
+    "safe_direction": "NONE",
+    "audio_spoken": false,
+    "audio_text": "",
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.908,
+        "bbox": [
+          42.3,
+          60.5,
+          549.8,
+          480.0
+        ],
+        "depth_value": 2.621,
+        "approach_state": "RECEDING",
+        "ttc_seconds": null,
+        "risk_level": "LOW",
+        "warning_state": "NO_WARNING"
+      }
+    ]
+  },
+  {
+    "frame_index": 40,
+    "timestamp_sec": 457950.036,
+    "loop_fps": 14.19,
+    "det_latency_ms": 9.37,
+    "depth_latency_ms": 26.39,
+    "e2e_latency_ms": 47.45,
+    "active_tracks_count": 1,
+    "global_warning_state": "NO_WARNING",
+    "navigation_state": "CONTINUE",
+    "safe_direction": "NONE",
+    "audio_spoken": false,
+    "audio_text": "",
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.91,
+        "bbox": [
+          40.9,
+          63.6,
+          550.7,
+          480.0
+        ],
+        "depth_value": 2.698,
+        "approach_state": "RECEDING",
+        "ttc_seconds": null,
+        "risk_level": "LOW",
+        "warning_state": "NO_WARNING"
+      }
+    ]
+  },
+  {
+    "frame_index": 41,
+    "timestamp_sec": 457950.0992,
+    "loop_fps": 14.28,
+    "det_latency_ms": 9.74,
+    "depth_latency_ms": 26.58,
+    "e2e_latency_ms": 47.89,
+    "active_tracks_count": 1,
+    "global_warning_state": "NO_WARNING",
+    "navigation_state": "CONTINUE",
+    "safe_direction": "NONE",
+    "audio_spoken": false,
+    "audio_text": "",
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.909,
+        "bbox": [
+          40.2,
+          64.2,
+          551.3,
+          479.4
+        ],
+        "depth_value": 2.732,
+        "approach_state": "RECEDING",
+        "ttc_seconds": null,
+        "risk_level": "LOW",
+        "warning_state": "NO_WARNING"
+      }
+    ]
+  },
+  {
+    "frame_index": 42,
+    "timestamp_sec": 457950.1633,
+    "loop_fps": 14.34,
+    "det_latency_ms": 9.09,
+    "depth_latency_ms": 26.67,
+    "e2e_latency_ms": 47.04,
+    "active_tracks_count": 1,
+    "global_warning_state": "NO_WARNING",
+    "navigation_state": "CONTINUE",
+    "safe_direction": "NONE",
+    "audio_spoken": false,
+    "audio_text": "",
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.908,
+        "bbox": [
+          39.8,
+          65.3,
+          551.0,
+          479.1
+        ],
+        "depth_value": 2.548,
+        "approach_state": "RECEDING",
+        "ttc_seconds": null,
+        "risk_level": "LOW",
+        "warning_state": "NO_WARNING"
+      }
+    ]
+  },
+  {
+    "frame_index": 43,
+    "timestamp_sec": 457950.2271,
+    "loop_fps": 14.38,
+    "det_latency_ms": 9.97,
+    "depth_latency_ms": 26.45,
+    "e2e_latency_ms": 48.05,
+    "active_tracks_count": 1,
+    "global_warning_state": "NO_WARNING",
+    "navigation_state": "CONTINUE",
+    "safe_direction": "NONE",
+    "audio_spoken": false,
+    "audio_text": "",
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.908,
+        "bbox": [
+          38.1,
+          65.3,
+          550.6,
+          478.9
+        ],
+        "depth_value": 2.602,
+        "approach_state": "RECEDING",
+        "ttc_seconds": null,
+        "risk_level": "LOW",
+        "warning_state": "NO_WARNING"
+      }
+    ]
+  },
+  {
+    "frame_index": 44,
+    "timestamp_sec": 457950.2909,
+    "loop_fps": 14.52,
+    "det_latency_ms": 9.32,
+    "depth_latency_ms": 26.24,
+    "e2e_latency_ms": 46.99,
+    "active_tracks_count": 1,
+    "global_warning_state": "NO_WARNING",
+    "navigation_state": "CONTINUE",
+    "safe_direction": "NONE",
+    "audio_spoken": false,
+    "audio_text": "",
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.909,
+        "bbox": [
+          38.5,
+          65.6,
+          549.0,
+          478.9
+        ],
+        "depth_value": 2.589,
+        "approach_state": "RECEDING",
+        "ttc_seconds": null,
+        "risk_level": "LOW",
+        "warning_state": "NO_WARNING"
+      }
+    ]
+  },
+  {
+    "frame_index": 45,
+    "timestamp_sec": 457950.3544,
+    "loop_fps": 14.55,
+    "det_latency_ms": 9.57,
+    "depth_latency_ms": 26.13,
+    "e2e_latency_ms": 47.54,
+    "active_tracks_count": 1,
+    "global_warning_state": "NO_WARNING",
+    "navigation_state": "CONTINUE",
+    "safe_direction": "NONE",
+    "audio_spoken": false,
+    "audio_text": "",
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.91,
+        "bbox": [
+          28.2,
+          69.1,
+          541.4,
+          475.9
+        ],
+        "depth_value": 2.477,
+        "approach_state": "RECEDING",
+        "ttc_seconds": null,
+        "risk_level": "LOW",
+        "warning_state": "NO_WARNING"
+      }
+    ]
+  },
+  {
+    "frame_index": 46,
+    "timestamp_sec": 457950.4184,
+    "loop_fps": 14.62,
+    "det_latency_ms": 9.48,
+    "depth_latency_ms": 26.69,
+    "e2e_latency_ms": 47.93,
+    "active_tracks_count": 1,
+    "global_warning_state": "NO_WARNING",
+    "navigation_state": "CONTINUE",
+    "safe_direction": "NONE",
+    "audio_spoken": false,
+    "audio_text": "",
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.909,
+        "bbox": [
+          32.0,
+          65.7,
+          539.5,
+          478.3
+        ],
+        "depth_value": 2.478,
+        "approach_state": "RECEDING",
+        "ttc_seconds": null,
+        "risk_level": "LOW",
+        "warning_state": "NO_WARNING"
+      }
+    ]
+  },
+  {
+    "frame_index": 47,
+    "timestamp_sec": 457950.488,
+    "loop_fps": 15.09,
+    "det_latency_ms": 9.52,
+    "depth_latency_ms": 26.97,
+    "e2e_latency_ms": 48.83,
+    "active_tracks_count": 1,
+    "global_warning_state": "NO_WARNING",
+    "navigation_state": "CONTINUE",
+    "safe_direction": "NONE",
+    "audio_spoken": false,
+    "audio_text": "",
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.897,
+        "bbox": [
+          33.8,
+          64.7,
+          536.8,
+          479.3
+        ],
+        "depth_value": 2.497,
+        "approach_state": "RECEDING",
+        "ttc_seconds": null,
+        "risk_level": "LOW",
+        "warning_state": "NO_WARNING"
+      }
+    ]
+  },
+  {
+    "frame_index": 48,
+    "timestamp_sec": 457950.5598,
+    "loop_fps": 15.04,
+    "det_latency_ms": 14.91,
+    "depth_latency_ms": 26.86,
+    "e2e_latency_ms": 55.05,
+    "active_tracks_count": 1,
+    "global_warning_state": "NO_WARNING",
+    "navigation_state": "CONTINUE",
+    "safe_direction": "NONE",
+    "audio_spoken": false,
+    "audio_text": "",
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.908,
+        "bbox": [
+          32.7,
+          67.0,
+          531.1,
+          477.7
+        ],
+        "depth_value": 2.521,
+        "approach_state": "RECEDING",
+        "ttc_seconds": null,
+        "risk_level": "LOW",
+        "warning_state": "NO_WARNING"
+      }
+    ]
+  },
+  {
+    "frame_index": 49,
+    "timestamp_sec": 457950.6336,
+    "loop_fps": 15.1,
+    "det_latency_ms": 9.59,
+    "depth_latency_ms": 26.58,
+    "e2e_latency_ms": 48.7,
+    "active_tracks_count": 1,
+    "global_warning_state": "NO_WARNING",
+    "navigation_state": "CONTINUE",
+    "safe_direction": "NONE",
+    "audio_spoken": false,
+    "audio_text": "",
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.918,
+        "bbox": [
+          37.4,
+          65.6,
+          530.0,
+          479.2
+        ],
+        "depth_value": 2.544,
+        "approach_state": "RECEDING",
+        "ttc_seconds": null,
+        "risk_level": "LOW",
+        "warning_state": "NO_WARNING"
+      }
+    ]
+  },
+  {
+    "frame_index": 50,
+    "timestamp_sec": 457950.7025,
+    "loop_fps": 15.05,
+    "det_latency_ms": 10.24,
+    "depth_latency_ms": 26.69,
+    "e2e_latency_ms": 48.54,
+    "active_tracks_count": 1,
+    "global_warning_state": "NO_WARNING",
+    "navigation_state": "CONTINUE",
+    "safe_direction": "NONE",
+    "audio_spoken": false,
+    "audio_text": "",
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.92,
+        "bbox": [
+          38.4,
+          65.6,
+          528.3,
+          479.9
+        ],
+        "depth_value": 2.617,
+        "approach_state": "RECEDING",
+        "ttc_seconds": null,
+        "risk_level": "LOW",
+        "warning_state": "NO_WARNING"
+      }
+    ]
+  },
+  {
+    "frame_index": 51,
+    "timestamp_sec": 457950.773,
+    "loop_fps": 15.0,
+    "det_latency_ms": 15.61,
+    "depth_latency_ms": 26.74,
+    "e2e_latency_ms": 54.06,
     "active_tracks_count": 2,
+    "global_warning_state": "NO_WARNING",
+    "navigation_state": "CONTINUE",
+    "safe_direction": "NONE",
+    "audio_spoken": false,
+    "audio_text": "",
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.914,
+        "bbox": [
+          33.4,
+          68.4,
+          519.2,
+          478.1
+        ],
+        "depth_value": 2.519,
+        "approach_state": "RECEDING",
+        "ttc_seconds": null,
+        "risk_level": "LOW",
+        "warning_state": "NO_WARNING"
+      },
+      {
+        "track_id": 4,
+        "class_name": "tie",
+        "confidence": 0.506,
+        "bbox": [
+          309.2,
+          335.9,
+          346.0,
+          478.7
+        ],
+        "depth_value": 3.951,
+        "approach_state": "UNKNOWN",
+        "ttc_seconds": null,
+        "risk_level": "MEDIUM",
+        "warning_state": "NO_WARNING"
+      }
+    ]
+  },
+  {
+    "frame_index": 52,
+    "timestamp_sec": 457950.8526,
+    "loop_fps": 14.93,
+    "det_latency_ms": 10.29,
+    "depth_latency_ms": 28.01,
+    "e2e_latency_ms": 50.0,
+    "active_tracks_count": 2,
+    "global_warning_state": "NO_WARNING",
+    "navigation_state": "CONTINUE",
+    "safe_direction": "NONE",
+    "audio_spoken": false,
+    "audio_text": "",
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.896,
+        "bbox": [
+          35.4,
+          66.4,
+          518.2,
+          479.8
+        ],
+        "depth_value": 2.566,
+        "approach_state": "RECEDING",
+        "ttc_seconds": null,
+        "risk_level": "LOW",
+        "warning_state": "NO_WARNING"
+      },
+      {
+        "track_id": 4,
+        "class_name": "tie",
+        "confidence": 0.339,
+        "bbox": [
+          308.9,
+          335.7,
+          344.9,
+          478.8
+        ],
+        "depth_value": 3.967,
+        "approach_state": "STABLE",
+        "ttc_seconds": null,
+        "risk_level": "LOW",
+        "warning_state": "NO_WARNING"
+      }
+    ]
+  },
+  {
+    "frame_index": 53,
+    "timestamp_sec": 457950.9272,
+    "loop_fps": 14.94,
+    "det_latency_ms": 12.86,
+    "depth_latency_ms": 26.76,
+    "e2e_latency_ms": 51.64,
+    "active_tracks_count": 1,
+    "global_warning_state": "NO_WARNING",
+    "navigation_state": "CONTINUE",
+    "safe_direction": "NONE",
+    "audio_spoken": false,
+    "audio_text": "",
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.819,
+        "bbox": [
+          48.0,
+          65.9,
+          517.2,
+          480.0
+        ],
+        "depth_value": 2.681,
+        "approach_state": "RECEDING",
+        "ttc_seconds": null,
+        "risk_level": "LOW",
+        "warning_state": "NO_WARNING"
+      }
+    ]
+  },
+  {
+    "frame_index": 54,
+    "timestamp_sec": 457950.9954,
+    "loop_fps": 14.98,
+    "det_latency_ms": 10.41,
+    "depth_latency_ms": 26.03,
+    "e2e_latency_ms": 47.42,
+    "active_tracks_count": 1,
+    "global_warning_state": "NO_WARNING",
+    "navigation_state": "CONTINUE",
+    "safe_direction": "NONE",
+    "audio_spoken": false,
+    "audio_text": "",
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.821,
+        "bbox": [
+          81.6,
+          65.7,
+          516.9,
+          480.0
+        ],
+        "depth_value": 2.888,
+        "approach_state": "STABLE",
+        "ttc_seconds": 10.98,
+        "risk_level": "MEDIUM",
+        "warning_state": "NO_WARNING"
+      }
+    ]
+  },
+  {
+    "frame_index": 55,
+    "timestamp_sec": 457951.059,
+    "loop_fps": 14.97,
+    "det_latency_ms": 9.35,
+    "depth_latency_ms": 27.22,
+    "e2e_latency_ms": 47.84,
+    "active_tracks_count": 1,
+    "global_warning_state": "CAUTION",
+    "navigation_state": "CONTINUE",
+    "safe_direction": "NONE",
+    "audio_spoken": true,
+    "audio_text": "Caution. Person nearby.",
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.831,
+        "bbox": [
+          64.2,
+          65.6,
+          517.0,
+          480.0
+        ],
+        "depth_value": 2.815,
+        "approach_state": "STABLE",
+        "ttc_seconds": 7.11,
+        "risk_level": "MEDIUM",
+        "warning_state": "CAUTION"
+      }
+    ]
+  },
+  {
+    "frame_index": 56,
+    "timestamp_sec": 457951.1284,
+    "loop_fps": 14.95,
+    "det_latency_ms": 9.41,
+    "depth_latency_ms": 26.65,
+    "e2e_latency_ms": 47.83,
+    "active_tracks_count": 1,
     "global_warning_state": "CAUTION",
     "navigation_state": "CONTINUE",
     "safe_direction": "NONE",
@@ -128,31 +1872,127 @@
       {
         "track_id": 1,
         "class_name": "person",
-        "confidence": 0.893,
+        "confidence": 0.827,
         "bbox": [
-          86.6,
-          68.7,
-          582.7,
-          479.2
+          58.7,
+          65.8,
+          519.0,
+          480.0
         ],
-        "depth_value": 2.994,
+        "depth_value": 2.718,
         "approach_state": "STABLE",
-        "ttc_seconds": null,
-        "risk_level": "LOW",
+        "ttc_seconds": 5.96,
+        "risk_level": "MEDIUM",
+        "warning_state": "CAUTION"
+      }
+    ]
+  },
+  {
+    "frame_index": 57,
+    "timestamp_sec": 457951.1978,
+    "loop_fps": 14.88,
+    "det_latency_ms": 13.3,
+    "depth_latency_ms": 26.52,
+    "e2e_latency_ms": 51.63,
+    "active_tracks_count": 1,
+    "global_warning_state": "CAUTION",
+    "navigation_state": "CAUTION",
+    "safe_direction": "NONE",
+    "audio_spoken": true,
+    "audio_text": "Caution. Person nearby.",
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.857,
+        "bbox": [
+          49.8,
+          66.1,
+          519.5,
+          480.0
+        ],
+        "depth_value": 2.666,
+        "approach_state": "STABLE",
+        "ttc_seconds": 6.13,
+        "risk_level": "MEDIUM",
+        "warning_state": "CAUTION"
+      }
+    ]
+  },
+  {
+    "frame_index": 58,
+    "timestamp_sec": 457951.2738,
+    "loop_fps": 14.75,
+    "det_latency_ms": 14.62,
+    "depth_latency_ms": 27.17,
+    "e2e_latency_ms": 53.82,
+    "active_tracks_count": 1,
+    "global_warning_state": "CAUTION",
+    "navigation_state": "CAUTION",
+    "safe_direction": "NONE",
+    "audio_spoken": false,
+    "audio_text": "",
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.854,
+        "bbox": [
+          43.0,
+          67.3,
+          521.4,
+          479.7
+        ],
+        "depth_value": 2.631,
+        "approach_state": "STABLE",
+        "ttc_seconds": 7.16,
+        "risk_level": "MEDIUM",
+        "warning_state": "CAUTION"
+      }
+    ]
+  },
+  {
+    "frame_index": 59,
+    "timestamp_sec": 457951.3426,
+    "loop_fps": 14.78,
+    "det_latency_ms": 10.08,
+    "depth_latency_ms": 27.75,
+    "e2e_latency_ms": 50.06,
+    "active_tracks_count": 2,
+    "global_warning_state": "CAUTION",
+    "navigation_state": "CAUTION",
+    "safe_direction": "NONE",
+    "audio_spoken": true,
+    "audio_text": "Caution. Person nearby.",
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.894,
+        "bbox": [
+          38.1,
+          68.8,
+          521.8,
+          480.0
+        ],
+        "depth_value": 2.553,
+        "approach_state": "APPROACHING",
+        "ttc_seconds": 14.07,
+        "risk_level": "MEDIUM",
         "warning_state": "CAUTION"
       },
       {
         "track_id": 4,
-        "class_name": "person",
-        "confidence": 0.779,
+        "class_name": "tie",
+        "confidence": 0.279,
         "bbox": [
-          545.8,
-          36.4,
-          639.3,
-          478.5
+          313.5,
+          331.0,
+          348.5,
+          478.7
         ],
-        "depth_value": 1.205,
-        "approach_state": "UNKNOWN",
+        "depth_value": 3.909,
+        "approach_state": "RECEDING",
         "ttc_seconds": null,
         "risk_level": "LOW",
         "warning_state": "NO_WARNING"
@@ -160,12 +2000,12 @@
     ]
   },
   {
-    "frame_index": 3,
-    "timestamp_sec": 436447.0508,
-    "loop_fps": 9.85,
-    "det_latency_ms": 15.34,
-    "depth_latency_ms": 31.39,
-    "e2e_latency_ms": 61.84,
+    "frame_index": 60,
+    "timestamp_sec": 457951.4063,
+    "loop_fps": 14.77,
+    "det_latency_ms": 11.92,
+    "depth_latency_ms": 26.68,
+    "e2e_latency_ms": 50.31,
     "active_tracks_count": 2,
     "global_warning_state": "CAUTION",
     "navigation_state": "CAUTION",
@@ -176,31 +2016,31 @@
       {
         "track_id": 1,
         "class_name": "person",
-        "confidence": 0.895,
+        "confidence": 0.883,
         "bbox": [
-          88.0,
-          71.2,
-          580.7,
-          479.0
+          37.1,
+          70.2,
+          522.5,
+          480.0
         ],
-        "depth_value": 2.981,
-        "approach_state": "STABLE",
+        "depth_value": 2.522,
+        "approach_state": "APPROACHING",
         "ttc_seconds": null,
-        "risk_level": "LOW",
+        "risk_level": "MEDIUM",
         "warning_state": "CAUTION"
       },
       {
         "track_id": 4,
-        "class_name": "person",
-        "confidence": 0.767,
+        "class_name": "tie",
+        "confidence": 0.397,
         "bbox": [
-          510.9,
-          33.8,
-          639.2,
-          478.7
+          313.9,
+          331.1,
+          349.1,
+          479.1
         ],
-        "depth_value": 1.191,
-        "approach_state": "UNKNOWN",
+        "depth_value": 3.9,
+        "approach_state": "RECEDING",
         "ttc_seconds": null,
         "risk_level": "LOW",
         "warning_state": "NO_WARNING"
@@ -208,13 +2048,221 @@
     ]
   },
   {
-    "frame_index": 4,
-    "timestamp_sec": 436447.1233,
-    "loop_fps": 11.0,
-    "det_latency_ms": 11.39,
-    "depth_latency_ms": 29.32,
-    "e2e_latency_ms": 53.42,
+    "frame_index": 61,
+    "timestamp_sec": 457951.4686,
+    "loop_fps": 14.81,
+    "det_latency_ms": 9.54,
+    "depth_latency_ms": 26.36,
+    "e2e_latency_ms": 47.08,
     "active_tracks_count": 2,
+    "global_warning_state": "CAUTION",
+    "navigation_state": "CAUTION",
+    "safe_direction": "NONE",
+    "audio_spoken": false,
+    "audio_text": "",
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.889,
+        "bbox": [
+          36.2,
+          71.0,
+          522.7,
+          480.0
+        ],
+        "depth_value": 2.524,
+        "approach_state": "APPROACHING",
+        "ttc_seconds": null,
+        "risk_level": "MEDIUM",
+        "warning_state": "CAUTION"
+      },
+      {
+        "track_id": 4,
+        "class_name": "tie",
+        "confidence": 0.258,
+        "bbox": [
+          314.9,
+          330.9,
+          349.5,
+          479.3
+        ],
+        "depth_value": 3.91,
+        "approach_state": "RECEDING",
+        "ttc_seconds": null,
+        "risk_level": "LOW",
+        "warning_state": "NO_WARNING"
+      }
+    ]
+  },
+  {
+    "frame_index": 62,
+    "timestamp_sec": 457951.5311,
+    "loop_fps": 14.87,
+    "det_latency_ms": 10.38,
+    "depth_latency_ms": 26.66,
+    "e2e_latency_ms": 49.49,
+    "active_tracks_count": 1,
+    "global_warning_state": "CAUTION",
+    "navigation_state": "CAUTION",
+    "safe_direction": "NONE",
+    "audio_spoken": false,
+    "audio_text": "",
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.907,
+        "bbox": [
+          34.7,
+          72.1,
+          523.3,
+          479.8
+        ],
+        "depth_value": 2.38,
+        "approach_state": "APPROACHING",
+        "ttc_seconds": null,
+        "risk_level": "MEDIUM",
+        "warning_state": "CAUTION"
+      }
+    ]
+  },
+  {
+    "frame_index": 63,
+    "timestamp_sec": 457951.5941,
+    "loop_fps": 14.91,
+    "det_latency_ms": 12.66,
+    "depth_latency_ms": 26.84,
+    "e2e_latency_ms": 50.41,
+    "active_tracks_count": 1,
+    "global_warning_state": "CAUTION",
+    "navigation_state": "CAUTION",
+    "safe_direction": "NONE",
+    "audio_spoken": false,
+    "audio_text": "",
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.896,
+        "bbox": [
+          34.3,
+          72.8,
+          523.1,
+          479.9
+        ],
+        "depth_value": 2.383,
+        "approach_state": "APPROACHING",
+        "ttc_seconds": null,
+        "risk_level": "MEDIUM",
+        "warning_state": "CAUTION"
+      }
+    ]
+  },
+  {
+    "frame_index": 64,
+    "timestamp_sec": 457951.6629,
+    "loop_fps": 14.81,
+    "det_latency_ms": 12.94,
+    "depth_latency_ms": 26.86,
+    "e2e_latency_ms": 53.04,
+    "active_tracks_count": 1,
+    "global_warning_state": "CAUTION",
+    "navigation_state": "CAUTION",
+    "safe_direction": "NONE",
+    "audio_spoken": false,
+    "audio_text": "",
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.907,
+        "bbox": [
+          34.0,
+          72.9,
+          523.2,
+          480.0
+        ],
+        "depth_value": 2.418,
+        "approach_state": "RECEDING",
+        "ttc_seconds": null,
+        "risk_level": "LOW",
+        "warning_state": "CAUTION"
+      }
+    ]
+  },
+  {
+    "frame_index": 65,
+    "timestamp_sec": 457951.7324,
+    "loop_fps": 14.84,
+    "det_latency_ms": 9.29,
+    "depth_latency_ms": 26.48,
+    "e2e_latency_ms": 47.12,
+    "active_tracks_count": 1,
+    "global_warning_state": "CAUTION",
+    "navigation_state": "CAUTION",
+    "safe_direction": "NONE",
+    "audio_spoken": false,
+    "audio_text": "",
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.898,
+        "bbox": [
+          35.3,
+          72.8,
+          523.2,
+          480.0
+        ],
+        "depth_value": 2.404,
+        "approach_state": "RECEDING",
+        "ttc_seconds": null,
+        "risk_level": "LOW",
+        "warning_state": "CAUTION"
+      }
+    ]
+  },
+  {
+    "frame_index": 66,
+    "timestamp_sec": 457951.7953,
+    "loop_fps": 14.84,
+    "det_latency_ms": 9.42,
+    "depth_latency_ms": 26.5,
+    "e2e_latency_ms": 48.82,
+    "active_tracks_count": 1,
+    "global_warning_state": "NO_WARNING",
+    "navigation_state": "CAUTION",
+    "safe_direction": "NONE",
+    "audio_spoken": true,
+    "audio_text": "Risk cleared. Path clear.",
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.881,
+        "bbox": [
+          38.6,
+          72.4,
+          523.4,
+          479.9
+        ],
+        "depth_value": 2.425,
+        "approach_state": "RECEDING",
+        "ttc_seconds": null,
+        "risk_level": "LOW",
+        "warning_state": "NO_WARNING"
+      }
+    ]
+  },
+  {
+    "frame_index": 67,
+    "timestamp_sec": 457951.8564,
+    "loop_fps": 14.83,
+    "det_latency_ms": 12.07,
+    "depth_latency_ms": 27.5,
+    "e2e_latency_ms": 53.13,
+    "active_tracks_count": 1,
     "global_warning_state": "NO_WARNING",
     "navigation_state": "CAUTION",
     "safe_direction": "NONE",
@@ -224,34 +2272,2674 @@
       {
         "track_id": 1,
         "class_name": "person",
+        "confidence": 0.898,
+        "bbox": [
+          36.5,
+          72.0,
+          523.2,
+          479.9
+        ],
+        "depth_value": 2.425,
+        "approach_state": "RECEDING",
+        "ttc_seconds": null,
+        "risk_level": "LOW",
+        "warning_state": "NO_WARNING"
+      }
+    ]
+  },
+  {
+    "frame_index": 68,
+    "timestamp_sec": 457951.9338,
+    "loop_fps": 14.79,
+    "det_latency_ms": 11.95,
+    "depth_latency_ms": 26.71,
+    "e2e_latency_ms": 50.71,
+    "active_tracks_count": 1,
+    "global_warning_state": "NO_WARNING",
+    "navigation_state": "CONTINUE",
+    "safe_direction": "NONE",
+    "audio_spoken": false,
+    "audio_text": "",
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.911,
+        "bbox": [
+          32.7,
+          71.7,
+          522.9,
+          480.0
+        ],
+        "depth_value": 2.413,
+        "approach_state": "RECEDING",
+        "ttc_seconds": null,
+        "risk_level": "LOW",
+        "warning_state": "NO_WARNING"
+      }
+    ]
+  },
+  {
+    "frame_index": 69,
+    "timestamp_sec": 457952.0027,
+    "loop_fps": 14.77,
+    "det_latency_ms": 9.28,
+    "depth_latency_ms": 26.41,
+    "e2e_latency_ms": 45.85,
+    "active_tracks_count": 1,
+    "global_warning_state": "NO_WARNING",
+    "navigation_state": "CONTINUE",
+    "safe_direction": "NONE",
+    "audio_spoken": false,
+    "audio_text": "",
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.911,
+        "bbox": [
+          31.4,
+          71.4,
+          522.9,
+          479.9
+        ],
+        "depth_value": 2.394,
+        "approach_state": "RECEDING",
+        "ttc_seconds": null,
+        "risk_level": "LOW",
+        "warning_state": "NO_WARNING"
+      }
+    ]
+  },
+  {
+    "frame_index": 70,
+    "timestamp_sec": 457952.0656,
+    "loop_fps": 14.84,
+    "det_latency_ms": 9.67,
+    "depth_latency_ms": 27.45,
+    "e2e_latency_ms": 50.89,
+    "active_tracks_count": 1,
+    "global_warning_state": "NO_WARNING",
+    "navigation_state": "CONTINUE",
+    "safe_direction": "NONE",
+    "audio_spoken": false,
+    "audio_text": "",
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.914,
+        "bbox": [
+          31.2,
+          71.4,
+          522.7,
+          480.0
+        ],
+        "depth_value": 2.388,
+        "approach_state": "RECEDING",
+        "ttc_seconds": null,
+        "risk_level": "LOW",
+        "warning_state": "NO_WARNING"
+      }
+    ]
+  },
+  {
+    "frame_index": 71,
+    "timestamp_sec": 457952.1413,
+    "loop_fps": 14.75,
+    "det_latency_ms": 11.34,
+    "depth_latency_ms": 28.09,
+    "e2e_latency_ms": 51.26,
+    "active_tracks_count": 1,
+    "global_warning_state": "NO_WARNING",
+    "navigation_state": "CONTINUE",
+    "safe_direction": "NONE",
+    "audio_spoken": false,
+    "audio_text": "",
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.921,
+        "bbox": [
+          30.6,
+          71.2,
+          522.7,
+          480.0
+        ],
+        "depth_value": 2.365,
+        "approach_state": "RECEDING",
+        "ttc_seconds": null,
+        "risk_level": "LOW",
+        "warning_state": "NO_WARNING"
+      }
+    ]
+  },
+  {
+    "frame_index": 72,
+    "timestamp_sec": 457952.2047,
+    "loop_fps": 14.8,
+    "det_latency_ms": 9.4,
+    "depth_latency_ms": 26.48,
+    "e2e_latency_ms": 46.4,
+    "active_tracks_count": 1,
+    "global_warning_state": "NO_WARNING",
+    "navigation_state": "CONTINUE",
+    "safe_direction": "NONE",
+    "audio_spoken": false,
+    "audio_text": "",
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.909,
+        "bbox": [
+          31.8,
+          71.1,
+          523.0,
+          479.9
+        ],
+        "depth_value": 2.351,
+        "approach_state": "RECEDING",
+        "ttc_seconds": null,
+        "risk_level": "LOW",
+        "warning_state": "NO_WARNING"
+      }
+    ]
+  },
+  {
+    "frame_index": 73,
+    "timestamp_sec": 457952.2656,
+    "loop_fps": 14.83,
+    "det_latency_ms": 9.02,
+    "depth_latency_ms": 26.76,
+    "e2e_latency_ms": 46.44,
+    "active_tracks_count": 1,
+    "global_warning_state": "NO_WARNING",
+    "navigation_state": "CONTINUE",
+    "safe_direction": "NONE",
+    "audio_spoken": false,
+    "audio_text": "",
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.922,
+        "bbox": [
+          31.2,
+          71.2,
+          522.4,
+          480.0
+        ],
+        "depth_value": 2.355,
+        "approach_state": "RECEDING",
+        "ttc_seconds": null,
+        "risk_level": "LOW",
+        "warning_state": "NO_WARNING"
+      }
+    ]
+  },
+  {
+    "frame_index": 74,
+    "timestamp_sec": 457952.3296,
+    "loop_fps": 14.8,
+    "det_latency_ms": 10.98,
+    "depth_latency_ms": 26.84,
+    "e2e_latency_ms": 48.85,
+    "active_tracks_count": 1,
+    "global_warning_state": "NO_WARNING",
+    "navigation_state": "CONTINUE",
+    "safe_direction": "NONE",
+    "audio_spoken": false,
+    "audio_text": "",
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.921,
+        "bbox": [
+          30.3,
+          71.3,
+          522.0,
+          480.0
+        ],
+        "depth_value": 2.328,
+        "approach_state": "RECEDING",
+        "ttc_seconds": null,
+        "risk_level": "LOW",
+        "warning_state": "NO_WARNING"
+      }
+    ]
+  },
+  {
+    "frame_index": 75,
+    "timestamp_sec": 457952.3982,
+    "loop_fps": 14.78,
+    "det_latency_ms": 9.43,
+    "depth_latency_ms": 27.03,
+    "e2e_latency_ms": 47.02,
+    "active_tracks_count": 1,
+    "global_warning_state": "NO_WARNING",
+    "navigation_state": "CONTINUE",
+    "safe_direction": "NONE",
+    "audio_spoken": false,
+    "audio_text": "",
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.924,
+        "bbox": [
+          29.5,
+          71.2,
+          521.7,
+          480.0
+        ],
+        "depth_value": 2.33,
+        "approach_state": "RECEDING",
+        "ttc_seconds": null,
+        "risk_level": "LOW",
+        "warning_state": "NO_WARNING"
+      }
+    ]
+  },
+  {
+    "frame_index": 76,
+    "timestamp_sec": 457952.4685,
+    "loop_fps": 14.73,
+    "det_latency_ms": 9.58,
+    "depth_latency_ms": 26.33,
+    "e2e_latency_ms": 47.24,
+    "active_tracks_count": 1,
+    "global_warning_state": "NO_WARNING",
+    "navigation_state": "CONTINUE",
+    "safe_direction": "NONE",
+    "audio_spoken": false,
+    "audio_text": "",
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.916,
+        "bbox": [
+          30.9,
+          70.9,
+          521.9,
+          480.0
+        ],
+        "depth_value": 2.393,
+        "approach_state": "RECEDING",
+        "ttc_seconds": null,
+        "risk_level": "LOW",
+        "warning_state": "NO_WARNING"
+      }
+    ]
+  },
+  {
+    "frame_index": 77,
+    "timestamp_sec": 457952.5309,
+    "loop_fps": 14.79,
+    "det_latency_ms": 9.62,
+    "depth_latency_ms": 26.36,
+    "e2e_latency_ms": 47.29,
+    "active_tracks_count": 1,
+    "global_warning_state": "NO_WARNING",
+    "navigation_state": "CONTINUE",
+    "safe_direction": "NONE",
+    "audio_spoken": false,
+    "audio_text": "",
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.909,
+        "bbox": [
+          31.5,
+          70.4,
+          521.6,
+          480.0
+        ],
+        "depth_value": 2.339,
+        "approach_state": "RECEDING",
+        "ttc_seconds": null,
+        "risk_level": "LOW",
+        "warning_state": "NO_WARNING"
+      }
+    ]
+  },
+  {
+    "frame_index": 78,
+    "timestamp_sec": 457952.5939,
+    "loop_fps": 14.88,
+    "det_latency_ms": 10.31,
+    "depth_latency_ms": 26.65,
+    "e2e_latency_ms": 48.64,
+    "active_tracks_count": 1,
+    "global_warning_state": "NO_WARNING",
+    "navigation_state": "CONTINUE",
+    "safe_direction": "NONE",
+    "audio_spoken": false,
+    "audio_text": "",
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.907,
+        "bbox": [
+          31.9,
+          69.9,
+          521.4,
+          479.9
+        ],
+        "depth_value": 2.403,
+        "approach_state": "RECEDING",
+        "ttc_seconds": null,
+        "risk_level": "LOW",
+        "warning_state": "NO_WARNING"
+      }
+    ]
+  },
+  {
+    "frame_index": 79,
+    "timestamp_sec": 457952.6579,
+    "loop_fps": 14.88,
+    "det_latency_ms": 13.45,
+    "depth_latency_ms": 27.02,
+    "e2e_latency_ms": 53.27,
+    "active_tracks_count": 1,
+    "global_warning_state": "NO_WARNING",
+    "navigation_state": "CONTINUE",
+    "safe_direction": "NONE",
+    "audio_spoken": false,
+    "audio_text": "",
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.903,
+        "bbox": [
+          32.8,
+          69.4,
+          522.1,
+          479.8
+        ],
+        "depth_value": 2.378,
+        "approach_state": "RECEDING",
+        "ttc_seconds": null,
+        "risk_level": "LOW",
+        "warning_state": "NO_WARNING"
+      }
+    ]
+  },
+  {
+    "frame_index": 80,
+    "timestamp_sec": 457952.7344,
+    "loop_fps": 14.83,
+    "det_latency_ms": 11.5,
+    "depth_latency_ms": 27.56,
+    "e2e_latency_ms": 52.24,
+    "active_tracks_count": 1,
+    "global_warning_state": "NO_WARNING",
+    "navigation_state": "CONTINUE",
+    "safe_direction": "NONE",
+    "audio_spoken": false,
+    "audio_text": "",
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.905,
+        "bbox": [
+          32.1,
+          67.2,
+          522.1,
+          479.9
+        ],
+        "depth_value": 2.376,
+        "approach_state": "RECEDING",
+        "ttc_seconds": null,
+        "risk_level": "LOW",
+        "warning_state": "NO_WARNING"
+      }
+    ]
+  },
+  {
+    "frame_index": 81,
+    "timestamp_sec": 457952.8009,
+    "loop_fps": 14.93,
+    "det_latency_ms": 9.95,
+    "depth_latency_ms": 27.19,
+    "e2e_latency_ms": 48.61,
+    "active_tracks_count": 1,
+    "global_warning_state": "NO_WARNING",
+    "navigation_state": "CONTINUE",
+    "safe_direction": "NONE",
+    "audio_spoken": false,
+    "audio_text": "",
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.878,
+        "bbox": [
+          33.5,
+          66.0,
+          522.2,
+          479.7
+        ],
+        "depth_value": 2.376,
+        "approach_state": "RECEDING",
+        "ttc_seconds": null,
+        "risk_level": "LOW",
+        "warning_state": "NO_WARNING"
+      }
+    ]
+  },
+  {
+    "frame_index": 82,
+    "timestamp_sec": 457952.8634,
+    "loop_fps": 14.98,
+    "det_latency_ms": 13.5,
+    "depth_latency_ms": 26.77,
+    "e2e_latency_ms": 53.1,
+    "active_tracks_count": 1,
+    "global_warning_state": "NO_WARNING",
+    "navigation_state": "CONTINUE",
+    "safe_direction": "NONE",
+    "audio_spoken": false,
+    "audio_text": "",
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.876,
+        "bbox": [
+          32.2,
+          65.1,
+          522.1,
+          479.7
+        ],
+        "depth_value": 2.369,
+        "approach_state": "RECEDING",
+        "ttc_seconds": null,
+        "risk_level": "LOW",
+        "warning_state": "NO_WARNING"
+      }
+    ]
+  },
+  {
+    "frame_index": 83,
+    "timestamp_sec": 457952.9401,
+    "loop_fps": 15.0,
+    "det_latency_ms": 9.9,
+    "depth_latency_ms": 27.18,
+    "e2e_latency_ms": 49.16,
+    "active_tracks_count": 1,
+    "global_warning_state": "NO_WARNING",
+    "navigation_state": "CONTINUE",
+    "safe_direction": "NONE",
+    "audio_spoken": false,
+    "audio_text": "",
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
         "confidence": 0.895,
         "bbox": [
-          88.0,
-          71.4,
-          578.2,
-          479.2
+          29.6,
+          64.5,
+          522.2,
+          479.6
         ],
-        "depth_value": 3.086,
+        "depth_value": 2.341,
+        "approach_state": "RECEDING",
+        "ttc_seconds": null,
+        "risk_level": "LOW",
+        "warning_state": "NO_WARNING"
+      }
+    ]
+  },
+  {
+    "frame_index": 84,
+    "timestamp_sec": 457953.0032,
+    "loop_fps": 15.0,
+    "det_latency_ms": 11.01,
+    "depth_latency_ms": 27.28,
+    "e2e_latency_ms": 49.75,
+    "active_tracks_count": 1,
+    "global_warning_state": "NO_WARNING",
+    "navigation_state": "CONTINUE",
+    "safe_direction": "NONE",
+    "audio_spoken": false,
+    "audio_text": "",
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.895,
+        "bbox": [
+          30.7,
+          64.4,
+          522.2,
+          479.7
+        ],
+        "depth_value": 2.35,
+        "approach_state": "RECEDING",
+        "ttc_seconds": null,
+        "risk_level": "LOW",
+        "warning_state": "NO_WARNING"
+      }
+    ]
+  },
+  {
+    "frame_index": 85,
+    "timestamp_sec": 457953.0725,
+    "loop_fps": 14.96,
+    "det_latency_ms": 11.02,
+    "depth_latency_ms": 27.15,
+    "e2e_latency_ms": 49.87,
+    "active_tracks_count": 1,
+    "global_warning_state": "NO_WARNING",
+    "navigation_state": "CONTINUE",
+    "safe_direction": "NONE",
+    "audio_spoken": false,
+    "audio_text": "",
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.917,
+        "bbox": [
+          28.2,
+          64.2,
+          522.7,
+          479.7
+        ],
+        "depth_value": 2.325,
         "approach_state": "STABLE",
         "ttc_seconds": null,
         "risk_level": "LOW",
         "warning_state": "NO_WARNING"
-      },
+      }
+    ]
+  },
+  {
+    "frame_index": 86,
+    "timestamp_sec": 457953.141,
+    "loop_fps": 15.0,
+    "det_latency_ms": 9.17,
+    "depth_latency_ms": 26.18,
+    "e2e_latency_ms": 46.0,
+    "active_tracks_count": 1,
+    "global_warning_state": "NO_WARNING",
+    "navigation_state": "CONTINUE",
+    "safe_direction": "NONE",
+    "audio_spoken": false,
+    "audio_text": "",
+    "objects": [
       {
-        "track_id": 4,
+        "track_id": 1,
         "class_name": "person",
-        "confidence": 0.829,
+        "confidence": 0.911,
         "bbox": [
-          491.0,
-          34.4,
-          639.4,
-          478.0
+          28.1,
+          64.0,
+          522.7,
+          479.7
         ],
-        "depth_value": 1.239,
+        "depth_value": 2.347,
         "approach_state": "STABLE",
-        "ttc_seconds": 4.97,
+        "ttc_seconds": null,
         "risk_level": "LOW",
         "warning_state": "NO_WARNING"
+      }
+    ]
+  },
+  {
+    "frame_index": 87,
+    "timestamp_sec": 457953.2035,
+    "loop_fps": 15.07,
+    "det_latency_ms": 9.37,
+    "depth_latency_ms": 26.37,
+    "e2e_latency_ms": 46.48,
+    "active_tracks_count": 1,
+    "global_warning_state": "NO_WARNING",
+    "navigation_state": "CONTINUE",
+    "safe_direction": "NONE",
+    "audio_spoken": false,
+    "audio_text": "",
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.92,
+        "bbox": [
+          27.1,
+          64.0,
+          523.1,
+          479.7
+        ],
+        "depth_value": 2.274,
+        "approach_state": "STABLE",
+        "ttc_seconds": null,
+        "risk_level": "LOW",
+        "warning_state": "NO_WARNING"
+      }
+    ]
+  },
+  {
+    "frame_index": 88,
+    "timestamp_sec": 457953.2668,
+    "loop_fps": 15.16,
+    "det_latency_ms": 9.36,
+    "depth_latency_ms": 26.26,
+    "e2e_latency_ms": 47.76,
+    "active_tracks_count": 1,
+    "global_warning_state": "NO_WARNING",
+    "navigation_state": "CONTINUE",
+    "safe_direction": "NONE",
+    "audio_spoken": false,
+    "audio_text": "",
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.923,
+        "bbox": [
+          26.3,
+          64.2,
+          523.1,
+          479.8
+        ],
+        "depth_value": 2.287,
+        "approach_state": "STABLE",
+        "ttc_seconds": null,
+        "risk_level": "LOW",
+        "warning_state": "NO_WARNING"
+      }
+    ]
+  },
+  {
+    "frame_index": 89,
+    "timestamp_sec": 457953.3293,
+    "loop_fps": 15.2,
+    "det_latency_ms": 9.52,
+    "depth_latency_ms": 26.38,
+    "e2e_latency_ms": 46.31,
+    "active_tracks_count": 1,
+    "global_warning_state": "NO_WARNING",
+    "navigation_state": "CONTINUE",
+    "safe_direction": "NONE",
+    "audio_spoken": false,
+    "audio_text": "",
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.92,
+        "bbox": [
+          26.5,
+          64.2,
+          523.1,
+          479.8
+        ],
+        "depth_value": 2.311,
+        "approach_state": "STABLE",
+        "ttc_seconds": null,
+        "risk_level": "LOW",
+        "warning_state": "NO_WARNING"
+      }
+    ]
+  },
+  {
+    "frame_index": 90,
+    "timestamp_sec": 457953.4009,
+    "loop_fps": 15.14,
+    "det_latency_ms": 9.83,
+    "depth_latency_ms": 27.19,
+    "e2e_latency_ms": 47.25,
+    "active_tracks_count": 1,
+    "global_warning_state": "NO_WARNING",
+    "navigation_state": "CONTINUE",
+    "safe_direction": "NONE",
+    "audio_spoken": false,
+    "audio_text": "",
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.917,
+        "bbox": [
+          26.8,
+          64.1,
+          523.2,
+          479.8
+        ],
+        "depth_value": 2.307,
+        "approach_state": "RECEDING",
+        "ttc_seconds": null,
+        "risk_level": "LOW",
+        "warning_state": "NO_WARNING"
+      }
+    ]
+  },
+  {
+    "frame_index": 91,
+    "timestamp_sec": 457953.4682,
+    "loop_fps": 15.07,
+    "det_latency_ms": 9.41,
+    "depth_latency_ms": 26.46,
+    "e2e_latency_ms": 46.28,
+    "active_tracks_count": 1,
+    "global_warning_state": "NO_WARNING",
+    "navigation_state": "CONTINUE",
+    "safe_direction": "NONE",
+    "audio_spoken": false,
+    "audio_text": "",
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.919,
+        "bbox": [
+          25.8,
+          64.2,
+          522.5,
+          479.7
+        ],
+        "depth_value": 2.326,
+        "approach_state": "RECEDING",
+        "ttc_seconds": null,
+        "risk_level": "LOW",
+        "warning_state": "NO_WARNING"
+      }
+    ]
+  },
+  {
+    "frame_index": 92,
+    "timestamp_sec": 457953.5307,
+    "loop_fps": 15.09,
+    "det_latency_ms": 8.78,
+    "depth_latency_ms": 26.84,
+    "e2e_latency_ms": 46.25,
+    "active_tracks_count": 1,
+    "global_warning_state": "NO_WARNING",
+    "navigation_state": "CONTINUE",
+    "safe_direction": "NONE",
+    "audio_spoken": false,
+    "audio_text": "",
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.914,
+        "bbox": [
+          26.6,
+          64.2,
+          521.8,
+          479.7
+        ],
+        "depth_value": 2.315,
+        "approach_state": "RECEDING",
+        "ttc_seconds": null,
+        "risk_level": "LOW",
+        "warning_state": "NO_WARNING"
+      }
+    ]
+  },
+  {
+    "frame_index": 93,
+    "timestamp_sec": 457953.5942,
+    "loop_fps": 15.08,
+    "det_latency_ms": 10.03,
+    "depth_latency_ms": 27.15,
+    "e2e_latency_ms": 48.05,
+    "active_tracks_count": 1,
+    "global_warning_state": "NO_WARNING",
+    "navigation_state": "CONTINUE",
+    "safe_direction": "NONE",
+    "audio_spoken": false,
+    "audio_text": "",
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.913,
+        "bbox": [
+          26.9,
+          64.2,
+          522.0,
+          479.6
+        ],
+        "depth_value": 2.365,
+        "approach_state": "RECEDING",
+        "ttc_seconds": null,
+        "risk_level": "LOW",
+        "warning_state": "NO_WARNING"
+      }
+    ]
+  },
+  {
+    "frame_index": 94,
+    "timestamp_sec": 457953.6621,
+    "loop_fps": 15.09,
+    "det_latency_ms": 12.24,
+    "depth_latency_ms": 26.45,
+    "e2e_latency_ms": 49.76,
+    "active_tracks_count": 1,
+    "global_warning_state": "NO_WARNING",
+    "navigation_state": "CONTINUE",
+    "safe_direction": "NONE",
+    "audio_spoken": false,
+    "audio_text": "",
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.913,
+        "bbox": [
+          26.6,
+          63.8,
+          521.8,
+          479.6
+        ],
+        "depth_value": 2.307,
+        "approach_state": "RECEDING",
+        "ttc_seconds": null,
+        "risk_level": "LOW",
+        "warning_state": "NO_WARNING"
+      }
+    ]
+  },
+  {
+    "frame_index": 95,
+    "timestamp_sec": 457953.7253,
+    "loop_fps": 15.1,
+    "det_latency_ms": 10.95,
+    "depth_latency_ms": 27.15,
+    "e2e_latency_ms": 49.16,
+    "active_tracks_count": 1,
+    "global_warning_state": "NO_WARNING",
+    "navigation_state": "CONTINUE",
+    "safe_direction": "NONE",
+    "audio_spoken": false,
+    "audio_text": "",
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.914,
+        "bbox": [
+          27.3,
+          64.0,
+          522.0,
+          479.6
+        ],
+        "depth_value": 2.344,
+        "approach_state": "STABLE",
+        "ttc_seconds": null,
+        "risk_level": "LOW",
+        "warning_state": "NO_WARNING"
+      }
+    ]
+  },
+  {
+    "frame_index": 96,
+    "timestamp_sec": 457953.7852,
+    "loop_fps": 15.16,
+    "det_latency_ms": 9.63,
+    "depth_latency_ms": 26.94,
+    "e2e_latency_ms": 47.43,
+    "active_tracks_count": 1,
+    "global_warning_state": "NO_WARNING",
+    "navigation_state": "CONTINUE",
+    "safe_direction": "NONE",
+    "audio_spoken": false,
+    "audio_text": "",
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.876,
+        "bbox": [
+          29.3,
+          63.9,
+          522.1,
+          479.4
+        ],
+        "depth_value": 2.314,
+        "approach_state": "STABLE",
+        "ttc_seconds": null,
+        "risk_level": "LOW",
+        "warning_state": "NO_WARNING"
+      }
+    ]
+  },
+  {
+    "frame_index": 97,
+    "timestamp_sec": 457953.8503,
+    "loop_fps": 15.17,
+    "det_latency_ms": 9.18,
+    "depth_latency_ms": 26.57,
+    "e2e_latency_ms": 46.84,
+    "active_tracks_count": 1,
+    "global_warning_state": "NO_WARNING",
+    "navigation_state": "CONTINUE",
+    "safe_direction": "NONE",
+    "audio_spoken": false,
+    "audio_text": "",
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.917,
+        "bbox": [
+          27.2,
+          64.1,
+          522.0,
+          479.5
+        ],
+        "depth_value": 2.306,
+        "approach_state": "STABLE",
+        "ttc_seconds": null,
+        "risk_level": "LOW",
+        "warning_state": "NO_WARNING"
+      }
+    ]
+  },
+  {
+    "frame_index": 98,
+    "timestamp_sec": 457953.9177,
+    "loop_fps": 15.21,
+    "det_latency_ms": 9.75,
+    "depth_latency_ms": 26.85,
+    "e2e_latency_ms": 47.58,
+    "active_tracks_count": 1,
+    "global_warning_state": "NO_WARNING",
+    "navigation_state": "CONTINUE",
+    "safe_direction": "NONE",
+    "audio_spoken": false,
+    "audio_text": "",
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.879,
+        "bbox": [
+          28.6,
+          64.5,
+          521.8,
+          479.6
+        ],
+        "depth_value": 2.366,
+        "approach_state": "STABLE",
+        "ttc_seconds": null,
+        "risk_level": "LOW",
+        "warning_state": "NO_WARNING"
+      }
+    ]
+  },
+  {
+    "frame_index": 99,
+    "timestamp_sec": 457953.9857,
+    "loop_fps": 15.16,
+    "det_latency_ms": 13.64,
+    "depth_latency_ms": 26.8,
+    "e2e_latency_ms": 51.42,
+    "active_tracks_count": 1,
+    "global_warning_state": "NO_WARNING",
+    "navigation_state": "CONTINUE",
+    "safe_direction": "NONE",
+    "audio_spoken": false,
+    "audio_text": "",
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.885,
+        "bbox": [
+          29.4,
+          64.7,
+          521.6,
+          479.5
+        ],
+        "depth_value": 2.47,
+        "approach_state": "STABLE",
+        "ttc_seconds": 29.74,
+        "risk_level": "LOW",
+        "warning_state": "NO_WARNING"
+      }
+    ]
+  },
+  {
+    "frame_index": 100,
+    "timestamp_sec": 457954.0517,
+    "loop_fps": 15.2,
+    "det_latency_ms": 9.32,
+    "depth_latency_ms": 27.05,
+    "e2e_latency_ms": 47.27,
+    "active_tracks_count": 1,
+    "global_warning_state": "NO_WARNING",
+    "navigation_state": "CONTINUE",
+    "safe_direction": "NONE",
+    "audio_spoken": false,
+    "audio_text": "",
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.888,
+        "bbox": [
+          28.9,
+          64.7,
+          520.6,
+          479.4
+        ],
+        "depth_value": 2.539,
+        "approach_state": "STABLE",
+        "ttc_seconds": 13.76,
+        "risk_level": "LOW",
+        "warning_state": "NO_WARNING"
+      }
+    ]
+  },
+  {
+    "frame_index": 101,
+    "timestamp_sec": 457954.1142,
+    "loop_fps": 15.29,
+    "det_latency_ms": 9.61,
+    "depth_latency_ms": 26.92,
+    "e2e_latency_ms": 48.27,
+    "active_tracks_count": 1,
+    "global_warning_state": "NO_WARNING",
+    "navigation_state": "CONTINUE",
+    "safe_direction": "NONE",
+    "audio_spoken": false,
+    "audio_text": "",
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.896,
+        "bbox": [
+          30.3,
+          65.4,
+          519.3,
+          479.8
+        ],
+        "depth_value": 2.53,
+        "approach_state": "STABLE",
+        "ttc_seconds": 8.13,
+        "risk_level": "MEDIUM",
+        "warning_state": "NO_WARNING"
+      }
+    ]
+  },
+  {
+    "frame_index": 102,
+    "timestamp_sec": 457954.1822,
+    "loop_fps": 15.22,
+    "det_latency_ms": 9.73,
+    "depth_latency_ms": 26.1,
+    "e2e_latency_ms": 47.34,
+    "active_tracks_count": 1,
+    "global_warning_state": "CAUTION",
+    "navigation_state": "CONTINUE",
+    "safe_direction": "NONE",
+    "audio_spoken": true,
+    "audio_text": "Caution. Person nearby.",
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.911,
+        "bbox": [
+          29.3,
+          66.1,
+          519.6,
+          479.7
+        ],
+        "depth_value": 2.533,
+        "approach_state": "STABLE",
+        "ttc_seconds": 6.3,
+        "risk_level": "MEDIUM",
+        "warning_state": "CAUTION"
+      }
+    ]
+  },
+  {
+    "frame_index": 103,
+    "timestamp_sec": 457954.2459,
+    "loop_fps": 15.17,
+    "det_latency_ms": 11.04,
+    "depth_latency_ms": 26.54,
+    "e2e_latency_ms": 50.12,
+    "active_tracks_count": 1,
+    "global_warning_state": "CAUTION",
+    "navigation_state": "CONTINUE",
+    "safe_direction": "NONE",
+    "audio_spoken": true,
+    "audio_text": "Caution. Person nearby.",
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.915,
+        "bbox": [
+          27.1,
+          66.3,
+          519.9,
+          479.8
+        ],
+        "depth_value": 2.544,
+        "approach_state": "APPROACHING",
+        "ttc_seconds": 5.45,
+        "risk_level": "HIGH",
+        "warning_state": "CAUTION"
+      }
+    ]
+  },
+  {
+    "frame_index": 104,
+    "timestamp_sec": 457954.3086,
+    "loop_fps": 15.2,
+    "det_latency_ms": 11.0,
+    "depth_latency_ms": 26.78,
+    "e2e_latency_ms": 50.29,
+    "active_tracks_count": 1,
+    "global_warning_state": "CAUTION",
+    "navigation_state": "CAUTION",
+    "safe_direction": "NONE",
+    "audio_spoken": true,
+    "audio_text": "Caution. Person nearby.",
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.916,
+        "bbox": [
+          27.1,
+          65.8,
+          521.9,
+          479.7
+        ],
+        "depth_value": 2.538,
+        "approach_state": "APPROACHING",
+        "ttc_seconds": 5.34,
+        "risk_level": "HIGH",
+        "warning_state": "CAUTION"
+      }
+    ]
+  },
+  {
+    "frame_index": 105,
+    "timestamp_sec": 457954.3709,
+    "loop_fps": 14.81,
+    "det_latency_ms": 9.78,
+    "depth_latency_ms": 26.59,
+    "e2e_latency_ms": 295.28,
+    "active_tracks_count": 1,
+    "global_warning_state": "WARNING",
+    "navigation_state": "CAUTION",
+    "safe_direction": "NONE",
+    "audio_spoken": true,
+    "audio_text": "Warning. Person approaching. TTC 6.3 seconds.",
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.882,
+        "bbox": [
+          29.6,
+          66.0,
+          522.4,
+          479.3
+        ],
+        "depth_value": 2.501,
+        "approach_state": "APPROACHING",
+        "ttc_seconds": 6.29,
+        "risk_level": "MEDIUM",
+        "warning_state": "WARNING"
+      }
+    ]
+  },
+  {
+    "frame_index": 106,
+    "timestamp_sec": 457954.6826,
+    "loop_fps": 14.86,
+    "det_latency_ms": 9.46,
+    "depth_latency_ms": 26.49,
+    "e2e_latency_ms": 47.26,
+    "active_tracks_count": 1,
+    "global_warning_state": "WARNING",
+    "navigation_state": "CAUTION",
+    "safe_direction": "NONE",
+    "audio_spoken": true,
+    "audio_text": "Warning. Person approaching. TTC 9.6 seconds.",
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.891,
+        "bbox": [
+          29.9,
+          66.1,
+          522.5,
+          479.3
+        ],
+        "depth_value": 2.491,
+        "approach_state": "APPROACHING",
+        "ttc_seconds": 9.64,
+        "risk_level": "MEDIUM",
+        "warning_state": "WARNING"
+      }
+    ]
+  },
+  {
+    "frame_index": 107,
+    "timestamp_sec": 457954.7461,
+    "loop_fps": 14.83,
+    "det_latency_ms": 11.73,
+    "depth_latency_ms": 26.61,
+    "e2e_latency_ms": 49.75,
+    "active_tracks_count": 1,
+    "global_warning_state": "WARNING",
+    "navigation_state": "AVOID_LEFT",
+    "safe_direction": "LEFT",
+    "audio_spoken": true,
+    "audio_text": "Obstacle ahead. Move left.",
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.885,
+        "bbox": [
+          29.8,
+          66.2,
+          522.5,
+          479.3
+        ],
+        "depth_value": 2.445,
+        "approach_state": "APPROACHING",
+        "ttc_seconds": 18.43,
+        "risk_level": "MEDIUM",
+        "warning_state": "WARNING"
+      }
+    ]
+  },
+  {
+    "frame_index": 108,
+    "timestamp_sec": 457954.8153,
+    "loop_fps": 14.82,
+    "det_latency_ms": 9.57,
+    "depth_latency_ms": 26.7,
+    "e2e_latency_ms": 46.99,
+    "active_tracks_count": 1,
+    "global_warning_state": "CAUTION",
+    "navigation_state": "AVOID_LEFT",
+    "safe_direction": "LEFT",
+    "audio_spoken": true,
+    "audio_text": "Risk decreasing.",
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.865,
+        "bbox": [
+          31.7,
+          66.5,
+          522.6,
+          479.2
+        ],
+        "depth_value": 2.468,
+        "approach_state": "APPROACHING",
+        "ttc_seconds": 30.0,
+        "risk_level": "MEDIUM",
+        "warning_state": "CAUTION"
+      }
+    ]
+  },
+  {
+    "frame_index": 109,
+    "timestamp_sec": 457954.8769,
+    "loop_fps": 14.83,
+    "det_latency_ms": 11.04,
+    "depth_latency_ms": 26.96,
+    "e2e_latency_ms": 52.47,
+    "active_tracks_count": 1,
+    "global_warning_state": "CAUTION",
+    "navigation_state": "AVOID_LEFT",
+    "safe_direction": "LEFT",
+    "audio_spoken": false,
+    "audio_text": "",
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.913,
+        "bbox": [
+          28.7,
+          66.5,
+          522.5,
+          479.3
+        ],
+        "depth_value": 2.401,
+        "approach_state": "APPROACHING",
+        "ttc_seconds": null,
+        "risk_level": "MEDIUM",
+        "warning_state": "CAUTION"
+      }
+    ]
+  },
+  {
+    "frame_index": 110,
+    "timestamp_sec": 457954.9542,
+    "loop_fps": 14.83,
+    "det_latency_ms": 11.49,
+    "depth_latency_ms": 26.74,
+    "e2e_latency_ms": 50.0,
+    "active_tracks_count": 1,
+    "global_warning_state": "CAUTION",
+    "navigation_state": "CAUTION",
+    "safe_direction": "NONE",
+    "audio_spoken": true,
+    "audio_text": "Caution. Person nearby.",
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.894,
+        "bbox": [
+          30.4,
+          66.5,
+          522.5,
+          479.3
+        ],
+        "depth_value": 2.425,
+        "approach_state": "APPROACHING",
+        "ttc_seconds": null,
+        "risk_level": "MEDIUM",
+        "warning_state": "CAUTION"
+      }
+    ]
+  },
+  {
+    "frame_index": 111,
+    "timestamp_sec": 457955.0236,
+    "loop_fps": 14.78,
+    "det_latency_ms": 9.95,
+    "depth_latency_ms": 27.64,
+    "e2e_latency_ms": 50.17,
+    "active_tracks_count": 1,
+    "global_warning_state": "CAUTION",
+    "navigation_state": "CAUTION",
+    "safe_direction": "NONE",
+    "audio_spoken": false,
+    "audio_text": "",
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.872,
+        "bbox": [
+          31.4,
+          66.3,
+          522.4,
+          479.3
+        ],
+        "depth_value": 2.423,
+        "approach_state": "APPROACHING",
+        "ttc_seconds": null,
+        "risk_level": "MEDIUM",
+        "warning_state": "CAUTION"
+      }
+    ]
+  },
+  {
+    "frame_index": 112,
+    "timestamp_sec": 457955.0896,
+    "loop_fps": 14.79,
+    "det_latency_ms": 10.62,
+    "depth_latency_ms": 27.01,
+    "e2e_latency_ms": 49.21,
+    "active_tracks_count": 1,
+    "global_warning_state": "CAUTION",
+    "navigation_state": "CAUTION",
+    "safe_direction": "NONE",
+    "audio_spoken": false,
+    "audio_text": "",
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.887,
+        "bbox": [
+          29.8,
+          66.2,
+          522.3,
+          479.3
+        ],
+        "depth_value": 2.358,
+        "approach_state": "APPROACHING",
+        "ttc_seconds": null,
+        "risk_level": "MEDIUM",
+        "warning_state": "CAUTION"
+      }
+    ]
+  },
+  {
+    "frame_index": 113,
+    "timestamp_sec": 457955.1561,
+    "loop_fps": 14.83,
+    "det_latency_ms": 10.89,
+    "depth_latency_ms": 28.0,
+    "e2e_latency_ms": 49.86,
+    "active_tracks_count": 1,
+    "global_warning_state": "CAUTION",
+    "navigation_state": "CAUTION",
+    "safe_direction": "NONE",
+    "audio_spoken": false,
+    "audio_text": "",
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.866,
+        "bbox": [
+          31.9,
+          66.2,
+          522.5,
+          479.2
+        ],
+        "depth_value": 2.392,
+        "approach_state": "APPROACHING",
+        "ttc_seconds": null,
+        "risk_level": "MEDIUM",
+        "warning_state": "CAUTION"
+      }
+    ]
+  },
+  {
+    "frame_index": 114,
+    "timestamp_sec": 457955.2187,
+    "loop_fps": 14.86,
+    "det_latency_ms": 9.24,
+    "depth_latency_ms": 26.58,
+    "e2e_latency_ms": 47.31,
+    "active_tracks_count": 1,
+    "global_warning_state": "CAUTION",
+    "navigation_state": "CAUTION",
+    "safe_direction": "NONE",
+    "audio_spoken": false,
+    "audio_text": "",
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.893,
+        "bbox": [
+          31.3,
+          66.3,
+          522.5,
+          479.3
+        ],
+        "depth_value": 2.378,
+        "approach_state": "RECEDING",
+        "ttc_seconds": null,
+        "risk_level": "LOW",
+        "warning_state": "CAUTION"
+      }
+    ]
+  },
+  {
+    "frame_index": 115,
+    "timestamp_sec": 457955.2875,
+    "loop_fps": 14.86,
+    "det_latency_ms": 9.96,
+    "depth_latency_ms": 26.48,
+    "e2e_latency_ms": 48.41,
+    "active_tracks_count": 1,
+    "global_warning_state": "CAUTION",
+    "navigation_state": "CAUTION",
+    "safe_direction": "NONE",
+    "audio_spoken": false,
+    "audio_text": "",
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.866,
+        "bbox": [
+          31.4,
+          66.5,
+          522.9,
+          479.4
+        ],
+        "depth_value": 2.333,
+        "approach_state": "RECEDING",
+        "ttc_seconds": null,
+        "risk_level": "LOW",
+        "warning_state": "CAUTION"
+      }
+    ]
+  },
+  {
+    "frame_index": 116,
+    "timestamp_sec": 457955.3559,
+    "loop_fps": 14.83,
+    "det_latency_ms": 9.85,
+    "depth_latency_ms": 26.69,
+    "e2e_latency_ms": 48.55,
+    "active_tracks_count": 1,
+    "global_warning_state": "NO_WARNING",
+    "navigation_state": "CAUTION",
+    "safe_direction": "NONE",
+    "audio_spoken": true,
+    "audio_text": "Risk cleared. Path clear.",
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.881,
+        "bbox": [
+          30.7,
+          66.5,
+          522.9,
+          479.4
+        ],
+        "depth_value": 2.34,
+        "approach_state": "RECEDING",
+        "ttc_seconds": null,
+        "risk_level": "LOW",
+        "warning_state": "NO_WARNING"
+      }
+    ]
+  },
+  {
+    "frame_index": 117,
+    "timestamp_sec": 457955.4197,
+    "loop_fps": 14.82,
+    "det_latency_ms": 11.11,
+    "depth_latency_ms": 26.56,
+    "e2e_latency_ms": 48.68,
+    "active_tracks_count": 1,
+    "global_warning_state": "NO_WARNING",
+    "navigation_state": "CAUTION",
+    "safe_direction": "NONE",
+    "audio_spoken": false,
+    "audio_text": "",
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.879,
+        "bbox": [
+          30.5,
+          66.6,
+          522.7,
+          479.3
+        ],
+        "depth_value": 2.327,
+        "approach_state": "RECEDING",
+        "ttc_seconds": null,
+        "risk_level": "LOW",
+        "warning_state": "NO_WARNING"
+      }
+    ]
+  },
+  {
+    "frame_index": 118,
+    "timestamp_sec": 457955.4889,
+    "loop_fps": 14.79,
+    "det_latency_ms": 10.75,
+    "depth_latency_ms": 26.77,
+    "e2e_latency_ms": 48.58,
+    "active_tracks_count": 1,
+    "global_warning_state": "NO_WARNING",
+    "navigation_state": "CONTINUE",
+    "safe_direction": "NONE",
+    "audio_spoken": false,
+    "audio_text": "",
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.847,
+        "bbox": [
+          31.2,
+          66.6,
+          522.6,
+          479.2
+        ],
+        "depth_value": 2.361,
+        "approach_state": "RECEDING",
+        "ttc_seconds": null,
+        "risk_level": "LOW",
+        "warning_state": "NO_WARNING"
+      }
+    ]
+  },
+  {
+    "frame_index": 119,
+    "timestamp_sec": 457955.5508,
+    "loop_fps": 14.78,
+    "det_latency_ms": 9.55,
+    "depth_latency_ms": 26.9,
+    "e2e_latency_ms": 48.47,
+    "active_tracks_count": 1,
+    "global_warning_state": "NO_WARNING",
+    "navigation_state": "CONTINUE",
+    "safe_direction": "NONE",
+    "audio_spoken": false,
+    "audio_text": "",
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.877,
+        "bbox": [
+          31.8,
+          66.1,
+          522.8,
+          479.2
+        ],
+        "depth_value": 2.376,
+        "approach_state": "RECEDING",
+        "ttc_seconds": null,
+        "risk_level": "LOW",
+        "warning_state": "NO_WARNING"
+      }
+    ]
+  },
+  {
+    "frame_index": 120,
+    "timestamp_sec": 457955.6133,
+    "loop_fps": 14.86,
+    "det_latency_ms": 10.08,
+    "depth_latency_ms": 27.25,
+    "e2e_latency_ms": 48.33,
+    "active_tracks_count": 1,
+    "global_warning_state": "NO_WARNING",
+    "navigation_state": "CONTINUE",
+    "safe_direction": "NONE",
+    "audio_spoken": false,
+    "audio_text": "",
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.912,
+        "bbox": [
+          27.4,
+          66.1,
+          522.3,
+          479.4
+        ],
+        "depth_value": 2.341,
+        "approach_state": "RECEDING",
+        "ttc_seconds": null,
+        "risk_level": "LOW",
+        "warning_state": "NO_WARNING"
+      }
+    ]
+  },
+  {
+    "frame_index": 121,
+    "timestamp_sec": 457955.6764,
+    "loop_fps": 14.87,
+    "det_latency_ms": 11.24,
+    "depth_latency_ms": 26.97,
+    "e2e_latency_ms": 50.56,
+    "active_tracks_count": 1,
+    "global_warning_state": "NO_WARNING",
+    "navigation_state": "CONTINUE",
+    "safe_direction": "NONE",
+    "audio_spoken": false,
+    "audio_text": "",
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.898,
+        "bbox": [
+          28.2,
+          66.6,
+          522.4,
+          479.2
+        ],
+        "depth_value": 2.407,
+        "approach_state": "RECEDING",
+        "ttc_seconds": null,
+        "risk_level": "LOW",
+        "warning_state": "NO_WARNING"
+      }
+    ]
+  },
+  {
+    "frame_index": 122,
+    "timestamp_sec": 457955.7451,
+    "loop_fps": 14.78,
+    "det_latency_ms": 17.07,
+    "depth_latency_ms": 26.82,
+    "e2e_latency_ms": 56.94,
+    "active_tracks_count": 1,
+    "global_warning_state": "NO_WARNING",
+    "navigation_state": "CONTINUE",
+    "safe_direction": "NONE",
+    "audio_spoken": false,
+    "audio_text": "",
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.852,
+        "bbox": [
+          32.4,
+          65.6,
+          522.4,
+          479.2
+        ],
+        "depth_value": 2.429,
+        "approach_state": "RECEDING",
+        "ttc_seconds": null,
+        "risk_level": "LOW",
+        "warning_state": "NO_WARNING"
+      }
+    ]
+  },
+  {
+    "frame_index": 123,
+    "timestamp_sec": 457955.8222,
+    "loop_fps": 14.73,
+    "det_latency_ms": 12.54,
+    "depth_latency_ms": 27.14,
+    "e2e_latency_ms": 51.81,
+    "active_tracks_count": 1,
+    "global_warning_state": "NO_WARNING",
+    "navigation_state": "CONTINUE",
+    "safe_direction": "NONE",
+    "audio_spoken": false,
+    "audio_text": "",
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.885,
+        "bbox": [
+          31.3,
+          64.8,
+          522.4,
+          479.2
+        ],
+        "depth_value": 2.421,
+        "approach_state": "RECEDING",
+        "ttc_seconds": null,
+        "risk_level": "LOW",
+        "warning_state": "NO_WARNING"
+      }
+    ]
+  },
+  {
+    "frame_index": 124,
+    "timestamp_sec": 457955.891,
+    "loop_fps": 14.73,
+    "det_latency_ms": 11.69,
+    "depth_latency_ms": 27.41,
+    "e2e_latency_ms": 53.1,
+    "active_tracks_count": 1,
+    "global_warning_state": "NO_WARNING",
+    "navigation_state": "CONTINUE",
+    "safe_direction": "NONE",
+    "audio_spoken": false,
+    "audio_text": "",
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.884,
+        "bbox": [
+          31.7,
+          64.9,
+          522.5,
+          479.4
+        ],
+        "depth_value": 2.356,
+        "approach_state": "RECEDING",
+        "ttc_seconds": null,
+        "risk_level": "LOW",
+        "warning_state": "NO_WARNING"
+      }
+    ]
+  },
+  {
+    "frame_index": 125,
+    "timestamp_sec": 457955.9689,
+    "loop_fps": 14.62,
+    "det_latency_ms": 12.46,
+    "depth_latency_ms": 27.4,
+    "e2e_latency_ms": 52.66,
+    "active_tracks_count": 1,
+    "global_warning_state": "NO_WARNING",
+    "navigation_state": "CONTINUE",
+    "safe_direction": "NONE",
+    "audio_spoken": false,
+    "audio_text": "",
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.862,
+        "bbox": [
+          32.9,
+          65.9,
+          522.5,
+          478.5
+        ],
+        "depth_value": 2.323,
+        "approach_state": "RECEDING",
+        "ttc_seconds": null,
+        "risk_level": "LOW",
+        "warning_state": "NO_WARNING"
+      }
+    ]
+  },
+  {
+    "frame_index": 126,
+    "timestamp_sec": 457956.0354,
+    "loop_fps": 14.57,
+    "det_latency_ms": 11.27,
+    "depth_latency_ms": 27.24,
+    "e2e_latency_ms": 50.3,
+    "active_tracks_count": 1,
+    "global_warning_state": "NO_WARNING",
+    "navigation_state": "CONTINUE",
+    "safe_direction": "NONE",
+    "audio_spoken": false,
+    "audio_text": "",
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.9,
+        "bbox": [
+          32.6,
+          65.6,
+          522.4,
+          479.2
+        ],
+        "depth_value": 2.276,
+        "approach_state": "RECEDING",
+        "ttc_seconds": null,
+        "risk_level": "LOW",
+        "warning_state": "NO_WARNING"
+      }
+    ]
+  },
+  {
+    "frame_index": 127,
+    "timestamp_sec": 457956.1061,
+    "loop_fps": 14.53,
+    "det_latency_ms": 10.34,
+    "depth_latency_ms": 27.11,
+    "e2e_latency_ms": 50.0,
+    "active_tracks_count": 1,
+    "global_warning_state": "NO_WARNING",
+    "navigation_state": "CONTINUE",
+    "safe_direction": "NONE",
+    "audio_spoken": false,
+    "audio_text": "",
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.9,
+        "bbox": [
+          31.2,
+          68.7,
+          522.2,
+          479.7
+        ],
+        "depth_value": 2.441,
+        "approach_state": "RECEDING",
+        "ttc_seconds": null,
+        "risk_level": "LOW",
+        "warning_state": "NO_WARNING"
+      }
+    ]
+  },
+  {
+    "frame_index": 128,
+    "timestamp_sec": 457956.1687,
+    "loop_fps": 14.59,
+    "det_latency_ms": 9.63,
+    "depth_latency_ms": 26.9,
+    "e2e_latency_ms": 48.19,
+    "active_tracks_count": 1,
+    "global_warning_state": "NO_WARNING",
+    "navigation_state": "CONTINUE",
+    "safe_direction": "NONE",
+    "audio_spoken": false,
+    "audio_text": "",
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.909,
+        "bbox": [
+          30.9,
+          70.1,
+          522.0,
+          479.8
+        ],
+        "depth_value": 2.5,
+        "approach_state": "STABLE",
+        "ttc_seconds": null,
+        "risk_level": "LOW",
+        "warning_state": "NO_WARNING"
+      }
+    ]
+  },
+  {
+    "frame_index": 129,
+    "timestamp_sec": 457956.2398,
+    "loop_fps": 14.59,
+    "det_latency_ms": 9.59,
+    "depth_latency_ms": 26.46,
+    "e2e_latency_ms": 48.44,
+    "active_tracks_count": 1,
+    "global_warning_state": "NO_WARNING",
+    "navigation_state": "CONTINUE",
+    "safe_direction": "NONE",
+    "audio_spoken": false,
+    "audio_text": "",
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.925,
+        "bbox": [
+          26.3,
+          70.3,
+          520.5,
+          479.8
+        ],
+        "depth_value": 2.476,
+        "approach_state": "STABLE",
+        "ttc_seconds": null,
+        "risk_level": "LOW",
+        "warning_state": "NO_WARNING"
+      }
+    ]
+  },
+  {
+    "frame_index": 130,
+    "timestamp_sec": 457956.3014,
+    "loop_fps": 14.61,
+    "det_latency_ms": 9.56,
+    "depth_latency_ms": 26.53,
+    "e2e_latency_ms": 46.92,
+    "active_tracks_count": 1,
+    "global_warning_state": "NO_WARNING",
+    "navigation_state": "CONTINUE",
+    "safe_direction": "NONE",
+    "audio_spoken": false,
+    "audio_text": "",
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.921,
+        "bbox": [
+          26.3,
+          70.1,
+          520.4,
+          480.0
+        ],
+        "depth_value": 2.465,
+        "approach_state": "STABLE",
+        "ttc_seconds": 20.45,
+        "risk_level": "LOW",
+        "warning_state": "NO_WARNING"
+      }
+    ]
+  },
+  {
+    "frame_index": 131,
+    "timestamp_sec": 457956.3638,
+    "loop_fps": 14.61,
+    "det_latency_ms": 9.51,
+    "depth_latency_ms": 26.15,
+    "e2e_latency_ms": 47.29,
+    "active_tracks_count": 2,
+    "global_warning_state": "NO_WARNING",
+    "navigation_state": "CONTINUE",
+    "safe_direction": "NONE",
+    "audio_spoken": false,
+    "audio_text": "",
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.921,
+        "bbox": [
+          27.7,
+          70.6,
+          520.1,
+          480.0
+        ],
+        "depth_value": 2.493,
+        "approach_state": "STABLE",
+        "ttc_seconds": 11.45,
+        "risk_level": "LOW",
+        "warning_state": "NO_WARNING"
+      },
+      {
+        "track_id": 8,
+        "class_name": "tie",
+        "confidence": 0.343,
+        "bbox": [
+          310.4,
+          334.1,
+          346.6,
+          479.3
+        ],
+        "depth_value": 3.614,
+        "approach_state": "UNKNOWN",
+        "ttc_seconds": null,
+        "risk_level": "MEDIUM",
+        "warning_state": "NO_WARNING"
+      }
+    ]
+  },
+  {
+    "frame_index": 132,
+    "timestamp_sec": 457956.4325,
+    "loop_fps": 14.6,
+    "det_latency_ms": 9.44,
+    "depth_latency_ms": 26.7,
+    "e2e_latency_ms": 47.54,
+    "active_tracks_count": 1,
+    "global_warning_state": "NO_WARNING",
+    "navigation_state": "CONTINUE",
+    "safe_direction": "NONE",
+    "audio_spoken": false,
+    "audio_text": "",
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.925,
+        "bbox": [
+          27.8,
+          70.5,
+          519.7,
+          480.0
+        ],
+        "depth_value": 2.466,
+        "approach_state": "STABLE",
+        "ttc_seconds": 8.98,
+        "risk_level": "MEDIUM",
+        "warning_state": "NO_WARNING"
+      }
+    ]
+  },
+  {
+    "frame_index": 133,
+    "timestamp_sec": 457956.4946,
+    "loop_fps": 14.64,
+    "det_latency_ms": 9.21,
+    "depth_latency_ms": 26.88,
+    "e2e_latency_ms": 46.82,
+    "active_tracks_count": 1,
+    "global_warning_state": "CAUTION",
+    "navigation_state": "CONTINUE",
+    "safe_direction": "NONE",
+    "audio_spoken": true,
+    "audio_text": "Caution. Person nearby.",
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.912,
+        "bbox": [
+          27.2,
+          70.5,
+          519.5,
+          480.0
+        ],
+        "depth_value": 2.453,
+        "approach_state": "STABLE",
+        "ttc_seconds": 9.24,
+        "risk_level": "MEDIUM",
+        "warning_state": "CAUTION"
+      }
+    ]
+  },
+  {
+    "frame_index": 134,
+    "timestamp_sec": 457956.5581,
+    "loop_fps": 14.62,
+    "det_latency_ms": 9.9,
+    "depth_latency_ms": 27.84,
+    "e2e_latency_ms": 48.66,
+    "active_tracks_count": 1,
+    "global_warning_state": "CAUTION",
+    "navigation_state": "CONTINUE",
+    "safe_direction": "NONE",
+    "audio_spoken": true,
+    "audio_text": "Caution. Person nearby.",
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.925,
+        "bbox": [
+          26.1,
+          70.5,
+          519.6,
+          480.0
+        ],
+        "depth_value": 2.427,
+        "approach_state": "APPROACHING",
+        "ttc_seconds": 15.52,
+        "risk_level": "MEDIUM",
+        "warning_state": "CAUTION"
+      }
+    ]
+  },
+  {
+    "frame_index": 135,
+    "timestamp_sec": 457956.6271,
+    "loop_fps": 15.0,
+    "det_latency_ms": 11.4,
+    "depth_latency_ms": 26.69,
+    "e2e_latency_ms": 48.44,
+    "active_tracks_count": 1,
+    "global_warning_state": "CAUTION",
+    "navigation_state": "CAUTION",
+    "safe_direction": "NONE",
+    "audio_spoken": true,
+    "audio_text": "Caution. Person nearby.",
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.93,
+        "bbox": [
+          25.5,
+          70.5,
+          520.0,
+          480.0
+        ],
+        "depth_value": 2.407,
+        "approach_state": "APPROACHING",
+        "ttc_seconds": 30.0,
+        "risk_level": "MEDIUM",
+        "warning_state": "CAUTION"
+      }
+    ]
+  },
+  {
+    "frame_index": 136,
+    "timestamp_sec": 457956.6906,
+    "loop_fps": 14.99,
+    "det_latency_ms": 10.85,
+    "depth_latency_ms": 26.36,
+    "e2e_latency_ms": 48.95,
+    "active_tracks_count": 1,
+    "global_warning_state": "CAUTION",
+    "navigation_state": "CAUTION",
+    "safe_direction": "NONE",
+    "audio_spoken": false,
+    "audio_text": "",
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.924,
+        "bbox": [
+          27.7,
+          70.1,
+          520.1,
+          480.0
+        ],
+        "depth_value": 2.429,
+        "approach_state": "APPROACHING",
+        "ttc_seconds": null,
+        "risk_level": "MEDIUM",
+        "warning_state": "CAUTION"
+      }
+    ]
+  },
+  {
+    "frame_index": 137,
+    "timestamp_sec": 457956.7521,
+    "loop_fps": 15.04,
+    "det_latency_ms": 9.79,
+    "depth_latency_ms": 26.53,
+    "e2e_latency_ms": 47.94,
+    "active_tracks_count": 1,
+    "global_warning_state": "CAUTION",
+    "navigation_state": "CAUTION",
+    "safe_direction": "NONE",
+    "audio_spoken": false,
+    "audio_text": "",
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.932,
+        "bbox": [
+          27.3,
+          70.1,
+          520.4,
+          480.0
+        ],
+        "depth_value": 2.442,
+        "approach_state": "APPROACHING",
+        "ttc_seconds": null,
+        "risk_level": "MEDIUM",
+        "warning_state": "CAUTION"
+      }
+    ]
+  },
+  {
+    "frame_index": 138,
+    "timestamp_sec": 457956.8154,
+    "loop_fps": 15.05,
+    "det_latency_ms": 12.03,
+    "depth_latency_ms": 26.53,
+    "e2e_latency_ms": 49.52,
+    "active_tracks_count": 1,
+    "global_warning_state": "CAUTION",
+    "navigation_state": "CAUTION",
+    "safe_direction": "NONE",
+    "audio_spoken": false,
+    "audio_text": "",
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.925,
+        "bbox": [
+          27.4,
+          70.1,
+          519.8,
+          480.0
+        ],
+        "depth_value": 2.426,
+        "approach_state": "APPROACHING",
+        "ttc_seconds": null,
+        "risk_level": "MEDIUM",
+        "warning_state": "CAUTION"
+      }
+    ]
+  },
+  {
+    "frame_index": 139,
+    "timestamp_sec": 457956.884,
+    "loop_fps": 15.02,
+    "det_latency_ms": 11.09,
+    "depth_latency_ms": 27.93,
+    "e2e_latency_ms": 52.17,
+    "active_tracks_count": 1,
+    "global_warning_state": "CAUTION",
+    "navigation_state": "CAUTION",
+    "safe_direction": "NONE",
+    "audio_spoken": false,
+    "audio_text": "",
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.935,
+        "bbox": [
+          26.3,
+          70.2,
+          519.8,
+          480.0
+        ],
+        "depth_value": 2.465,
+        "approach_state": "APPROACHING",
+        "ttc_seconds": null,
+        "risk_level": "MEDIUM",
+        "warning_state": "CAUTION"
+      }
+    ]
+  },
+  {
+    "frame_index": 140,
+    "timestamp_sec": 457956.961,
+    "loop_fps": 15.01,
+    "det_latency_ms": 10.43,
+    "depth_latency_ms": 28.44,
+    "e2e_latency_ms": 51.4,
+    "active_tracks_count": 1,
+    "global_warning_state": "CAUTION",
+    "navigation_state": "CAUTION",
+    "safe_direction": "NONE",
+    "audio_spoken": false,
+    "audio_text": "",
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.916,
+        "bbox": [
+          26.6,
+          69.9,
+          519.4,
+          480.0
+        ],
+        "depth_value": 2.499,
+        "approach_state": "APPROACHING",
+        "ttc_seconds": null,
+        "risk_level": "MEDIUM",
+        "warning_state": "CAUTION"
+      }
+    ]
+  },
+  {
+    "frame_index": 141,
+    "timestamp_sec": 457957.0369,
+    "loop_fps": 14.91,
+    "det_latency_ms": 18.2,
+    "depth_latency_ms": 28.58,
+    "e2e_latency_ms": 63.8,
+    "active_tracks_count": 1,
+    "global_warning_state": "CAUTION",
+    "navigation_state": "CAUTION",
+    "safe_direction": "NONE",
+    "audio_spoken": false,
+    "audio_text": "",
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.934,
+        "bbox": [
+          26.8,
+          70.1,
+          518.8,
+          480.0
+        ],
+        "depth_value": 2.525,
+        "approach_state": "APPROACHING",
+        "ttc_seconds": 30.0,
+        "risk_level": "MEDIUM",
+        "warning_state": "CAUTION"
+      }
+    ]
+  },
+  {
+    "frame_index": 142,
+    "timestamp_sec": 457957.1131,
+    "loop_fps": 14.85,
+    "det_latency_ms": 17.81,
+    "depth_latency_ms": 28.45,
+    "e2e_latency_ms": 61.62,
+    "active_tracks_count": 1,
+    "global_warning_state": "CAUTION",
+    "navigation_state": "CAUTION",
+    "safe_direction": "NONE",
+    "audio_spoken": true,
+    "audio_text": "Caution. Person nearby.",
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.932,
+        "bbox": [
+          26.4,
+          70.0,
+          518.5,
+          480.0
+        ],
+        "depth_value": 2.512,
+        "approach_state": "APPROACHING",
+        "ttc_seconds": 19.41,
+        "risk_level": "MEDIUM",
+        "warning_state": "CAUTION"
+      }
+    ]
+  },
+  {
+    "frame_index": 143,
+    "timestamp_sec": 457957.1908,
+    "loop_fps": 14.87,
+    "det_latency_ms": 10.86,
+    "depth_latency_ms": 26.61,
+    "e2e_latency_ms": 48.38,
+    "active_tracks_count": 1,
+    "global_warning_state": "CAUTION",
+    "navigation_state": "CAUTION",
+    "safe_direction": "NONE",
+    "audio_spoken": true,
+    "audio_text": "Caution. Person nearby.",
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.918,
+        "bbox": [
+          26.4,
+          69.7,
+          518.3,
+          479.9
+        ],
+        "depth_value": 2.535,
+        "approach_state": "APPROACHING",
+        "ttc_seconds": 15.39,
+        "risk_level": "MEDIUM",
+        "warning_state": "CAUTION"
+      }
+    ]
+  },
+  {
+    "frame_index": 144,
+    "timestamp_sec": 457957.2518,
+    "loop_fps": 14.87,
+    "det_latency_ms": 9.85,
+    "depth_latency_ms": 26.35,
+    "e2e_latency_ms": 47.71,
+    "active_tracks_count": 1,
+    "global_warning_state": "CAUTION",
+    "navigation_state": "CAUTION",
+    "safe_direction": "NONE",
+    "audio_spoken": true,
+    "audio_text": "Caution. Person nearby.",
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.933,
+        "bbox": [
+          25.4,
+          69.5,
+          517.2,
+          480.0
+        ],
+        "depth_value": 2.541,
+        "approach_state": "APPROACHING",
+        "ttc_seconds": 13.65,
+        "risk_level": "MEDIUM",
+        "warning_state": "CAUTION"
+      }
+    ]
+  },
+  {
+    "frame_index": 145,
+    "timestamp_sec": 457957.3219,
+    "loop_fps": 14.83,
+    "det_latency_ms": 13.88,
+    "depth_latency_ms": 27.76,
+    "e2e_latency_ms": 54.45,
+    "active_tracks_count": 2,
+    "global_warning_state": "CAUTION",
+    "navigation_state": "CAUTION",
+    "safe_direction": "NONE",
+    "audio_spoken": false,
+    "audio_text": "",
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.928,
+        "bbox": [
+          25.4,
+          69.3,
+          515.5,
+          480.0
+        ],
+        "depth_value": 2.506,
+        "approach_state": "APPROACHING",
+        "ttc_seconds": 13.85,
+        "risk_level": "MEDIUM",
+        "warning_state": "CAUTION"
+      },
+      {
+        "track_id": 8,
+        "class_name": "tie",
+        "confidence": 0.286,
+        "bbox": [
+          301.7,
+          332.5,
+          345.9,
+          479.2
+        ],
+        "depth_value": 3.785,
+        "approach_state": "UNKNOWN",
+        "ttc_seconds": null,
+        "risk_level": "MEDIUM",
+        "warning_state": "NO_WARNING"
+      }
+    ]
+  },
+  {
+    "frame_index": 146,
+    "timestamp_sec": 457957.3913,
+    "loop_fps": 14.86,
+    "det_latency_ms": 9.84,
+    "depth_latency_ms": 27.3,
+    "e2e_latency_ms": 48.54,
+    "active_tracks_count": 1,
+    "global_warning_state": "CAUTION",
+    "navigation_state": "CAUTION",
+    "safe_direction": "NONE",
+    "audio_spoken": true,
+    "audio_text": "Caution. Person nearby.",
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.92,
+        "bbox": [
+          24.6,
+          69.4,
+          514.5,
+          480.0
+        ],
+        "depth_value": 2.492,
+        "approach_state": "APPROACHING",
+        "ttc_seconds": 18.06,
+        "risk_level": "MEDIUM",
+        "warning_state": "CAUTION"
+      }
+    ]
+  },
+  {
+    "frame_index": 147,
+    "timestamp_sec": 457957.4539,
+    "loop_fps": 14.88,
+    "det_latency_ms": 9.65,
+    "depth_latency_ms": 26.25,
+    "e2e_latency_ms": 48.1,
+    "active_tracks_count": 1,
+    "global_warning_state": "CAUTION",
+    "navigation_state": "CAUTION",
+    "safe_direction": "NONE",
+    "audio_spoken": true,
+    "audio_text": "Caution. Person nearby.",
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.916,
+        "bbox": [
+          31.3,
+          69.9,
+          511.0,
+          479.9
+        ],
+        "depth_value": 2.426,
+        "approach_state": "APPROACHING",
+        "ttc_seconds": 30.0,
+        "risk_level": "MEDIUM",
+        "warning_state": "CAUTION"
+      }
+    ]
+  },
+  {
+    "frame_index": 148,
+    "timestamp_sec": 457957.5156,
+    "loop_fps": 14.93,
+    "det_latency_ms": 10.56,
+    "depth_latency_ms": 27.59,
+    "e2e_latency_ms": 49.07,
+    "active_tracks_count": 1,
+    "global_warning_state": "CAUTION",
+    "navigation_state": "CAUTION",
+    "safe_direction": "NONE",
+    "audio_spoken": false,
+    "audio_text": "",
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.924,
+        "bbox": [
+          36.6,
+          71.4,
+          509.7,
+          479.9
+        ],
+        "depth_value": 2.543,
+        "approach_state": "APPROACHING",
+        "ttc_seconds": 30.0,
+        "risk_level": "MEDIUM",
+        "warning_state": "CAUTION"
+      }
+    ]
+  },
+  {
+    "frame_index": 149,
+    "timestamp_sec": 457957.5792,
+    "loop_fps": 14.9,
+    "det_latency_ms": 9.73,
+    "depth_latency_ms": 27.15,
+    "e2e_latency_ms": 50.2,
+    "active_tracks_count": 1,
+    "global_warning_state": "CAUTION",
+    "navigation_state": "CAUTION",
+    "safe_direction": "NONE",
+    "audio_spoken": false,
+    "audio_text": "",
+    "objects": [
+      {
+        "track_id": 1,
+        "class_name": "person",
+        "confidence": 0.929,
+        "bbox": [
+          47.0,
+          72.9,
+          509.0,
+          479.9
+        ],
+        "depth_value": 2.559,
+        "approach_state": "APPROACHING",
+        "ttc_seconds": 30.0,
+        "risk_level": "MEDIUM",
+        "warning_state": "CAUTION"
       }
     ]
   }

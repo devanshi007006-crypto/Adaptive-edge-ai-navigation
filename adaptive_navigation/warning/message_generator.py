@@ -53,6 +53,15 @@ class WarningMessageGenerator:
         "CRITICAL": 4,
     }
 
+    # Configurable risk-based repeat intervals (seconds)
+    RISK_INTERVALS = {
+        "NO_WARNING": 6.0,
+        "CAUTION": 3.0,
+        "WARNING": 1.8,
+        "CRITICAL": 0.9,
+        "UNKNOWN": 6.0,
+    }
+
     VEHICLE_CLASSES = {"car", "truck", "bus", "motorcycle"}
 
     def __init__(self, config: Optional[dict] = None) -> None:
@@ -60,19 +69,32 @@ class WarningMessageGenerator:
         audio_cfg = self.config.get("audio", {})
         templates_cfg = self.config.get("warning_messages", {})
 
-        self.repeat_interval = float(audio_cfg.get("repeat_interval_seconds", 2.0))
-        self.continuous_guidance = bool(audio_cfg.get("continuous_guidance", True))
-        self.caution_template = templates_cfg.get("caution", "Please be cautious.")
-        self.warning_template = templates_cfg.get("warning", "Obstacle ahead.")
-        self.critical_template = templates_cfg.get("critical", "Immediate obstacle ahead.")
+        self.audio_mode = audio_cfg.get("mode", "CONTINUOUS_RISK")  # CONTINUOUS_RISK or TRANSITIONS_ONLY
+        self.caution_template = templates_cfg.get("caution", "Caution. Obstacle nearby.")
+        self.warning_template = templates_cfg.get("warning", "Warning. Obstacle ahead.")
+        self.critical_template = templates_cfg.get("critical", "Critical. Immediate obstacle ahead. Stop.")
 
-        # Deduplication and pacing state
+        # Tracking state for deduplication and pacing
         self.last_spoken_text: str = ""
         self.last_spoken_time: Optional[float] = None
         self.last_spoken_wall_time: Optional[float] = None
         self.last_spoken_state: str = "NO_WARNING"
+        self.last_spoken_nav: str = "CONTINUE"
         self.last_spoken_track_id: Optional[int] = None
         self.last_spoken_priority: str = "NONE"
+        self.last_spoken_ttc: Optional[float] = None
+
+    def set_audio_mode(self, mode: str) -> None:
+        """Dynamically set audio guidance mode ('CONTINUOUS_RISK' vs 'TRANSITIONS_ONLY')."""
+        self.audio_mode = mode.upper()
+
+    def get_seconds_to_next_update(self) -> float:
+        """Returns seconds remaining until next periodic audio update."""
+        if self.last_spoken_wall_time is None:
+            return 0.0
+        interval = self.RISK_INTERVALS.get(self.last_spoken_state, 5.0)
+        elapsed = time.time() - self.last_spoken_wall_time
+        return max(0.0, interval - elapsed)
 
     def generate(
         self,
@@ -94,28 +116,20 @@ class WarningMessageGenerator:
         target_dec = track_decisions.get(tid) if (tid is not None) else None
 
         priority = self.STATE_PRIORITY_MAP.get(state, "NONE")
+        nav_state = getattr(scene_nav, "navigation_state", "CONTINUE") if scene_nav else "CONTINUE"
 
-        # 1. If NO_WARNING or UNKNOWN: silent
-        if state in ("NO_WARNING", "UNKNOWN") or not state:
-            return WarningMessage(
-                text="",
-                priority=priority,
-                state=state,
-                track_id=tid,
-                reason=global_warning.reason,
-                should_speak=False,
-                timestamp=current_time,
-            )
+        # 1. Formulate natural wording based on risk escalation, de-escalation, or current state
+        raw_text, is_deescalation = self._build_natural_text(state, target_dec, scene_nav=scene_nav)
 
-        # 2. Formulate natural wording based on obstacle context & navigation guidance
-        raw_text = self._build_natural_text(state, target_dec, scene_nav=scene_nav)
-
-        # 3. Deduplication & Escalation Check (wall-clock aware for physical audio output)
+        # 2. Evaluate pacing, state-change triggers, TTC shifts, and deduplication
         should_speak = self._evaluate_should_speak(
             text=raw_text,
             state=state,
             priority=priority,
             track_id=tid,
+            nav_state=nav_state,
+            is_deescalation=is_deescalation,
+            target_dec=target_dec,
             current_time=current_time,
             current_wall_time=current_wall_time,
         )
@@ -125,11 +139,13 @@ class WarningMessageGenerator:
             self.last_spoken_time = current_time
             self.last_spoken_wall_time = current_wall_time
             self.last_spoken_state = state
+            self.last_spoken_nav = nav_state
             self.last_spoken_track_id = tid
             self.last_spoken_priority = priority
+            self.last_spoken_ttc = target_dec.ttc_seconds if (target_dec and target_dec.ttc_seconds is not None) else None
 
         return WarningMessage(
-            text=raw_text,
+            text=raw_text if should_speak else "",
             priority=priority,
             state=state,
             track_id=tid,
@@ -143,76 +159,75 @@ class WarningMessageGenerator:
         state: str,
         target: Optional[WarningDecision],
         scene_nav=None,
-    ) -> str:
+    ) -> Tuple[str, bool]:
         """
-        Builds concise natural language warning text incorporating directional navigation.
+        Builds concise natural language warning text.
+        Returns Tuple[text, is_deescalation_flag].
         """
-        nav_state = getattr(scene_nav, "navigation_state", "UNKNOWN") if scene_nav else "UNKNOWN"
+        nav_state = getattr(scene_nav, "navigation_state", "CONTINUE") if scene_nav else "CONTINUE"
+        curr_p_order = self.PRIORITY_ORDER.get(self.STATE_PRIORITY_MAP.get(state, "NONE"), 0)
+        last_p_order = self.PRIORITY_ORDER.get(self.last_spoken_priority, 0)
+
+        is_deescalation = (curr_p_order < last_p_order)
+
+        # De-escalation Phrasing
+        if is_deescalation:
+            if state == "WARNING":
+                return "Risk decreasing. Still approaching.", True
+            elif state == "CAUTION":
+                return "Risk decreasing.", True
+            elif state in ("NO_WARNING", "UNKNOWN"):
+                return "Risk cleared. Path clear.", True
 
         # Emergency STOP takes top precedence
-        if nav_state == "STOP":
-            if state == "CRITICAL":
-                return "Immediate obstacle ahead. Stop."
-            return "Stop."
+        if nav_state == "STOP" or state == "CRITICAL":
+            ttc_phrase = ""
+            if target and target.ttc_seconds is not None and target.ttc_seconds > 0.0:
+                ttc_phrase = f" TTC {target.ttc_seconds:.1f} seconds."
+            if target and target.class_name:
+                cls_str = target.class_name.capitalize()
+                return f"Critical. {cls_str} approaching.{ttc_phrase} Stop.", False
+            return "Critical. Stop.", False
 
-        # Identify target obstacle label
-        if target is not None:
-            cls_name = target.class_name.lower().strip()
-            if cls_name in self.VEHICLE_CLASSES:
-                obj_label = "vehicle"
-            elif cls_name in ("person", "bicycle"):
-                obj_label = cls_name
-            else:
-                obj_label = "obstacle"
-            is_approaching = (target.approach_state == "APPROACHING")
-        else:
-            obj_label = "obstacle"
-            is_approaching = False
-
-        # Step 14 Lateral Avoidance Guidance
+        # Directional Lateral Avoidance Guidance
         if nav_state == "AVOID_LEFT":
-            if is_approaching:
-                return f"{obj_label.capitalize()} approaching ahead. Move left."
-            return f"Obstacle ahead. Move left."
+            return "Obstacle ahead. Move left.", False
 
         if nav_state == "AVOID_RIGHT":
-            if is_approaching:
-                return f"{obj_label.capitalize()} approaching ahead. Move right."
-            return f"Obstacle ahead. Move right."
+            return "Obstacle ahead. Move right.", False
 
-        if target is None:
-            if state == "CRITICAL":
-                return self.critical_template
-            elif state == "WARNING":
-                return self.warning_template
-            elif state == "CAUTION":
-                return self.caution_template
-            return ""
+        # Clear Path
+        if state in ("NO_WARNING", "UNKNOWN") or target is None:
+            return "Path clear.", False
 
-        # TTC phrase (ONLY if metric, valid, and reliable)
+        # Identify target object class label
+        cls_name = target.class_name.lower().strip()
+        if cls_name in self.VEHICLE_CLASSES:
+            obj_label = "vehicle"
+        elif cls_name in ("person", "bicycle", "chair", "table", "bed"):
+            obj_label = cls_name
+        else:
+            obj_label = "obstacle"
+
+        is_approaching = (target.approach_state == "APPROACHING")
+
+        # TTC phrase formatting
         ttc_phrase = ""
-        if target.ttc_state == "VALID" and target.ttc_seconds is not None:
-            rounded_sec = max(1, int(round(target.ttc_seconds)))
-            sec_word = "one second" if rounded_sec == 1 else f"{rounded_sec} seconds"
-            ttc_phrase = f", about {sec_word}"
+        if is_approaching and target.ttc_seconds is not None and target.ttc_seconds > 0.0:
+            ttc_phrase = f" TTC {target.ttc_seconds:.1f} seconds."
 
-        # Standard Obstacle Alert Phrasing
-        if state == "CRITICAL":
-            if is_approaching:
-                return f"Immediate {obj_label} approaching{ttc_phrase}."
-            return f"Immediate {obj_label} ahead."
-
+        # Structured Warning Format: [RISK] + [OBJECT] + [MOTION] + [TTC/ACTION]
         if state == "WARNING":
             if is_approaching:
-                return f"{obj_label.capitalize()} approaching ahead{ttc_phrase}."
-            return f"{obj_label.capitalize()} ahead."
+                return f"Warning. {obj_label.capitalize()} approaching.{ttc_phrase}", False
+            return f"Warning. {obj_label.capitalize()} ahead.", False
 
         if state == "CAUTION":
             if obj_label != "obstacle":
-                return f"Caution, {obj_label} nearby."
-            return self.caution_template
+                return f"Caution. {obj_label.capitalize()} nearby.", False
+            return "Caution. Obstacle nearby.", False
 
-        return ""
+        return "Path clear.", False
 
     def _evaluate_should_speak(
         self,
@@ -220,52 +235,57 @@ class WarningMessageGenerator:
         state: str,
         priority: str,
         track_id: Optional[int],
+        nav_state: str,
+        is_deescalation: bool,
+        target_dec: Optional[WarningDecision],
         current_time: float,
         current_wall_time: float,
     ) -> bool:
         """
-        Determines whether speech output should be dispatched.
-        Synchronizes with physical audio hardware using wall-clock time
-        so users receive continuous, properly paced audible guidance.
+        Determines whether speech output should be dispatched based on risk state,
+        transitions, TTC changes, deduplication, and audio mode.
         """
         if not text:
             return False
 
-        # First spoken message
+        # First message ever
         if not self.last_spoken_text:
             return True
 
         curr_p_order = self.PRIORITY_ORDER.get(priority, 0)
         last_p_order = self.PRIORITY_ORDER.get(self.last_spoken_priority, 0)
 
-        # De-escalation rule: do not announce de-escalation chatter
-        if curr_p_order < last_p_order:
-            return False
-
-        # Immediate Escalation rule: higher priority always speaks immediately
+        # 1. Immediate Escalation: state increase triggers immediate speech
         if curr_p_order > last_p_order:
             return True
 
-        # New threat with same high priority
-        if track_id is not None and self.last_spoken_track_id != track_id and curr_p_order >= 3:
+        # 2. Immediate De-escalation: state decrease triggers immediate speech
+        if is_deescalation:
             return True
 
-        # Timing elapsed:
-        # In real-world operation, speech delivery is experienced by the user in wall-clock time.
-        # Check both wall-clock elapsed and stream elapsed to support slow inference (CPU 0.2 FPS)
-        # as well as fast real-time playback.
+        # 3. Navigation Direction Shift (e.g. from CONTINUE to AVOID_LEFT or STOP)
+        if nav_state != self.last_spoken_nav and nav_state != "CONTINUE":
+            return True
+
+        # 4. Significant TTC Change Trigger (e.g., TTC closed by >0.5s)
+        if target_dec and target_dec.ttc_seconds is not None and self.last_spoken_ttc is not None:
+            ttc_diff = abs(target_dec.ttc_seconds - self.last_spoken_ttc)
+            if ttc_diff >= 0.5 and target_dec.approach_state == "APPROACHING":
+                return True
+
+        # If mode is TRANSITIONS_ONLY, do not send periodic updates
+        if self.audio_mode == "TRANSITIONS_ONLY":
+            return False
+
+        # 5. Continuous Risk Pacing (Periodic updates based on risk state)
         wall_elapsed = (current_wall_time - self.last_spoken_wall_time) if (self.last_spoken_wall_time is not None) else 999.0
         stream_elapsed = (current_time - self.last_spoken_time) if (self.last_spoken_time is not None) else 999.0
         elapsed = max(wall_elapsed, stream_elapsed)
 
-        # If guidance instruction changed (e.g., from "Move left" to "Stop"):
-        # Allow immediate update after a short conversational pause (1.0s)
-        if text != self.last_spoken_text and elapsed >= 1.0:
-            return True
+        interval = self.RISK_INTERVALS.get(state, 5.0)
 
-        # Continuous Guidance: if the threat persists (WARNING, CRITICAL, or persistent CAUTION),
-        # provide continuous periodic voice guidance once repeat_interval has elapsed.
-        if elapsed >= self.repeat_interval:
+        # Dispatch periodic update if required interval has elapsed
+        if elapsed >= interval:
             return True
 
         return False

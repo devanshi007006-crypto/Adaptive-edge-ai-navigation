@@ -16,7 +16,9 @@ camera:
   exposure_compensation: true
   low_light_boost: true
 detector:
-  model: yolo11n.pt
+  model: models/detector/yolo26n.pt
+  family: yolo26
+  task: detect
   confidence_threshold: 0.28
   iou_threshold: 0.45
   image_size: 640

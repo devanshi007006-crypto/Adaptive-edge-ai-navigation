@@ -12,27 +12,28 @@
 
 ---
 
-## Quick Start (Run Live Demo Control Center)
+## Quick Start (Run Final Research Prototype)
 
 ```powershell
 # 1. Activate project environment
 .\.venv\Scripts\activate
 
-# 2. Launch Live Demo Control Center GUI (S01–S06 Scenarios)
-python scripts/run/run_demo_control_center.py
+# 2. Launch Canonical Layer 1 + Layer 2 Research Prototype (YOLO26n Primary)
+python scripts/run/run_final_prototype.py
 
-# 3. Or launch raw live webcam feed (TensorRT FP16)
-python scripts/run/run_live_camera.py
+# 3. Launch Live Demo Control Center GUI (S01–S06 Scenarios)
+python scripts/run/run_demo_control_center.py
 ```
 
 ---
 
 ## Current Status
 
-* **Status**: **Research Prototype — Live Webcam Demonstration Capable**
+* **Status**: **Research Prototype — Live Webcam Demonstration & Judge Demo Capable**
 * **Target Environment**: Laptop Integrated Webcam ($640 \times 480$ @ 30 FPS) + NVIDIA GeForce RTX 4050 Laptop GPU (`cuda:0`).
-* **Live Performance**: **14.93 FPS** mean throughput (**50.13 ms** p50 latency) with native TensorRT FP16 monocular depth inference (`models/deployment/depth_anything_v2_vits_fp16.engine`).
-* **Live Stability**: 400-frame static room baseline revalidation achieved **0 false STOP calls (0.0%)**, **0 false steering calls (0.0%)**, **357 CONTINUE frames (89.25%)**, **43 CAUTION frames (10.75%)**, and **0 spoken audio alert interruptions**.
+* **Primary Detector**: **Ultralytics YOLO26n** (`models/detector/yolo26n.pt`) with **9.02 ms** detection latency. *(Research baseline YOLO11n remains available).*
+* **Live Performance**: **17.68 FPS** mean throughput (**50.13 ms** p50 latency) with native TensorRT FP16 monocular depth inference (`models/deployment/depth_anything_v2_vits_fp16.engine`) and Risk-Aware Adaptive Computation Controller.
+* **Evidence Package**: Poster evidence report, CSV tables, visualizations, and judge demo script compiled in [`validation/results/final_research_evidence/`](file:///c:/My%20sep_stuffs/Research%20Conclave/Adaptive-edge-ai-navigation/validation/results/final_research_evidence/).
 * **Safety Boundary**: Strictly for **controlled, open-eye, supervised technical demonstrations**. Not certified as a medical device or blind mobility aid.
 
 ---
@@ -40,10 +41,10 @@ python scripts/run/run_live_camera.py
 ## Documentation Map
 
 - [`PROJECT_INDEX.md`](PROJECT_INDEX.md) — Master project database, sitemap, metrics provenance, and complete changelog.
-- [`docs/FILE_MANIFEST.md`](docs/FILE_MANIFEST.md) — Detailed 2nd-level map defining ownership, purpose, status, and references for all 187+ files.
-- [`docs/PROJECT_CLEANUP_REPORT.md`](docs/PROJECT_CLEANUP_REPORT.md) — Maintenance phase execution report detailing file classification, archives, and verification.
-- [`docs/live_demo_control_center.md`](docs/live_demo_control_center.md) — Operator guide for the Phase 5.1 Desktop Control Center GUI and S01–S06 scenarios.
-- [`validation/results/live/live_risk_navigation_audit.md`](validation/results/live/live_risk_navigation_audit.md) — Diagnostic bug audit and 400-frame static room baseline verification report.
+- [`validation/results/final_research_evidence/reports/poster_evidence_report.md`](validation/results/final_research_evidence/reports/poster_evidence_report.md) — Canonical final poster evidence report.
+- [`validation/results/final_research_evidence/judge_demo/judge_demo_script.md`](validation/results/final_research_evidence/judge_demo/judge_demo_script.md) — 2–3 minute Research Conclave judge demonstration walkthrough.
+- [`validation/results/final_research_evidence/reports/poster_claims.md`](validation/results/final_research_evidence/reports/poster_claims.md) — Safe, qualified, and excluded scientific claims guidance.
+- [`docs/FILE_MANIFEST.md`](docs/FILE_MANIFEST.md) — Detailed 2nd-level map defining ownership, purpose, status, and references for all repository files.
 
 ---
 

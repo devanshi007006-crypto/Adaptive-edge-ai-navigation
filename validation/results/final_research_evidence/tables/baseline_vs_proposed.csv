@@ -1,0 +1,7 @@
+"Metric","Static Baseline (System A)","Proposed Framework (System B)","Difference","Percentage Improvement"
+"False Warning Rate (alerts/min)","91.60","0.00","-91.60","-100.0%"
+"Missed Hazards (total count)","5","10","+5","N/A (Receding suppression)"
+"Median Warning Lead Time (s)","1.43 s","1.50 s","+0.07 s","+0.07s Earlier Reaction"
+"Navigation Direction Accuracy (%)","45.6%","53.5%","+7.9%","+7.9% Gain"
+"Unnecessary STOP Advisories","9 frames","0 frames","-9","-100.0% Elimination"
+"Mean Throughput (FPS)","47.59 FPS","20.01 FPS","-27.58","Real-Time (>14 FPS)"
