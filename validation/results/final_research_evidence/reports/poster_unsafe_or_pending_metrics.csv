@@ -1,0 +1,8 @@
+"Metric / Claim","Unsafe Value","Reason for Rejection / Exclusion","Authoritative Reconciled Replacement","Source / Audit Ref"
+"Informal False Warning Count","6 false warnings","Informal text draft value conflicting with raw CSV telemetry","0.00 alerts/min vs 91.60 alerts/min (229 false warning frames in Baseline)","RESULT_RECONCILIATION.md Sec 3.A"
+"Informal Unnecessary STOP Count","4 unnecessary STOPs","Informal text draft value conflicting with raw trial logs","0 frames vs 9 frames (100% unnecessary STOP elimination in S04)","RESULT_RECONCILIATION.md Sec 3.B"
+"Uncalibrated Lead Time Claim","1.8s lead time","Single-frame preliminary chart estimate not traceable to 30-trial Phase 6 dataset","+0.07s earlier median reaction window (1.50s Proposed vs 1.43s Baseline)","RESULT_RECONCILIATION.md Sec 3.C"
+"Universal Throughput Claim","17.68 FPS (Universal)","Must NOT be claimed as universal system frame rate across all hardware/scenarios","17.68 FPS Preliminary S03 measured throughput on RTX 4050","FINAL_EVIDENCE_AUDIT.md Sec 4"
+"Universal Real-World False Warning Elimination","100% real-world false warning reduction","Overbroad claim unsupported by unconstrained real-world deployment","100% false-warning reduction across controlled S01-S06 scenario suite","FINAL_EVIDENCE_AUDIT.md Sec 5"
+"Theoretical TTC / Risk Curves","Theoretical plots 01 & 02","Theoretical mathematical curves non-representative of empirical sensor logs","Real S03 telemetry plot (real_ttc_plot.png) labeled MEASURED","FINAL_EVIDENCE_AUDIT.md Sec 2"
+"Banned Scientific Overclaims","100% safe / clinical grade / guaranteed navigation","Vague, unscientific, or regulatory compliance overclaims","Strict adherence to poster-safe claim checklist","FINAL_EVIDENCE_AUDIT.md Sec 6"
